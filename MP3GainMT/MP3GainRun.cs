@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MP3GainMT;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms.Automation;
 
@@ -16,20 +18,25 @@ namespace WinFormMP3Gain
         public event EventHandler<MP3GainFolder> FolderFinished;
         public event EventHandler<MP3GainFile> FoundFile;
         public event EventHandler<MP3GainFile> ChangedFile;
-        public event EventHandler<MP3GainFolder> SearchFinished;
+        public event EventHandler<MP3GainFolder> SearchFinishedFolder;
         public event EventHandler RefreshTable;
 
         private Dictionary<string, BackgroundWorker> workers = new Dictionary<string, BackgroundWorker>();
         private DateTime lastRefresh = DateTime.Now;
 
+        private Dictionary<string, MP3GainFile> foundFiles = new Dictionary<string, MP3GainFile>();
+        private List<MP3GainFolder> finished = new List<MP3GainFolder>();
+
+        public SortableBindingList<MP3GainRow> DataSource { get; private set; } = new SortableBindingList<MP3GainRow>();
+
         public Dictionary<string, MP3GainFolder> Folders { get; set; } = new Dictionary<string, MP3GainFolder>();
 
         public static string Executable { get; set; } = string.Empty;
 
-        public string ParentFolder { get; } = string.Empty;
+        public string ParentFolder { get; set; } = string.Empty;
         public int FoldersLeft { get; private set; }
 
-        public MP3GainRun(string exePath, string parentFolder)
+        public MP3GainRun(string exePath, string parentFolder = "")
         {
             if (Executable == string.Empty)
             {
@@ -39,9 +46,15 @@ namespace WinFormMP3Gain
             ParentFolder = parentFolder;
         }
 
-        public void SearchFolders()
+        public void SearchFolders(string parentFolder = "")
         {
+            if (parentFolder != string.Empty)
+            {
+                this.ParentFolder = parentFolder;
+            }
+
             this.FindFolders(this.ParentFolder);
+            this.RaiseRefreshTable();
         }
 
         public void Run()
@@ -55,6 +68,7 @@ namespace WinFormMP3Gain
 
             foreach (var folder in Folders.Values)
             {
+                var index = Folders.Values.ToList().IndexOf(folder);
                 var worker = new BackgroundWorker();
                 worker.WorkerReportsProgress = true;
 
@@ -63,7 +77,20 @@ namespace WinFormMP3Gain
                 worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 
                 worker.RunWorkerAsync(folder);
+
+                /*if (index != 0 && index % 4 == 0)
+                {
+                    while(!this.IsFolderFinished(folder))
+                    {
+                        Thread.Sleep(250);
+                    }
+                }*/
             }
+        }
+
+        private bool IsFolderFinished(MP3GainFolder folder)
+        {
+            return this.finished.Contains(folder);
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -90,6 +117,7 @@ namespace WinFormMP3Gain
                 string fileWord = WordWithEnding("file", folder.MP3Files);
                 Debug.WriteLine($"{folder.FolderName} is done. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
                 this.RaiseFolderFinished(this, folder);
+                this.finished.Add(folder);
             }
         }
 
@@ -134,7 +162,11 @@ namespace WinFormMP3Gain
                 if (mp3Folder.MP3Files.Count > 0)
                 {
                     this.Folders.Add(folder, mp3Folder);
-                    this.RaiseSearchFinished(mp3Folder);
+                    
+                    if (folders.Count < 25)
+                    {
+                        this.RaiseSearchFinished(mp3Folder);
+                    }
                 }
             }
         }
@@ -154,9 +186,9 @@ namespace WinFormMP3Gain
 
         private void RaiseSearchFinished(MP3GainFolder mp3Folder)
         {
-            if (this.SearchFinished != null)
+            if (this.SearchFinishedFolder != null)
             {
-                this.SearchFinished.Invoke(this, mp3Folder);
+                this.SearchFinishedFolder.Invoke(this, mp3Folder);
             }
         }
 
@@ -171,6 +203,71 @@ namespace WinFormMP3Gain
             {
                 this.FoundFile.Invoke(sender, file);
             }
+        }
+
+        internal void Clear()
+        {
+            this.foundFiles.Clear();
+            this.DataSource.Clear();
+            this.Folders.Clear();
+            this.finished.Clear();
+        }
+
+        internal void RefreshDataSource()
+        {
+            this.RefreshDataSource(AllFiles);
+        }
+
+        private List<MP3GainFile> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
+
+        public Dictionary<string, MP3GainRow> SourceDictionary { get; private set; } = new Dictionary<string, MP3GainRow>();
+
+        internal void RefreshDataSource(List<MP3GainFile> folderFiles)
+        {
+            foreach (var file in folderFiles)
+            {
+                UpdateFile(file);
+            }
+        }
+
+        public void UpdateFile(MP3GainFile file)
+        {
+            if (this.Folders.ContainsKey(file.FolderPath))
+            {
+                if (!this.SourceDictionary.ContainsKey(file.FilePath))
+                {
+                    var row = new MP3GainRow(file, this.Folders[file.FolderPath]);
+                    this.SourceDictionary.Add(file.FilePath, row);
+                    this.DataSource.Add(row);
+                }
+            }
+        }
+
+        internal void AddFile(MP3GainFile file)
+        {
+            if (!this.foundFiles.ContainsKey(file.FilePath))
+            {
+                this.foundFiles.Add(file.FilePath, file);
+            }
+            else
+            {
+                UpdateFile(file);
+            }
+        }
+
+        internal void UpdateFolder(MP3GainFolder e)
+        {
+            var folderFiles = FolderFiles(e);
+
+            if (folderFiles.Any())
+            {
+                this.RefreshDataSource(folderFiles);
+            }
+        }
+
+        public List<MP3GainFile> FolderFiles(MP3GainFolder folder)
+        {
+            return folder.Files.Select( x => x.Value).ToList();
         }
     }
 }
