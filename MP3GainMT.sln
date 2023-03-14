@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MP3GainMT", "MP3GainMT\MP3GainMT.csproj", "{00039B32-F61A-478C-972D-0232C7334327}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00039B32-F61A-478C-972D-0232C7334327}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00039B32-F61A-478C-972D-0232C7334327}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00039B32-F61A-478C-972D-0232C7334327}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00039B32-F61A-478C-972D-0232C7334327}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {778DF36A-AB01-48E3-9BC7-75143C282D15}
+	EndGlobalSection
+EndGlobal
