@@ -244,7 +244,6 @@ namespace WinFormMP3Gain
         private bool ProcessAlbumGain(string line)
         {
             bool found = false;
-            bool done = false;
 
             if (line.StartsWith($"Recommended \"Album\" mp3 gain change for all files:"))
             {
@@ -256,7 +255,6 @@ namespace WinFormMP3Gain
                 {
                     this.SuggestedGain = gain;
                     found = true;
-                    done = true;
                 }
 
             }

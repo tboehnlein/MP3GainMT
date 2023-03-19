@@ -35,7 +35,7 @@ namespace MP3GainMT
             this.runButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label2 = new System.Windows.Forms.Label();
+            this.fileListLabel = new System.Windows.Forms.Label();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -110,81 +110,91 @@ namespace MP3GainMT
             this.dataGridView1.Size = new System.Drawing.Size(924, 310);
             this.dataGridView1.TabIndex = 3;
             // 
-            // label2
+            // fileListLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 52);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(67, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Gain Results";
+            this.fileListLabel.AutoSize = true;
+            this.fileListLabel.Location = new System.Drawing.Point(16, 52);
+            this.fileListLabel.Name = "fileListLabel";
+            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
+            this.fileListLabel.TabIndex = 2;
+            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
             // 
             // FullPath
             // 
+            this.FullPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.FullPath.DataPropertyName = "FullPath";
             this.FullPath.HeaderText = "Full Path";
             this.FullPath.Name = "FullPath";
             this.FullPath.ReadOnly = true;
+            this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.FullPath.Visible = false;
             // 
             // Folder
             // 
-            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.Folder.DataPropertyName = "Folder";
             this.Folder.HeaderText = "Folder";
             this.Folder.Name = "Folder";
             this.Folder.ReadOnly = true;
+            this.Folder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Folder.Width = 468;
             // 
             // FileName
             // 
-            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
+            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.FileName.DataPropertyName = "FileName";
             this.FileName.HeaderText = "File Name";
             this.FileName.Name = "FileName";
             this.FileName.ReadOnly = true;
-            this.FileName.Width = 5;
+            this.FileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             // 
             // Progress
             // 
-            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.Progress.DataPropertyName = "Progress";
             this.Progress.HeaderText = "%";
             this.Progress.Name = "Progress";
             this.Progress.ReadOnly = true;
+            this.Progress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Progress.Width = 40;
             // 
             // TrackDB
             // 
-            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.TrackDB.DataPropertyName = "TrackDB";
             this.TrackDB.HeaderText = "Track Before";
             this.TrackDB.Name = "TrackDB";
             this.TrackDB.ReadOnly = true;
-            this.TrackDB.Width = 87;
+            this.TrackDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.TrackDB.Width = 94;
             // 
             // TrackFinal
             // 
+            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.TrackFinal.DataPropertyName = "TrackFinal";
             this.TrackFinal.HeaderText = "Track After";
             this.TrackFinal.Name = "TrackFinal";
             this.TrackFinal.ReadOnly = true;
+            this.TrackFinal.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             // 
             // AlbumDB
             // 
-            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.AlbumDB.DataPropertyName = "AlbumDB";
             this.AlbumDB.HeaderText = "Album Before";
             this.AlbumDB.Name = "AlbumDB";
             this.AlbumDB.ReadOnly = true;
-            this.AlbumDB.Width = 88;
+            this.AlbumDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.AlbumDB.Width = 95;
             // 
             // AlbumGain
             // 
-            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.AlbumGain.DataPropertyName = "AlbumFinal";
             this.AlbumGain.HeaderText = "Album After";
             this.AlbumGain.Name = "AlbumGain";
             this.AlbumGain.ReadOnly = true;
+            this.AlbumGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.AlbumGain.Width = 79;
             // 
             // Form1
@@ -193,7 +203,7 @@ namespace MP3GainMT
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(948, 390);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.folderPathTextBox);
             this.Controls.Add(this.runButton);
@@ -201,6 +211,7 @@ namespace MP3GainMT
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Text = "MP3Gain Multi-Threaded";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -214,7 +225,7 @@ namespace MP3GainMT
         private Button runButton;
         private Label label1;
         private DataGridView dataGridView1;
-        private Label label2;
+        private Label fileListLabel;
         private DataGridViewTextBoxColumn FullPath;
         private DataGridViewTextBoxColumn Folder;
         private DataGridViewTextBoxColumn FileName;

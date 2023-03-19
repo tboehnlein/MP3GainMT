@@ -20,6 +20,7 @@ namespace WinFormMP3Gain
         public event EventHandler<MP3GainFile> ChangedFile;
         public event EventHandler<MP3GainFolder> SearchFinishedFolder;
         public event EventHandler RefreshTable;
+        public event EventHandler<bool> UpdateSearchProgress;
 
         private Dictionary<string, BackgroundWorker> workers = new Dictionary<string, BackgroundWorker>();
         private DateTime lastRefresh = DateTime.Now;
@@ -48,6 +49,8 @@ namespace WinFormMP3Gain
 
         public void SearchFolders(string parentFolder = "")
         {
+            this.SourceDictionary.Clear();
+
             if (parentFolder != string.Empty)
             {
                 this.ParentFolder = parentFolder;
@@ -167,7 +170,19 @@ namespace WinFormMP3Gain
                     {
                         this.RaiseSearchFinished(mp3Folder);
                     }
+
+                    this.RaiseUpdateSearchProgress();
                 }
+            }
+
+            this.RaiseUpdateSearchProgress(true);
+        }
+
+        private void RaiseUpdateSearchProgress(bool force = false)
+        {
+            if (this.UpdateSearchProgress != null)
+            {
+                this.UpdateSearchProgress.Invoke(this, force);
             }
         }
 
@@ -215,13 +230,17 @@ namespace WinFormMP3Gain
 
         internal void RefreshDataSource()
         {
+            this.RaiseUpdateSearchProgress();
             this.RefreshDataSource(AllFiles);
         }
 
         private List<MP3GainFile> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
 
         public Dictionary<string, MP3GainRow> SourceDictionary { get; private set; } = new Dictionary<string, MP3GainRow>();
-
+        public int FileCount
+        {
+            get { return this.foundFiles.Count; }
+        }
         internal void RefreshDataSource(List<MP3GainFile> folderFiles)
         {
             foreach (var file in folderFiles)
