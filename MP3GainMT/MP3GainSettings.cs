@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace MP3GainMT
 {
@@ -39,7 +34,7 @@ namespace MP3GainMT
         }
 
         public readonly string SettingsFileLocation = @".\settings.json";
-        
+
         public MP3GainSettings()
         {
             this.ReadSettingsFile();
@@ -65,10 +60,8 @@ namespace MP3GainMT
             {
                 this._json = new JObject();
                 _json.Add(LastUsedLabel, string.Empty);
-
             }
         }
-
 
         public void WriteSettingsFile()
         {

@@ -1,25 +1,25 @@
 ﻿using MP3GainMT;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms.Automation;
 
 namespace WinFormMP3Gain
 {
     internal class MP3GainRun
     {
         public event EventHandler<MP3GainFolder> FolderFinished;
+
         public event EventHandler<MP3GainFile> FoundFile;
+
         public event EventHandler<MP3GainFile> ChangedFile;
+
         public event EventHandler<MP3GainFolder> SearchFinishedFolder;
+
         public event EventHandler RefreshTable;
+
         public event EventHandler<bool> UpdateSearchProgress;
 
         private Dictionary<string, BackgroundWorker> workers = new Dictionary<string, BackgroundWorker>();
@@ -28,7 +28,7 @@ namespace WinFormMP3Gain
         private Dictionary<string, MP3GainFile> foundFiles = new Dictionary<string, MP3GainFile>();
         private List<MP3GainFolder> finished = new List<MP3GainFolder>();
 
-        public SortableBindingList<MP3GainRow> DataSource { get; private set; } = new SortableBindingList<MP3GainRow>();
+        public BindingList<MP3GainRow> DataSource { get; private set; } = new BindingList<MP3GainRow>();
 
         public Dictionary<string, MP3GainFolder> Folders { get; set; } = new Dictionary<string, MP3GainFolder>();
 
@@ -49,15 +49,37 @@ namespace WinFormMP3Gain
 
         public void SearchFolders(string parentFolder = "")
         {
-            this.SourceDictionary.Clear();
+            var worker = new BackgroundWorker();
 
-            if (parentFolder != string.Empty)
-            {
-                this.ParentFolder = parentFolder;
-            }
+            this.ParentFolder = parentFolder;
 
-            this.FindFolders(this.ParentFolder);
+            worker.WorkerReportsProgress = true;
+
+            worker.DoWork += SearchWorker_DoWork;
+            worker.ProgressChanged += SearchWorker_ProgressChanged;
+            worker.RunWorkerCompleted += SearchWorker_RunWorkerCompleted;
+
+            worker.RunWorkerAsync(this.ParentFolder);
+        }
+
+        private void SearchWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
             this.RaiseRefreshTable();
+        }
+
+        private void SearchWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.RaiseUpdateSearchProgress(true);
+        }
+
+        private void SearchWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is string folder && sender is BackgroundWorker worker)
+            {
+                this.SourceDictionary.Clear();
+                this.FindFolders(folder, worker);
+                worker.ReportProgress(100);
+            }
         }
 
         public void Run()
@@ -75,9 +97,9 @@ namespace WinFormMP3Gain
                 var worker = new BackgroundWorker();
                 worker.WorkerReportsProgress = true;
 
-                worker.DoWork += Worker_DoWork;
-                worker.ProgressChanged += Worker_ProgressChanged;
-                worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+                worker.DoWork += ProcessWorker_DoWork;
+                worker.ProgressChanged += ProcessWorker_ProgressChanged;
+                worker.RunWorkerCompleted += ProcessWorker_RunWorkerCompleted;
 
                 worker.RunWorkerAsync(folder);
 
@@ -96,7 +118,7 @@ namespace WinFormMP3Gain
             return this.finished.Contains(folder);
         }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProcessWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if ((DateTime.Now - this.lastRefresh).TotalSeconds > .250)
             {
@@ -113,7 +135,7 @@ namespace WinFormMP3Gain
             }
         }
 
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ProcessWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Result is MP3GainFolder folder)
             {
@@ -131,7 +153,7 @@ namespace WinFormMP3Gain
             if (this.FolderFinished != null)
             {
                 this.FolderFinished.Invoke(sender, folder);
-            }            
+            }
         }
 
         public static string WordWithEnding<T>(string word, List<T> list)
@@ -139,7 +161,7 @@ namespace WinFormMP3Gain
             return word + (list.Count == 0 ? "" : "s");
         }
 
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        private void ProcessWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument is MP3GainFolder folder)
             {
@@ -148,7 +170,7 @@ namespace WinFormMP3Gain
             }
         }
 
-        private void FindFolders(string parentFolder)
+        private void FindFolders(string parentFolder, BackgroundWorker worker)
         {
             var folders = Directory.GetDirectories(parentFolder, "*", SearchOption.AllDirectories).ToList();
 
@@ -165,17 +187,15 @@ namespace WinFormMP3Gain
                 if (mp3Folder.MP3Files.Count > 0)
                 {
                     this.Folders.Add(folder, mp3Folder);
-                    
+
                     if (folders.Count < 25)
                     {
                         this.RaiseSearchFinished(mp3Folder);
                     }
 
-                    this.RaiseUpdateSearchProgress();
+                    worker.ReportProgress(Convert.ToInt32((((double)folder.IndexOf(folder) + 1) / folders.Count) * 100.0));
                 }
             }
-
-            this.RaiseUpdateSearchProgress(true);
         }
 
         private void RaiseUpdateSearchProgress(bool force = false)
@@ -237,10 +257,12 @@ namespace WinFormMP3Gain
         private List<MP3GainFile> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
 
         public Dictionary<string, MP3GainRow> SourceDictionary { get; private set; } = new Dictionary<string, MP3GainRow>();
+
         public int FileCount
         {
             get { return this.foundFiles.Count; }
         }
+
         internal void RefreshDataSource(List<MP3GainFile> folderFiles)
         {
             foreach (var file in folderFiles)
@@ -286,7 +308,7 @@ namespace WinFormMP3Gain
 
         public List<MP3GainFile> FolderFiles(MP3GainFolder folder)
         {
-            return folder.Files.Select( x => x.Value).ToList();
+            return folder.Files.Select(x => x.Value).ToList();
         }
     }
 }

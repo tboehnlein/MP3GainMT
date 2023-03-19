@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MP3GainMT
 {
     public class SortableBindingList<T> : BindingList<T>
     {
         private bool isSortedValue;
-        ListSortDirection sortDirectionValue;
-        PropertyDescriptor sortPropertyValue;
+        private ListSortDirection sortDirectionValue;
+        private PropertyDescriptor sortPropertyValue;
 
         public SortableBindingList()
         {
@@ -57,6 +55,7 @@ namespace MP3GainMT
                 }
 
                 int newIndex = 0;
+
                 foreach (object item in query)
                 {
                     this.Items[newIndex] = (T)item;

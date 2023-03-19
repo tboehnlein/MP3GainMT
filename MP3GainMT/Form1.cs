@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WinFormMP3Gain;
 using WK.Libraries.BetterFolderBrowserNS;
@@ -16,8 +9,6 @@ namespace MP3GainMT
 {
     public partial class Form1 : Form
     {
-
-        
         private MP3GainRun run;
         private MP3GainSettings settings;
         private BindingSource source;
@@ -42,16 +33,14 @@ namespace MP3GainMT
             this.folderPathTextBox.Text = run.ParentFolder;
             this.source.DataSource = this.run.DataSource;
 
-
             dataGridView1.DataSource = source;
         }
 
-        private void Run_RefreshProgress(object sender,bool force)
+        private void Run_RefreshProgress(object sender, bool force)
         {
             if (CheckTime(force, this.lastLabelRefresh))
             {
                 UpdateFileListLabel();
-
 
                 lastLabelRefresh = DateTime.Now;
             }
@@ -63,8 +52,6 @@ namespace MP3GainMT
         {
             run.RefreshDataSource();
         }
-
-        
 
         private void BrowseButton_Click(object sender, EventArgs e)
         {
@@ -84,7 +71,6 @@ namespace MP3GainMT
 
                 this.settings.LastUsedParentFolder = parentFolder;
             }
-
         }
 
         private void Run_RefreshTable(object sender, EventArgs e)
@@ -102,13 +88,13 @@ namespace MP3GainMT
 
         private void Run_SearchFinishedFolder(object sender, MP3GainFolder e)
         {
-            run.RefreshDataSource(run.FolderFiles(e));            
+            run.RefreshDataSource(run.FolderFiles(e));
             SortTable();
         }
 
         private void RunButton_Click(object sender, EventArgs e)
         {
-            this.StartTime = DateTime.Now;  
+            this.StartTime = DateTime.Now;
             var parentFolder = this.folderPathTextBox.Text;
 
             if (Directory.Exists(parentFolder))
@@ -128,7 +114,7 @@ namespace MP3GainMT
             {
                 UpdateFileListLabel();
                 this.RefreshRows();
-                this.dataGridView1.Sort(this.dataGridView1.Columns["FullPath"], ListSortDirection.Ascending);
+                //this.dataGridView1.Sort(this.dataGridView1.Columns["FullPath"], ListSortDirection.Ascending);
                 this.Update();
                 this.Refresh();
                 this.lastSort = DateTime.Now;

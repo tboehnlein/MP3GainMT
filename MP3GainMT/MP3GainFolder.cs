@@ -4,10 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace WinFormMP3Gain
 {
@@ -21,6 +18,7 @@ namespace WinFormMP3Gain
         private static DateTime lastWrite = DateTime.Now;
 
         public event EventHandler<MP3GainFile> FoundFile;
+
         public event EventHandler<MP3GainFile> ChangedFile;
 
         public Dictionary<string, MP3GainFile> Files { get; set; } = new Dictionary<string, MP3GainFile>();
@@ -37,7 +35,7 @@ namespace WinFormMP3Gain
         {
             get
             {
-                return Files.Select( x => x.Value.FilePath).ToList();
+                return Files.Select(x => x.Value.FilePath).ToList();
             }
         }
 
@@ -73,7 +71,6 @@ namespace WinFormMP3Gain
                     this.RaiseFoundFile(mp3File);
                 }
             }
-
         }
 
         internal void RunFolder(string executable, BackgroundWorker worker)
@@ -109,7 +106,6 @@ namespace WinFormMP3Gain
         private void ProcessGainOutput(string output)
         {
             this.GainLines = output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-
         }
 
         private void RunAnalysis(string executable)
@@ -131,7 +127,7 @@ namespace WinFormMP3Gain
             analysisProcess.OutputDataReceived += AnalysisProcess_OutputDataReceived;
             analysisProcess.ErrorDataReceived += AnalysisProcess_ErrorDataReceived;
 
-            this.sortedFiles = this.Files.Select ( x => x.Value.FilePath ).ToList();
+            this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
             sortedFiles.Sort();
 
             this.activeFile = this.Files[sortedFiles.First()];
@@ -143,9 +139,8 @@ namespace WinFormMP3Gain
 
             Debug.WriteLine($"{this.FolderName} started analaysis!");
 
-            
             /*MP3GainFile gainFile = null;
-            
+
             while (!stream.EndOfStream)
             {
                 var line = stream.ReadLine();
@@ -167,7 +162,7 @@ namespace WinFormMP3Gain
                 if (e.Data.Contains("%"))
                 {
                     var items = e.Data.Split('%');
-                    var percentItems = items[0].Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                    var percentItems = items[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     var index = Convert.ToInt32(percentItems[0].Split('/')[0].Substring(1)) - 1;
                     var percent = Convert.ToInt32(percentItems[1]);
 
@@ -220,7 +215,7 @@ namespace WinFormMP3Gain
         {
             this.AnalysisLines = output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             MP3GainFile gainFile = null;
-            
+
             foreach (var line in this.AnalysisLines)
             {
                 //start mp3 file
@@ -256,7 +251,6 @@ namespace WinFormMP3Gain
                     this.SuggestedGain = gain;
                     found = true;
                 }
-
             }
 
             if (line.StartsWith($"Recommended \"Album\" dB change for all files:"))
@@ -270,9 +264,7 @@ namespace WinFormMP3Gain
                     this.DBOffset = offset;
                     found = true;
                 }
-
             }
-
 
             return found;
         }
@@ -294,7 +286,6 @@ namespace WinFormMP3Gain
                     found = true;
                     done = true;
                 }
-
             }
 
             if (line.StartsWith($"Recommended \"Track\" dB change:"))
@@ -308,7 +299,6 @@ namespace WinFormMP3Gain
                     gainFile.DBOffset = offset;
                     found = true;
                 }
-
             }
 
             if (done)
@@ -316,7 +306,6 @@ namespace WinFormMP3Gain
                 gainFile.Progress = 100;
                 this.RaiseChangedFile(gainFile);
                 this.worker.ReportProgress(100, gainFile);
-
             }
 
             return found;
