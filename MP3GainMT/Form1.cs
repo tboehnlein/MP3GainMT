@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using WinFormMP3Gain;
@@ -30,10 +31,49 @@ namespace MP3GainMT
             this.run.RefreshTable += Run_RefreshTable;
             this.run.UpdateSearchProgress += Run_RefreshProgress;
             this.run.ParentFolder = settings.LastUsedParentFolder;
+            this.run.FindingFoldersTick += this.Run_FindingFoldersTick;
+            this.run.AnalysisFinished += Run_AnalysisFinished;
             this.folderPathTextBox.Text = run.ParentFolder;
             this.source.DataSource = this.run.DataSource;
 
             dataGridView1.DataSource = source;
+
+            this.UpdateFileListLabel();
+            this.CheckFolderPath();
+        }
+
+        private void Run_AnalysisFinished(object sender, EventArgs e)
+        {
+            this.run.ResumeDataSource();
+            this.dataGridView1.ResumeLayout();
+
+            Debug.WriteLine("FINISHED PROCESSING FILES");
+            
+        }
+
+        private void Run_FindingFoldersTick(object sender, EventArgs e)
+        {
+            this.TickFileListLabel();
+        }
+
+        private void TickFileListLabel()
+        {
+            if (!this.fileListLabel.Text.EndsWith(".]"))
+            {
+                this.fileListLabel.Text = $"Loaded Files [Searching folders.]";
+            }
+            else if (this.fileListLabel.Text.EndsWith("...]"))
+            {
+                this.fileListLabel.Text = $"Loaded Files [Searching folders]";
+            }
+            else if (this.fileListLabel.Text.EndsWith("..]"))
+            {
+                this.fileListLabel.Text = $"Loaded Files [Searching folders...]";
+            }
+            else if (this.fileListLabel.Text.EndsWith(".]"))
+            {
+                this.fileListLabel.Text = $"Loaded Files [Searching folders..]";
+            }
         }
 
         private void Run_RefreshProgress(object sender, bool force)
@@ -48,9 +88,11 @@ namespace MP3GainMT
 
         public DateTime StartTime { get; private set; }
 
-        private void RefreshRows()
+        private void UpdataDataGridView()
         {
+            this.dataGridView1.SuspendLayout();
             run.RefreshDataSource();
+            this.dataGridView1.ResumeLayout();
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -63,27 +105,37 @@ namespace MP3GainMT
 
             if (result == DialogResult.OK)
             {
-                this.run.Clear();
                 this.folderPathTextBox.Text = selectFolder.SelectedFolder;
-                var parentFolder = this.folderPathTextBox.Text;
+                this.settings.LastUsedParentFolder = selectFolder.SelectedFolder;
 
-                this.run.SearchFolders(parentFolder);
+                CheckFolderPath();
+            }
+        }
 
-                this.settings.LastUsedParentFolder = parentFolder;
+        private bool CheckFolderPath()
+        {
+            if (Directory.Exists(this.folderPathTextBox.Text))
+            {
+                this.folderPathTextBox.BackColor = Color.White;
+                this.run.ParentFolder = this.folderPathTextBox.Text;
+                return true;
+            }
+            else
+            {
+                this.folderPathTextBox.BackColor = Color.Yellow;
+                this.run.ParentFolder = string.Empty;
+                return false; 
             }
         }
 
         private void Run_RefreshTable(object sender, EventArgs e)
         {
-            run.RefreshDataSource();
-            this.SortTable(true);
-            this.Update();
-            this.Refresh();
+            UpdataDataGridView();
         }
 
         private void Run_ChangedFile(object sender, MP3GainFile e)
         {
-            this.run.UpdateFile(e);
+            //this.run.UpdateFile(e);
         }
 
         private void Run_SearchFinishedFolder(object sender, MP3GainFolder e)
@@ -99,7 +151,7 @@ namespace MP3GainMT
 
             if (Directory.Exists(parentFolder))
             {
-                this.run.Run();
+                this.run.ApplyGain();
             }
         }
 
@@ -113,7 +165,7 @@ namespace MP3GainMT
             if (CheckTime(force, this.lastSort))
             {
                 UpdateFileListLabel();
-                this.RefreshRows();
+                this.UpdataDataGridView();
                 //this.dataGridView1.Sort(this.dataGridView1.Columns["FullPath"], ListSortDirection.Ascending);
                 this.Update();
                 this.Refresh();
@@ -129,8 +181,18 @@ namespace MP3GainMT
 
         private void UpdateFileListLabel()
         {
-            this.fileListLabel.Text = $"Loaded Files [Album Folder Count = {this.run.Folders.Count}, Song File Count = {this.run.FileCount}]";
+            this.fileListLabel.Text = GetLoadedFilesLabel();
             this.fileListLabel.Refresh();
+        }
+
+        private string GetLoadedFilesLabel()
+        {
+            return $"Loaded Files [{GetFolderFileCountText()}]";
+        }
+
+        private string GetFolderFileCountText()
+        {
+            return $"Album Folder Count = {this.run.Folders.Count}, Song File Count = {this.run.FileCount}";
         }
 
         private void Run_FolderFinished(object sender, MP3GainFolder e)
@@ -154,6 +216,30 @@ namespace MP3GainMT
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.settings.WriteSettingsFile();
+        }
+
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+            if (CheckFolderPath())
+            {
+                this.run.Clear();
+
+                this.run.SearchFolders(this.run.ParentFolder);
+            }
+        }
+
+        private void AnalyzeButton_Click(object sender, EventArgs e)
+        {
+            this.dataGridView1.SuspendLayout();
+            this.run.SuspendDataSource();
+
+            this.StartTime = DateTime.Now;
+            var parentFolder = this.folderPathTextBox.Text;
+
+            if (Directory.Exists(parentFolder))
+            {
+                this.run.ProcessFiles();
+            }
         }
     }
 }

@@ -5,6 +5,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace WinFormMP3Gain
 {
@@ -22,11 +25,31 @@ namespace WinFormMP3Gain
 
         public event EventHandler<bool> UpdateSearchProgress;
 
+        public event EventHandler FindingFoldersTick;
+
+        private System.Windows.Forms.Timer timer = null;
+
+        private void TimerTick(object state)
+        {
+            this.RaiseFindingFoldersTick();
+        }
+
+        private void RaiseFindingFoldersTick()
+        {
+            if (FindingFoldersTick != null)
+            {
+                FindingFoldersTick.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         private Dictionary<string, BackgroundWorker> workers = new Dictionary<string, BackgroundWorker>();
         private DateTime lastRefresh = DateTime.Now;
 
         private Dictionary<string, MP3GainFile> foundFiles = new Dictionary<string, MP3GainFile>();
         private List<MP3GainFolder> finished = new List<MP3GainFolder>();
+        private int runningInBG;
+        private Stack<FolderWorker> processQueue;
+        public event EventHandler AnalysisFinished;
 
         public BindingList<MP3GainRow> DataSource { get; private set; } = new BindingList<MP3GainRow>();
 
@@ -45,6 +68,20 @@ namespace WinFormMP3Gain
             }
 
             ParentFolder = parentFolder;
+
+            this.timer = new System.Windows.Forms.Timer();
+
+            timer.Enabled = false;
+            timer.Tick += Timer_Tick;
+            timer.Interval = 500;
+
+            this.processQueue = new Stack<FolderWorker>();
+
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            this.RaiseFindingFoldersTick();
         }
 
         public void SearchFolders(string parentFolder = "")
@@ -69,7 +106,21 @@ namespace WinFormMP3Gain
 
         private void SearchWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            this.RaiseUpdateSearchProgress(true);
+            if (e.ProgressPercentage == -1)
+            {
+                if (this.timer.Enabled)
+                {
+                    this.timer.Stop();
+                }
+                else
+                {
+                    this.timer.Start();
+                }
+            }
+            else
+            {
+                this.RaiseUpdateSearchProgress(true);
+            }
         }
 
         private void SearchWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -82,12 +133,12 @@ namespace WinFormMP3Gain
             }
         }
 
-        public void Run()
+        public void ApplyGain()
         {
-            this.ProcessFolders();
+            this.ApplyFolderGain();
         }
 
-        public void ProcessFolders()
+        public void ApplyFolderGain()
         {
             this.FoldersLeft = Folders.Values.Count;
 
@@ -97,19 +148,101 @@ namespace WinFormMP3Gain
                 var worker = new BackgroundWorker();
                 worker.WorkerReportsProgress = true;
 
-                worker.DoWork += ProcessWorker_DoWork;
-                worker.ProgressChanged += ProcessWorker_ProgressChanged;
-                worker.RunWorkerCompleted += ProcessWorker_RunWorkerCompleted;
+                worker.DoWork += ApplyGain_DoWork;
+                worker.ProgressChanged += ApplyGain_ProgressChanged;
+                worker.RunWorkerCompleted += ApplyGain_RunWorkerCompleted;
 
                 worker.RunWorkerAsync(folder);
+            }
+        }
 
-                /*if (index != 0 && index % 4 == 0)
-                {
-                    while(!this.IsFolderFinished(folder))
-                    {
-                        Thread.Sleep(250);
-                    }
-                }*/
+        public void ProcessFiles()
+        {
+            /*var worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+
+            worker.DoWork += QueueFiles_DoWork;
+            worker.ProgressChanged += QueueFiles_ProgressChanged;
+            worker.RunWorkerCompleted += QueueFiles_RunWorkerCompleted;
+
+            worker.RunWorkerAsync();*/
+
+            this.FoldersLeft = Folders.Values.Count;
+
+            foreach (var folder in Folders.Values)
+            {
+                var index = Folders.Values.ToList().IndexOf(folder);
+                var worker = new BackgroundWorker();
+                worker.WorkerReportsProgress = true;
+
+                worker.DoWork += ProcessFiles_DoWork;
+                worker.ProgressChanged += ProcessFiles_ProgressChanged;
+                worker.RunWorkerCompleted += ProcessFiles_RunWorkerCompleted;
+
+                this.processQueue.Push(new FolderWorker(worker, folder));
+            }
+
+            RunFolderGroup();
+
+        }
+
+        private void RunFolderGroup()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                RunNextFolder();
+            }
+        }
+
+        private void RunNextFolder()
+        {
+            if (processQueue.Count > 0)
+            {
+                var item = processQueue.Pop();
+                item.Worker.RunWorkerAsync(item.Folder);
+            }
+        }
+
+        private void ProcessFiles_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Result is MP3GainFolder folder)
+            {
+                RunNextFolder();
+
+                string fileWord = WordWithEnding("file", folder.MP3Files);
+                Debug.WriteLine($"COMPLETE ANALYSIS FOR {folder.FolderName}. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
+                this.RaiseFolderFinished(this, folder);
+                this.finished.Add(folder);
+            }
+
+            if (this.processQueue.Count == 0)
+            {
+                this.RaiseAnalysisFinished();
+            }
+        }
+
+        private void RaiseAnalysisFinished()
+        {
+            if (this.AnalysisFinished != null)
+            {
+                this.AnalysisFinished.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void ProcessFiles_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //if ((DateTime.Now - this.lastRefresh).TotalSeconds > .250)
+            //{
+            //    this.lastRefresh = DateTime.Now;
+            //}
+        }
+
+        private void ProcessFiles_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is MP3GainFolder folder)
+            {
+                folder.ProcessFiles(Executable, sender as BackgroundWorker);
+                e.Result = folder;
             }
         }
 
@@ -118,7 +251,7 @@ namespace WinFormMP3Gain
             return this.finished.Contains(folder);
         }
 
-        private void ProcessWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ApplyGain_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if ((DateTime.Now - this.lastRefresh).TotalSeconds > .250)
             {
@@ -135,7 +268,7 @@ namespace WinFormMP3Gain
             }
         }
 
-        private void ProcessWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ApplyGain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Result is MP3GainFolder folder)
             {
@@ -152,7 +285,7 @@ namespace WinFormMP3Gain
 
             if (this.FolderFinished != null)
             {
-                this.FolderFinished.Invoke(sender, folder);
+                //this.FolderFinished.Invoke(sender, folder);
             }
         }
 
@@ -161,18 +294,22 @@ namespace WinFormMP3Gain
             return word + (list.Count == 0 ? "" : "s");
         }
 
-        private void ProcessWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void ApplyGain_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument is MP3GainFolder folder)
             {
-                folder.RunFolder(Executable, sender as BackgroundWorker);
+                folder.ApplyGainFolder(Executable, sender as BackgroundWorker);
                 e.Result = folder;
             }
         }
 
         private void FindFolders(string parentFolder, BackgroundWorker worker)
         {
+            worker.ReportProgress(-1);
+
             var folders = Directory.GetDirectories(parentFolder, "*", SearchOption.AllDirectories).ToList();
+
+            worker.ReportProgress(-1);
 
             folders.Add(parentFolder);
 
@@ -187,11 +324,6 @@ namespace WinFormMP3Gain
                 if (mp3Folder.MP3Files.Count > 0)
                 {
                     this.Folders.Add(folder, mp3Folder);
-
-                    if (folders.Count < 25)
-                    {
-                        this.RaiseSearchFinished(mp3Folder);
-                    }
 
                     worker.ReportProgress(Convert.ToInt32((((double)folder.IndexOf(folder) + 1) / folders.Count) * 100.0));
                 }
@@ -265,10 +397,20 @@ namespace WinFormMP3Gain
 
         internal void RefreshDataSource(List<MP3GainFile> folderFiles)
         {
+            //var gainRows = folderFiles.Select(x => new MP3GainRow(x, this.Folders[x.FilePath])).ToList();
+
+            //this.DataSource. = gainRows;
+
+            this.DataSource.RaiseListChangedEvents = false;
+
             foreach (var file in folderFiles)
             {
                 UpdateFile(file);
             }
+
+            this.DataSource.RaiseListChangedEvents = true;
+
+            this.DataSource.ResetBindings();
         }
 
         public void UpdateFile(MP3GainFile file)
@@ -309,6 +451,17 @@ namespace WinFormMP3Gain
         public List<MP3GainFile> FolderFiles(MP3GainFolder folder)
         {
             return folder.Files.Select(x => x.Value).ToList();
+        }
+
+        internal void SuspendDataSource()
+        {
+            this.DataSource.RaiseListChangedEvents = false;
+        }
+
+        internal void ResumeDataSource()
+        {
+            this.DataSource.RaiseListChangedEvents = true;
+            this.DataSource.ResetBindings();
         }
     }
 }

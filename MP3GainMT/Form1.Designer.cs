@@ -35,7 +35,6 @@ namespace MP3GainMT
             this.runButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.fileListLabel = new System.Windows.Forms.Label();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -44,15 +43,19 @@ namespace MP3GainMT
             this.TrackFinal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fileListLabel = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // browseButton
             // 
             this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.browseButton.Location = new System.Drawing.Point(808, 23);
+            this.browseButton.Location = new System.Drawing.Point(626, 23);
             this.browseButton.Name = "browseButton";
-            this.browseButton.Size = new System.Drawing.Size(35, 28);
+            this.browseButton.Size = new System.Drawing.Size(31, 28);
             this.browseButton.TabIndex = 0;
             this.browseButton.Text = "...";
             this.browseButton.UseVisualStyleBackColor = true;
@@ -64,7 +67,7 @@ namespace MP3GainMT
             | System.Windows.Forms.AnchorStyles.Right)));
             this.folderPathTextBox.Location = new System.Drawing.Point(19, 27);
             this.folderPathTextBox.Name = "folderPathTextBox";
-            this.folderPathTextBox.Size = new System.Drawing.Size(783, 20);
+            this.folderPathTextBox.Size = new System.Drawing.Size(601, 20);
             this.folderPathTextBox.TabIndex = 1;
             // 
             // runButton
@@ -109,15 +112,6 @@ namespace MP3GainMT
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.Size = new System.Drawing.Size(924, 310);
             this.dataGridView1.TabIndex = 3;
-            // 
-            // fileListLabel
-            // 
-            this.fileListLabel.AutoSize = true;
-            this.fileListLabel.Location = new System.Drawing.Point(16, 52);
-            this.fileListLabel.Name = "fileListLabel";
-            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
-            this.fileListLabel.TabIndex = 2;
-            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
             // 
             // FullPath
             // 
@@ -197,11 +191,55 @@ namespace MP3GainMT
             this.AlbumGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.AlbumGain.Width = 79;
             // 
+            // fileListLabel
+            // 
+            this.fileListLabel.AutoSize = true;
+            this.fileListLabel.Location = new System.Drawing.Point(16, 52);
+            this.fileListLabel.Name = "fileListLabel";
+            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
+            this.fileListLabel.TabIndex = 2;
+            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(756, 23);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(87, 28);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "Analyze";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
+            // 
+            // button2
+            // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button2.Location = new System.Drawing.Point(663, 23);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(87, 28);
+            this.button2.TabIndex = 4;
+            this.button2.Text = "Analyze";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // searchButton
+            // 
+            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchButton.Location = new System.Drawing.Point(663, 23);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(87, 28);
+            this.searchButton.TabIndex = 4;
+            this.searchButton.Text = "Search";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(948, 390);
+            this.Controls.Add(this.searchButton);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.label1);
@@ -234,6 +272,9 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn TrackFinal;
         private DataGridViewTextBoxColumn AlbumDB;
         private DataGridViewTextBoxColumn AlbumGain;
+        private Button button1;
+        private Button button2;
+        private Button searchButton;
     }
 }
 

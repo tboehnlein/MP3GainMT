@@ -73,11 +73,16 @@ namespace WinFormMP3Gain
             }
         }
 
-        internal void RunFolder(string executable, BackgroundWorker worker)
+        internal void ApplyGainFolder(string executable, BackgroundWorker worker)
+        {
+            this.worker = worker;
+            this.RunApplyGain(executable);            
+        }
+
+        internal void ProcessFiles(string executable, BackgroundWorker worker)
         {
             this.worker = worker;
             this.RunAnalysis(executable);
-            this.RunApplyGain(executable);
         }
 
         private void RunApplyGain(string executable)
@@ -137,16 +142,7 @@ namespace WinFormMP3Gain
             analysisProcess.BeginOutputReadLine();
             analysisProcess.BeginErrorReadLine();
 
-            Debug.WriteLine($"{this.FolderName} started analaysis!");
-
-            /*MP3GainFile gainFile = null;
-
-            while (!stream.EndOfStream)
-            {
-                var line = stream.ReadLine();
-
-                ProcessAnalysisOutputLine(line, ref gainFile);
-            }            */
+            Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
 
             analysisProcess.WaitForExit();
         }
@@ -157,6 +153,8 @@ namespace WinFormMP3Gain
             {
                 // Add the text to the collected output.
                 sortError.Append(e.Data);
+                //Debug.WriteLine(e.Data);
+
                 //Debug.WriteLine(e.Data);
 
                 if (e.Data.Contains("%"))
@@ -174,7 +172,7 @@ namespace WinFormMP3Gain
                     if (percent != this.activeFile.Progress && (DateTime.Now - lastWrite).TotalSeconds > .250)
                     {
                         this.activeFile.Progress = percent;
-                        this.RaiseChangedFile(this.activeFile);
+                        //this.RaiseChangedFile(this.activeFile);
                         lastWrite = DateTime.Now;
                     }
                 }
@@ -185,6 +183,8 @@ namespace WinFormMP3Gain
         {
             if (!String.IsNullOrEmpty(e.Data))
             {
+                //Debug.WriteLine(e.Data);
+
                 // Add the text to the collected output.
                 sortOutput.Append(e.Data);
                 //Debug.WriteLine(e.Data);
@@ -303,8 +303,9 @@ namespace WinFormMP3Gain
 
             if (done)
             {
+                //Debug.WriteLine($"Finished {gainFile.FilePath}");
                 gainFile.Progress = 100;
-                this.RaiseChangedFile(gainFile);
+                //this.RaiseChangedFile(gainFile);
                 this.worker.ReportProgress(100, gainFile);
             }
 
@@ -346,9 +347,9 @@ namespace WinFormMP3Gain
 
         private void RaiseChangedFile(MP3GainFile file)
         {
-            if (FoundFile != null)
+            if (ChangedFile != null)
             {
-                this.ChangedFile.Invoke(this, file);
+                //this.ChangedFile.Invoke(this, file);
                 this.worker.ReportProgress(0, file);
             }
         }
