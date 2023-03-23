@@ -31,7 +31,7 @@ namespace MP3GainMT
             this.run.RefreshTable += Run_RefreshTable;
             this.run.UpdateSearchProgress += Run_RefreshProgress;
             this.run.ParentFolder = settings.LastUsedParentFolder;
-            this.run.FindingFoldersTick += this.Run_FindingFoldersTick;
+            this.run.SearchTimeElasped += this.Run_SearchTimeElasped;
             this.run.AnalysisFinished += Run_AnalysisFinished;
             this.folderPathTextBox.Text = run.ParentFolder;
             this.source.DataSource = this.run.DataSource;
@@ -51,7 +51,7 @@ namespace MP3GainMT
             
         }
 
-        private void Run_FindingFoldersTick(object sender, EventArgs e)
+        private void Run_SearchTimeElasped(object sender, TimeSpan e)
         {
             this.TickFileListLabel();
         }
@@ -222,8 +222,6 @@ namespace MP3GainMT
         {
             if (CheckFolderPath())
             {
-                this.run.Clear();
-
                 this.run.SearchFolders(this.run.ParentFolder);
             }
         }
@@ -240,6 +238,11 @@ namespace MP3GainMT
             {
                 this.run.ProcessFiles();
             }
+        }
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            this.run.Clear();
         }
     }
 }

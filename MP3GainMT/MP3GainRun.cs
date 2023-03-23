@@ -25,20 +25,20 @@ namespace WinFormMP3Gain
 
         public event EventHandler<bool> UpdateSearchProgress;
 
-        public event EventHandler FindingFoldersTick;
+        public event EventHandler<TimeSpan> SearchTimeElasped;
 
-        private System.Windows.Forms.Timer timer = null;
+        private System.Windows.Forms.Timer searchTimeElaspedTimer = null;
 
         private void TimerTick(object state)
         {
-            this.RaiseFindingFoldersTick();
+            this.RaiseSearchTimeElapsed();
         }
 
-        private void RaiseFindingFoldersTick()
+        private void RaiseSearchTimeElapsed()
         {
-            if (FindingFoldersTick != null)
+            if (SearchTimeElasped != null)
             {
-                FindingFoldersTick.Invoke(this, EventArgs.Empty);
+                SearchTimeElasped.Invoke(this, this.ElaspedSearchTime);
             }
         }
 
@@ -49,6 +49,8 @@ namespace WinFormMP3Gain
         private List<MP3GainFolder> finished = new List<MP3GainFolder>();
         private int runningInBG;
         private Stack<FolderWorker> processQueue;
+        private DateTime startSearchTime;
+
         public event EventHandler AnalysisFinished;
 
         public BindingList<MP3GainRow> DataSource { get; private set; } = new BindingList<MP3GainRow>();
@@ -69,26 +71,24 @@ namespace WinFormMP3Gain
 
             ParentFolder = parentFolder;
 
-            this.timer = new System.Windows.Forms.Timer();
+            this.searchTimeElaspedTimer = new System.Windows.Forms.Timer();
 
-            timer.Enabled = false;
-            timer.Tick += Timer_Tick;
-            timer.Interval = 500;
+            searchTimeElaspedTimer.Enabled = false;
+            searchTimeElaspedTimer.Tick += FindFilesUpdateTimer_Tick;
+            searchTimeElaspedTimer.Interval = 500;
 
             this.processQueue = new Stack<FolderWorker>();
 
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void FindFilesUpdateTimer_Tick(object sender, EventArgs e)
         {
-            this.RaiseFindingFoldersTick();
+            this.RaiseSearchTimeElapsed();
         }
 
         public void SearchFolders(string parentFolder = "")
         {
             var worker = new BackgroundWorker();
-
-            this.ParentFolder = parentFolder;
 
             worker.WorkerReportsProgress = true;
 
@@ -96,7 +96,7 @@ namespace WinFormMP3Gain
             worker.ProgressChanged += SearchWorker_ProgressChanged;
             worker.RunWorkerCompleted += SearchWorker_RunWorkerCompleted;
 
-            worker.RunWorkerAsync(this.ParentFolder);
+            worker.RunWorkerAsync(parentFolder);
         }
 
         private void SearchWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -108,13 +108,14 @@ namespace WinFormMP3Gain
         {
             if (e.ProgressPercentage == -1)
             {
-                if (this.timer.Enabled)
+                if (this.searchTimeElaspedTimer.Enabled)
                 {
-                    this.timer.Stop();
+                    this.searchTimeElaspedTimer.Stop();
                 }
                 else
                 {
-                    this.timer.Start();
+                    this.startSearchTime = DateTime.Now;
+                    this.searchTimeElaspedTimer.Start();
                 }
             }
             else
@@ -127,7 +128,6 @@ namespace WinFormMP3Gain
         {
             if (e.Argument is string folder && sender is BackgroundWorker worker)
             {
-                this.SourceDictionary.Clear();
                 this.FindFolders(folder, worker);
                 worker.ReportProgress(100);
             }
@@ -323,9 +323,12 @@ namespace WinFormMP3Gain
 
                 if (mp3Folder.MP3Files.Count > 0)
                 {
-                    this.Folders.Add(folder, mp3Folder);
+                    if (!this.Folders.ContainsKey(folder))
+                    {
+                        this.Folders.Add(folder, mp3Folder);
 
-                    worker.ReportProgress(Convert.ToInt32((((double)folder.IndexOf(folder) + 1) / folders.Count) * 100.0));
+                        worker.ReportProgress(Convert.ToInt32((((double)folder.IndexOf(folder) + 1) / folders.Count) * 100.0));
+                    }
                 }
             }
         }
@@ -378,6 +381,8 @@ namespace WinFormMP3Gain
             this.DataSource.Clear();
             this.Folders.Clear();
             this.finished.Clear();
+            this.SourceDictionary.Clear();
+            this.RaiseRefreshTable();
         }
 
         internal void RefreshDataSource()
@@ -394,6 +399,8 @@ namespace WinFormMP3Gain
         {
             get { return this.foundFiles.Count; }
         }
+
+        public TimeSpan ElaspedSearchTime => DateTime.Now - this.startSearchTime;
 
         internal void RefreshDataSource(List<MP3GainFile> folderFiles)
         {
