@@ -5,9 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Windows.Forms;
 
 namespace WinFormMP3Gain
 {
@@ -23,7 +20,7 @@ namespace WinFormMP3Gain
 
         public event EventHandler RefreshTable;
 
-        public event EventHandler<bool> UpdateSearchProgress;
+        public event EventHandler<int> UpdateSearchProgress;
 
         public event EventHandler<TimeSpan> SearchTimeElasped;
 
@@ -50,6 +47,8 @@ namespace WinFormMP3Gain
         private int runningInBG;
         private Stack<FolderWorker> processQueue;
         private DateTime startSearchTime;
+
+        private TimeCheck findFileEventCheck = new TimeCheck(15);
 
         public event EventHandler AnalysisFinished;
 
@@ -78,7 +77,6 @@ namespace WinFormMP3Gain
             searchTimeElaspedTimer.Interval = 500;
 
             this.processQueue = new Stack<FolderWorker>();
-
         }
 
         private void FindFilesUpdateTimer_Tick(object sender, EventArgs e)
@@ -88,15 +86,15 @@ namespace WinFormMP3Gain
 
         public void SearchFolders(string parentFolder = "")
         {
-            var worker = new BackgroundWorker();
+            var searchWorker = new BackgroundWorker();
 
-            worker.WorkerReportsProgress = true;
+            searchWorker.WorkerReportsProgress = true;
 
-            worker.DoWork += SearchWorker_DoWork;
-            worker.ProgressChanged += SearchWorker_ProgressChanged;
-            worker.RunWorkerCompleted += SearchWorker_RunWorkerCompleted;
+            searchWorker.DoWork += SearchWorker_DoWork;
+            searchWorker.ProgressChanged += SearchWorker_ProgressChanged;
+            searchWorker.RunWorkerCompleted += SearchWorker_RunWorkerCompleted;
 
-            worker.RunWorkerAsync(parentFolder);
+            searchWorker.RunWorkerAsync(parentFolder);
         }
 
         private void SearchWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -120,16 +118,19 @@ namespace WinFormMP3Gain
             }
             else
             {
-                this.RaiseUpdateSearchProgress(true);
+                if (findFileEventCheck.CheckTime(e.ProgressPercentage == 100))
+                {
+                    this.RaiseUpdateSearchProgress(e.ProgressPercentage);
+                }
             }
         }
 
         private void SearchWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (e.Argument is string folder && sender is BackgroundWorker worker)
+            if (e.Argument is string folder && sender is BackgroundWorker searchWorker)
             {
-                this.FindFolders(folder, worker);
-                worker.ReportProgress(100);
+                this.FindFiles(folder, searchWorker);
+                searchWorker.ReportProgress(100);
             }
         }
 
@@ -183,7 +184,6 @@ namespace WinFormMP3Gain
             }
 
             RunFolderGroup();
-
         }
 
         private void RunFolderGroup()
@@ -303,13 +303,13 @@ namespace WinFormMP3Gain
             }
         }
 
-        private void FindFolders(string parentFolder, BackgroundWorker worker)
+        private void FindFiles(string parentFolder, BackgroundWorker searchWorker)
         {
-            worker.ReportProgress(-1);
+            searchWorker.ReportProgress(-1);
 
             var folders = Directory.GetDirectories(parentFolder, "*", SearchOption.AllDirectories).ToList();
 
-            worker.ReportProgress(-1);
+            searchWorker.ReportProgress(-1);
 
             folders.Add(parentFolder);
 
@@ -327,17 +327,17 @@ namespace WinFormMP3Gain
                     {
                         this.Folders.Add(folder, mp3Folder);
 
-                        worker.ReportProgress(Convert.ToInt32((((double)folder.IndexOf(folder) + 1) / folders.Count) * 100.0));
+                        searchWorker.ReportProgress(Convert.ToInt32((((double)folder.IndexOf(folder) + 1) / folders.Count) * 100.0));
                     }
                 }
             }
         }
 
-        private void RaiseUpdateSearchProgress(bool force = false)
+        private void RaiseUpdateSearchProgress(int progress)
         {
             if (this.UpdateSearchProgress != null)
             {
-                this.UpdateSearchProgress.Invoke(this, force);
+                this.UpdateSearchProgress.Invoke(this, progress);
             }
         }
 
@@ -387,7 +387,7 @@ namespace WinFormMP3Gain
 
         internal void RefreshDataSource()
         {
-            this.RaiseUpdateSearchProgress();
+            this.RaiseUpdateSearchProgress(0);
             this.RefreshDataSource(AllFiles);
         }
 

@@ -76,14 +76,9 @@ namespace MP3GainMT
             }
         }
 
-        private void Run_RefreshProgress(object sender, bool force)
+        private void Run_RefreshProgress(object sender, int progress)
         {
-            if (CheckTime(force, this.lastLabelRefresh))
-            {
-                UpdateFileListLabel();
-
-                lastLabelRefresh = DateTime.Now;
-            }
+            UpdateFileListLabel();
         }
 
         public DateTime StartTime { get; private set; }
@@ -162,22 +157,18 @@ namespace MP3GainMT
 
         private void SortTable(bool force = false)
         {
-            if (CheckTime(force, this.lastSort))
+            if (TimeCheck.Check(force, ref this.lastSort))
             {
                 UpdateFileListLabel();
                 this.UpdataDataGridView();
                 //this.dataGridView1.Sort(this.dataGridView1.Columns["FullPath"], ListSortDirection.Ascending);
                 this.Update();
                 this.Refresh();
-                this.lastSort = DateTime.Now;
                 UpdateFileListLabel();
             }
         }
 
-        private static bool CheckTime(bool force, DateTime lastTime)
-        {
-            return (DateTime.Now - lastTime).TotalSeconds > .250 || force;
-        }
+        
 
         private void UpdateFileListLabel()
         {
