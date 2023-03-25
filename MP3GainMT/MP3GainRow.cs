@@ -1,5 +1,6 @@
 ﻿using System;
 using WinFormMP3Gain;
+using MP3GainMT.Helpers;
 
 namespace MP3GainMT
 {
@@ -11,6 +12,8 @@ namespace MP3GainMT
         public double TrackDB => Math.Round(89.0 - this.file.DBOffset, 1);
         public double TrackFinal => Math.Round(this.TrackDB + this.folder.SuggestedGain, 1);
 
+        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
+
         public int Progress => this.file.Progress;
 
         private MP3GainFile file = null;
@@ -18,6 +21,9 @@ namespace MP3GainMT
 
         public double AlbumDB => Math.Round(89.0 - this.folder.DBOffset, 1);
         public double AlbumFinal => Math.Round(AlbumDB + this.folder.SuggestedGain, 1);
+
+        public string Album => this.file.Album;
+        public string Artist => this.file.Artist;
 
         public MP3GainRow(MP3GainFile file, MP3GainFolder folder)
         {

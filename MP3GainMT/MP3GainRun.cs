@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace WinFormMP3Gain
 {
@@ -51,6 +52,8 @@ namespace WinFormMP3Gain
         private TimeCheck findFileEventCheck = new TimeCheck(15);
 
         public event EventHandler AnalysisFinished;
+
+        public bool ExtractTags { get; set; } = false;
 
         public BindingList<MP3GainRow> DataSource { get; private set; } = new BindingList<MP3GainRow>();
 
@@ -118,10 +121,20 @@ namespace WinFormMP3Gain
             }
             else
             {
+                this.RaiseUpdateSearchProgress(e.ProgressPercentage);
+                
                 if (findFileEventCheck.CheckTime(e.ProgressPercentage == 100))
                 {
                     this.RaiseUpdateSearchProgress(e.ProgressPercentage);
                 }
+            }
+        }
+
+        private void RaiseAskContinue(MP3GainRun mp3GainRun, string question)
+        {
+            if (this.AskSearchQuestion != null)
+            {
+                this.AskSearchQuestion.Invoke(this, question);
             }
         }
 
@@ -130,7 +143,10 @@ namespace WinFormMP3Gain
             if (e.Argument is string folder && sender is BackgroundWorker searchWorker)
             {
                 this.FindFiles(folder, searchWorker);
-                searchWorker.ReportProgress(100);
+
+                var progress = this.ContinueSearch ? 100 : 0;
+
+                searchWorker.ReportProgress(progress);
             }
         }
 
@@ -305,17 +321,39 @@ namespace WinFormMP3Gain
 
         private void FindFiles(string parentFolder, BackgroundWorker searchWorker)
         {
+            this.ContinueSearch = true;
+            searchWorker.ReportProgress(0);
+
             searchWorker.ReportProgress(-1);
 
             var folders = Directory.GetDirectories(parentFolder, "*", SearchOption.AllDirectories).ToList();
+            var songs = Directory.GetFiles(parentFolder, "*.MP3", SearchOption.AllDirectories).ToList();
 
             searchWorker.ReportProgress(-1);
 
             folders.Add(parentFolder);
 
+            var newFilesCount = this.GetNewFileCount(songs);
+
+            if (newFilesCount > 5000 && this.ExtractTags)
+            {
+                var question = $"Are you sure you want to continue processing {newFilesCount} songs?";
+
+                var result = MessageBox.Show(question, "MP3 Gain MT", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                this.ContinueSearch = (result == DialogResult.Yes);
+
+
+                if (!this.ContinueSearch)
+                {
+                    return;
+                }
+            }
+
+
             foreach (var folder in folders)
             {
-                var mp3Folder = new MP3GainFolder(folder);
+                var mp3Folder = new MP3GainFolder(folder, this.ExtractTags);
 
                 mp3Folder.FoundFile += MP3Folder_FoundFile;
                 mp3Folder.ChangedFile += MP3Folder_ChangedFile;
@@ -327,10 +365,17 @@ namespace WinFormMP3Gain
                     {
                         this.Folders.Add(folder, mp3Folder);
 
-                        searchWorker.ReportProgress(Convert.ToInt32((((double)folder.IndexOf(folder) + 1) / folders.Count) * 100.0));
+                        var folderIndex = (double)folders.IndexOf(folder) + 1;
+                        var progress = Convert.ToInt32((folderIndex / folders.Count) * 100.0);                        
+                        searchWorker.ReportProgress(progress);
                     }
                 }
             }
+        }
+
+        private int GetNewFileCount(List<string> filePaths)
+        {
+            return filePaths.Except(this.foundFiles.Keys).ToList().Count;
         }
 
         private void RaiseUpdateSearchProgress(int progress)
@@ -387,7 +432,7 @@ namespace WinFormMP3Gain
 
         internal void RefreshDataSource()
         {
-            this.RaiseUpdateSearchProgress(0);
+            //this.RaiseUpdateSearchProgress(100);
             this.RefreshDataSource(AllFiles);
         }
 
@@ -401,6 +446,10 @@ namespace WinFormMP3Gain
         }
 
         public TimeSpan ElaspedSearchTime => DateTime.Now - this.startSearchTime;
+
+        public bool ContinueSearch { get; internal set; }
+
+        public event EventHandler<string> AskSearchQuestion;
 
         internal void RefreshDataSource(List<MP3GainFile> folderFiles)
         {

@@ -30,22 +30,33 @@ namespace MP3GainMT
             this.run.SearchFinishedFolder += Run_SearchFinishedFolder;
             this.run.RefreshTable += Run_RefreshTable;
             this.run.UpdateSearchProgress += Run_RefreshProgress;
-            this.run.ParentFolder = settings.LastUsedParentFolder;
+            this.run.ParentFolder = settings.ParentFolder;
+            this.run.ExtractTags = settings.ExtractTags;
             this.run.SearchTimeElasped += this.Run_SearchTimeElasped;
             this.run.AnalysisFinished += Run_AnalysisFinished;
+            this.run.AskSearchQuestion += Run_AskSearchQuestion;
             this.folderPathTextBox.Text = run.ParentFolder;
+            this.extractCheckBox.Checked = run.ExtractTags;
             this.source.DataSource = this.run.DataSource;
 
-            dataGridView1.DataSource = source;
+            fileGridView.DataSource = source;
 
             this.UpdateFileListLabel();
             this.CheckFolderPath();
         }
 
+        private void Run_AskSearchQuestion(object sender, string question)
+        {
+            if (question != string.Empty)
+            {
+                
+            }
+        }
+
         private void Run_AnalysisFinished(object sender, EventArgs e)
         {
             this.run.ResumeDataSource();
-            this.dataGridView1.ResumeLayout();
+            this.fileGridView.ResumeLayout();
 
             Debug.WriteLine("FINISHED PROCESSING FILES");
             
@@ -79,15 +90,30 @@ namespace MP3GainMT
         private void Run_RefreshProgress(object sender, int progress)
         {
             UpdateFileListLabel();
+            UpdateProgressBar(progress);
+        }
+
+        private void UpdateProgressBar(int progress)
+        {
+            this.activityProgressBar.Value = progress;
+
+            if (progress == 100)
+            {
+                this.activityProgressBar.Enabled = false;
+            }
+            else
+            {
+                this.activityProgressBar.Enabled = true;
+            }
         }
 
         public DateTime StartTime { get; private set; }
 
         private void UpdataDataGridView()
         {
-            this.dataGridView1.SuspendLayout();
+            this.fileGridView.SuspendLayout();
             run.RefreshDataSource();
-            this.dataGridView1.ResumeLayout();
+            this.fileGridView.ResumeLayout();
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -101,7 +127,7 @@ namespace MP3GainMT
             if (result == DialogResult.OK)
             {
                 this.folderPathTextBox.Text = selectFolder.SelectedFolder;
-                this.settings.LastUsedParentFolder = selectFolder.SelectedFolder;
+                this.settings.ParentFolder = selectFolder.SelectedFolder;
 
                 CheckFolderPath();
             }
@@ -209,6 +235,8 @@ namespace MP3GainMT
             this.settings.WriteSettingsFile();
         }
 
+        
+
         private void SearchButton_Click(object sender, EventArgs e)
         {
             if (CheckFolderPath())
@@ -219,7 +247,7 @@ namespace MP3GainMT
 
         private void AnalyzeButton_Click(object sender, EventArgs e)
         {
-            this.dataGridView1.SuspendLayout();
+            this.fileGridView.SuspendLayout();
             this.run.SuspendDataSource();
 
             this.StartTime = DateTime.Now;
@@ -234,6 +262,12 @@ namespace MP3GainMT
         private void ClearButton_Click(object sender, EventArgs e)
         {
             this.run.Clear();
+        }
+
+        private void ExtractCheckBox_CheckStateChanged(object sender, EventArgs e)
+        {
+            this.run.ExtractTags = this.extractCheckBox.Checked;
+            this.settings.ExtractTags = this.extractCheckBox.Checked;
         }
     }
 }

@@ -44,19 +44,21 @@ namespace WinFormMP3Gain
         public string GainOutput { get; private set; } = string.Empty;
         public List<string> AnalysisLines { get; private set; } = new List<string>();
         public List<string> GainLines { get; private set; } = new List<string>();
+        public bool ExtractTags { get; private set; }
 
-        public MP3GainFolder(string path)
+        public MP3GainFolder(string path, bool extractTags = false)
         {
             this.FolderPath = path;
             this.FolderName = Path.GetFileName(path);
+            this.ExtractTags = extractTags;
         }
 
         public void SearchFolder()
         {
-            this.FindFiles(this.FolderPath);
+            this.FindFiles(this.FolderPath, this.ExtractTags);
         }
 
-        private void FindFiles(string folderPath)
+        private void FindFiles(string folderPath, bool extractTags = false)
         {
             var files = Directory.GetFiles(folderPath, "*.mp3", SearchOption.TopDirectoryOnly);
 
@@ -64,7 +66,7 @@ namespace WinFormMP3Gain
             {
                 if (File.Exists(file))
                 {
-                    var mp3File = new MP3GainFile(file);
+                    var mp3File = new MP3GainFile(file, extractTags);
 
                     this.Files.Add(mp3File.FilePath, mp3File);
 

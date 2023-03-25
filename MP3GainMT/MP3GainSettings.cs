@@ -1,27 +1,45 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
 
 namespace MP3GainMT
 {
     internal class MP3GainSettings
     {
-        private static readonly string LastUsedLabel = "Last Used";
+        private static readonly string FolderPathLabel = "Last Used Folder";
+        private static readonly string ExtractTagLabel = "Last Used Extract";
         private JObject _json = null;
 
-        public string LastUsedParentFolder
+        public string ParentFolder
         {
             get
             {
                 CheckFile();
 
-                return _json[LastUsedLabel].ToString();
+                return _json[FolderPathLabel].ToString();
             }
             set
             {
                 CheckFile();
 
-                this._json[LastUsedLabel] = value;
+                this._json[FolderPathLabel] = value;
+            }
+        }
+
+        public bool ExtractTags
+        {
+            get
+            {
+                CheckFile();
+
+                return Convert.ToBoolean(_json[ExtractTagLabel]);
+            }
+            set
+            {
+                CheckFile();
+
+                this._json[ExtractTagLabel] = value;
             }
         }
 
@@ -50,16 +68,22 @@ namespace MP3GainMT
 
                     this._json = (JObject)JToken.ReadFrom(reader);
 
-                    if (!_json.ContainsKey(LastUsedLabel))
+                    if (!_json.ContainsKey(FolderPathLabel))
                     {
-                        _json.Add(LastUsedLabel, string.Empty);
+                        _json.Add(FolderPathLabel, string.Empty);
+                    }
+
+                    if (!_json.ContainsKey(ExtractTagLabel))
+                    {
+                        _json.Add(ExtractTagLabel, false);
                     }
                 }
             }
             else
             {
                 this._json = new JObject();
-                _json.Add(LastUsedLabel, string.Empty);
+                _json.Add(FolderPathLabel, string.Empty);
+                _json.Add(ExtractTagLabel, false);
             }
         }
 
