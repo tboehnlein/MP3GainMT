@@ -350,6 +350,7 @@ namespace WinFormMP3Gain
                 }
             }
 
+            var addedFilesCount = 0;
 
             foreach (var folder in folders)
             {
@@ -359,14 +360,15 @@ namespace WinFormMP3Gain
                 mp3Folder.ChangedFile += MP3Folder_ChangedFile;
                 mp3Folder.SearchFolder();
 
+                addedFilesCount += mp3Folder.MP3Files.Count;
+
                 if (mp3Folder.MP3Files.Count > 0)
                 {
                     if (!this.Folders.ContainsKey(folder))
                     {
                         this.Folders.Add(folder, mp3Folder);
 
-                        var folderIndex = (double)folders.IndexOf(folder) + 1;
-                        var progress = Convert.ToInt32((folderIndex / folders.Count) * 100.0);                        
+                        var progress = Convert.ToInt32(((double)addedFilesCount / (double)newFilesCount) * 100.0);                        
                         searchWorker.ReportProgress(progress);
                     }
                 }
