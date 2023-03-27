@@ -39,9 +39,10 @@ namespace MP3GainMT
             this.button1 = new System.Windows.Forms.Button();
             this.clearButton = new System.Windows.Forms.Button();
             this.searchButton = new System.Windows.Forms.Button();
-            this.extractCheckBox = new System.Windows.Forms.CheckBox();
             this.activityProgressBar = new System.Windows.Forms.ProgressBar();
+            this.readTagsButton = new System.Windows.Forms.Button();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Album = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -52,6 +53,7 @@ namespace MP3GainMT
             this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fileLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -105,6 +107,7 @@ namespace MP3GainMT
             this.fileGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FullPath,
+            this.Updated,
             this.Folder,
             this.FileName,
             this.Album,
@@ -155,35 +158,33 @@ namespace MP3GainMT
             // searchButton
             // 
             this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchButton.Location = new System.Drawing.Point(849, 23);
+            this.searchButton.Location = new System.Drawing.Point(720, 22);
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(87, 28);
             this.searchButton.TabIndex = 4;
-            this.searchButton.Text = "&Search";
+            this.searchButton.Text = "&Search Folder";
             this.searchButton.UseVisualStyleBackColor = true;
             this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
-            // extractCheckBox
-            // 
-            this.extractCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.extractCheckBox.AutoSize = true;
-            this.extractCheckBox.Location = new System.Drawing.Point(726, 30);
-            this.extractCheckBox.Name = "extractCheckBox";
-            this.extractCheckBox.Size = new System.Drawing.Size(111, 17);
-            this.extractCheckBox.TabIndex = 3;
-            this.extractCheckBox.Text = "&Extract MP3 Tags";
-            this.extractCheckBox.UseVisualStyleBackColor = true;
-            this.extractCheckBox.CheckStateChanged += new System.EventHandler(this.ExtractCheckBox_CheckStateChanged);
-            // 
             // activityProgressBar
             // 
-            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityProgressBar.Location = new System.Drawing.Point(12, 371);
+            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityProgressBar.Location = new System.Drawing.Point(964, 370);
             this.activityProgressBar.Name = "activityProgressBar";
-            this.activityProgressBar.Size = new System.Drawing.Size(1202, 10);
+            this.activityProgressBar.Size = new System.Drawing.Size(249, 16);
             this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.activityProgressBar.TabIndex = 10;
+            // 
+            // readTagsButton
+            // 
+            this.readTagsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.readTagsButton.Location = new System.Drawing.Point(847, 23);
+            this.readTagsButton.Name = "readTagsButton";
+            this.readTagsButton.Size = new System.Drawing.Size(87, 28);
+            this.readTagsButton.TabIndex = 11;
+            this.readTagsButton.Text = "&Read Tags";
+            this.readTagsButton.UseVisualStyleBackColor = true;
+            this.readTagsButton.Click += new System.EventHandler(this.ReadTagsButton_Click);
             // 
             // FullPath
             // 
@@ -194,6 +195,14 @@ namespace MP3GainMT
             this.FullPath.ReadOnly = true;
             this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.FullPath.Visible = false;
+            // 
+            // Updated
+            // 
+            this.Updated.DataPropertyName = "Updated";
+            this.Updated.HeaderText = "Updated";
+            this.Updated.Name = "Updated";
+            this.Updated.ReadOnly = true;
+            this.Updated.Visible = false;
             // 
             // Folder
             // 
@@ -287,17 +296,27 @@ namespace MP3GainMT
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
             // 
+            // fileLabel
+            // 
+            this.fileLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.fileLabel.AutoSize = true;
+            this.fileLabel.Location = new System.Drawing.Point(12, 370);
+            this.fileLabel.Name = "fileLabel";
+            this.fileLabel.Size = new System.Drawing.Size(0, 13);
+            this.fileLabel.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1225, 390);
+            this.Controls.Add(this.readTagsButton);
             this.Controls.Add(this.activityProgressBar);
-            this.Controls.Add(this.extractCheckBox);
             this.Controls.Add(this.searchButton);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.fileGridView);
+            this.Controls.Add(this.fileLabel);
             this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.folderPathTextBox);
@@ -324,9 +343,10 @@ namespace MP3GainMT
         private Button button1;
         private Button clearButton;
         private Button searchButton;
-        private CheckBox extractCheckBox;
         private ProgressBar activityProgressBar;
+        private Button readTagsButton;
         private DataGridViewTextBoxColumn FullPath;
+        private DataGridViewCheckBoxColumn Updated;
         private DataGridViewTextBoxColumn Folder;
         private DataGridViewTextBoxColumn FileName;
         private DataGridViewTextBoxColumn Album;
@@ -337,6 +357,7 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn AlbumDB;
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewTextBoxColumn ErrorMessage;
+        private Label fileLabel;
     }
 }
 

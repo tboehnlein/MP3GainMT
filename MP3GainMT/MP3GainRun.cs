@@ -21,16 +21,17 @@ namespace WinFormMP3Gain
 
         public event EventHandler RefreshTable;
 
-        public event EventHandler<int> UpdateSearchProgress;
+        public event EventHandler<MP3GainFolder> FolderLoaded;
+
+        public event EventHandler<int> TaskProgressed;
+
+        public event EventHandler<int> RowUpdated;
+
+        public event EventHandler<MP3GainFile> TagRead;
 
         public event EventHandler<TimeSpan> SearchTimeElasped;
 
         private System.Windows.Forms.Timer searchTimeElaspedTimer = null;
-
-        private void TimerTick(object state)
-        {
-            this.RaiseSearchTimeElapsed();
-        }
 
         private void RaiseSearchTimeElapsed()
         {
@@ -50,10 +51,9 @@ namespace WinFormMP3Gain
         private DateTime startSearchTime;
 
         private TimeCheck findFileEventCheck = new TimeCheck(15);
+        private TimeCheck readTagEventCheck = new TimeCheck(15);
 
         public event EventHandler AnalysisFinished;
-
-        public bool ExtractTags { get; set; } = false;
 
         public BindingList<MP3GainRow> DataSource { get; private set; } = new BindingList<MP3GainRow>();
 
@@ -109,33 +109,48 @@ namespace WinFormMP3Gain
         {
             if (e.ProgressPercentage == -1)
             {
-                if (this.searchTimeElaspedTimer.Enabled)
+                if (!this.searchTimeElaspedTimer.Enabled)
                 {
-                    this.searchTimeElaspedTimer.Stop();
+                    this.StartSearchTimer();
                 }
                 else
                 {
-                    this.startSearchTime = DateTime.Now;
-                    this.searchTimeElaspedTimer.Start();
+                    this.StopSearchTimer();
                 }
             }
             else
             {
-                this.RaiseUpdateSearchProgress(e.ProgressPercentage);
-                
-                if (findFileEventCheck.CheckTime(e.ProgressPercentage == 100))
+                this.RaiseTaskProgressed(e.ProgressPercentage);
+
+                if (e.UserState is MP3GainFolder folder)
                 {
-                    this.RaiseUpdateSearchProgress(e.ProgressPercentage);
+                    if (findFileEventCheck.CheckTime(e.ProgressPercentage == 100))
+                    {
+                        this.RaiseFolderLoaded(folder);
+                    }
                 }
             }
         }
 
-        private void RaiseAskContinue(MP3GainRun mp3GainRun, string question)
+        private void RaiseFolderLoaded(MP3GainFolder folder)
         {
-            if (this.AskSearchQuestion != null)
+            if (this.FolderLoaded != null)
             {
-                this.AskSearchQuestion.Invoke(this, question);
+                this.FolderLoaded.Invoke(this, folder);
             }
+        }
+
+        private void StartSearchTimer()
+        {
+            this.startSearchTime = DateTime.Now;
+            this.searchTimeElaspedTimer.Enabled = true;
+            this.searchTimeElaspedTimer.Start();
+        }
+
+        private void StopSearchTimer()
+        {
+            this.searchTimeElaspedTimer.Stop();
+            this.searchTimeElaspedTimer.Enabled = false;
         }
 
         private void SearchWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -146,7 +161,7 @@ namespace WinFormMP3Gain
 
                 var progress = this.ContinueSearch ? 100 : 0;
 
-                searchWorker.ReportProgress(progress);
+                searchWorker.ReportProgress(progress, new TaskUpdate(progress, "Completed search.", -1));
             }
         }
 
@@ -280,6 +295,11 @@ namespace WinFormMP3Gain
         {
             if (this.RefreshTable != null)
             {
+                foreach (var file in AllFiles)
+                {
+                    file.Updated = false;
+                }
+
                 this.RefreshTable.Invoke(this, null);
             }
         }
@@ -322,7 +342,6 @@ namespace WinFormMP3Gain
         private void FindFiles(string parentFolder, BackgroundWorker searchWorker)
         {
             this.ContinueSearch = true;
-            searchWorker.ReportProgress(0);
 
             searchWorker.ReportProgress(-1);
 
@@ -335,14 +354,13 @@ namespace WinFormMP3Gain
 
             var newFilesCount = this.GetNewFileCount(songs);
 
-            if (newFilesCount > 5000 && this.ExtractTags)
+            if (newFilesCount > 25000)
             {
-                var question = $"Are you sure you want to continue processing {newFilesCount} songs?";
+                var question = $"Are you sure you want to continue loading {newFilesCount} songs?";
 
                 var result = MessageBox.Show(question, "MP3 Gain MT", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 this.ContinueSearch = (result == DialogResult.Yes);
-
 
                 if (!this.ContinueSearch)
                 {
@@ -354,22 +372,21 @@ namespace WinFormMP3Gain
 
             foreach (var folder in folders)
             {
-                var mp3Folder = new MP3GainFolder(folder, this.ExtractTags);
+                var mp3Folder = new MP3GainFolder(folder);
 
                 mp3Folder.FoundFile += MP3Folder_FoundFile;
                 mp3Folder.ChangedFile += MP3Folder_ChangedFile;
                 mp3Folder.SearchFolder();
-
-                addedFilesCount += mp3Folder.MP3Files.Count;
 
                 if (mp3Folder.MP3Files.Count > 0)
                 {
                     if (!this.Folders.ContainsKey(folder))
                     {
                         this.Folders.Add(folder, mp3Folder);
+                        addedFilesCount += mp3Folder.MP3Files.Count;
 
-                        var progress = Convert.ToInt32(((double)addedFilesCount / (double)newFilesCount) * 100.0);                        
-                        searchWorker.ReportProgress(progress);
+                        var progress = Helpers.GetProgress(addedFilesCount, newFilesCount);
+                        searchWorker.ReportProgress(progress, mp3Folder);
                     }
                 }
             }
@@ -380,11 +397,11 @@ namespace WinFormMP3Gain
             return filePaths.Except(this.foundFiles.Keys).ToList().Count;
         }
 
-        private void RaiseUpdateSearchProgress(int progress)
+        private void RaiseTaskProgressed(int progress)
         {
-            if (this.UpdateSearchProgress != null)
+            if (this.TaskProgressed != null)
             {
-                this.UpdateSearchProgress.Invoke(this, progress);
+                this.TaskProgressed.Invoke(this, progress);
             }
         }
 
@@ -455,10 +472,6 @@ namespace WinFormMP3Gain
 
         internal void RefreshDataSource(List<MP3GainFile> folderFiles)
         {
-            //var gainRows = folderFiles.Select(x => new MP3GainRow(x, this.Folders[x.FilePath])).ToList();
-
-            //this.DataSource. = gainRows;
-
             this.DataSource.RaiseListChangedEvents = false;
 
             foreach (var file in folderFiles)
@@ -520,6 +533,77 @@ namespace WinFormMP3Gain
         {
             this.DataSource.RaiseListChangedEvents = true;
             this.DataSource.ResetBindings();
+        }
+
+        internal void ReadTags()
+        {
+            var readTagsWorker = new BackgroundWorker();
+
+            readTagsWorker.WorkerReportsProgress = true;
+
+            readTagsWorker.DoWork += ReadTagsWorker_DoWork;
+            readTagsWorker.ProgressChanged += ReadTagsWorker_ProgressChanged;
+            readTagsWorker.RunWorkerCompleted += ReadTagsWorker_RunWorkerCompleted;
+
+            readTagsWorker.RunWorkerAsync();
+        }
+
+        private void ReadTagsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.RaiseRefreshTable();
+        }
+
+        private void ReadTagsWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.RaiseTaskProgressed(e.ProgressPercentage);
+
+            if (e.UserState is int index)
+            {
+                this.RaiseRowUpdated(index);
+
+                if (this.readTagEventCheck.CheckTime(e.ProgressPercentage == 100))
+                {
+                    this.RaiseTagRead(this.AllFiles[index]);
+                }
+            }
+        }
+
+        private void RaiseTagRead(MP3GainFile mP3GainFile)
+        {
+            if (this.TagRead != null)
+            {
+                this.TagRead.Invoke(this, mP3GainFile);
+            }
+        }
+
+        private void RaiseRowUpdated(int index)
+        {
+            if (this.RowUpdated != null)
+            {
+                this.RowUpdated.Invoke(this, index);
+            }
+        }
+
+        private void ReadTagsWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (sender is BackgroundWorker worker)
+            {
+                var files = this.AllFiles;
+                var filesDone = 1;
+                var totalFiles = files.Count;
+
+                worker.ReportProgress(0);
+
+                foreach (var file in files)
+                {
+                    file.ExtractTags();
+                    var progress = Helpers.GetProgress(filesDone, totalFiles);
+                    worker.ReportProgress(progress, filesDone - 1);
+                    filesDone++;
+                }
+
+                worker.ReportProgress(100);
+            }
         }
     }
 }

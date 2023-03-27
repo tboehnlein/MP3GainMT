@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.IO;
 
 namespace MP3GainMT
@@ -8,7 +7,6 @@ namespace MP3GainMT
     internal class MP3GainSettings
     {
         private static readonly string FolderPathLabel = "Last Used Folder";
-        private static readonly string ExtractTagLabel = "Last Used Extract";
         private JObject _json = null;
 
         public string ParentFolder
@@ -24,22 +22,6 @@ namespace MP3GainMT
                 CheckFile();
 
                 this._json[FolderPathLabel] = value;
-            }
-        }
-
-        public bool ExtractTags
-        {
-            get
-            {
-                CheckFile();
-
-                return Convert.ToBoolean(_json[ExtractTagLabel]);
-            }
-            set
-            {
-                CheckFile();
-
-                this._json[ExtractTagLabel] = value;
             }
         }
 
@@ -72,18 +54,12 @@ namespace MP3GainMT
                     {
                         _json.Add(FolderPathLabel, string.Empty);
                     }
-
-                    if (!_json.ContainsKey(ExtractTagLabel))
-                    {
-                        _json.Add(ExtractTagLabel, false);
-                    }
                 }
             }
             else
             {
                 this._json = new JObject();
                 _json.Add(FolderPathLabel, string.Empty);
-                _json.Add(ExtractTagLabel, false);
             }
         }
 
