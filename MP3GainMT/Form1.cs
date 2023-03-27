@@ -29,20 +29,71 @@ namespace MP3GainMT
             this.run.ChangedFile += Run_ChangedFile;
             this.run.SearchFinishedFolder += Run_SearchFinishedFolder;
             this.run.RefreshTable += Run_RefreshTable;
-            this.run.UpdateSearchProgress += Run_RefreshProgress;
+            this.run.TaskProgressed += Run_TaskProgressed;
+            this.run.RowUpdated += Run_RowUpdated;
+            this.run.FolderLoaded += Run_FolderLoaded;
             this.run.ParentFolder = settings.ParentFolder;
-            this.run.ExtractTags = settings.ExtractTags;
+            this.run.TagRead += Run_TagRead;
             this.run.SearchTimeElasped += this.Run_SearchTimeElasped;
             this.run.AnalysisFinished += Run_AnalysisFinished;
             this.run.AskSearchQuestion += Run_AskSearchQuestion;
             this.folderPathTextBox.Text = run.ParentFolder;
-            this.extractCheckBox.Checked = run.ExtractTags;
             this.source.DataSource = this.run.DataSource;
 
             fileGridView.DataSource = source;
 
             this.UpdateFileListLabel();
             this.CheckFolderPath();
+        }
+
+        private void Run_TagRead(object sender, MP3GainFile e)
+        {
+            this.fileLabel.Text = $"Read Tag: {e.FileName}";
+            this.fileLabel.Refresh();
+        }
+
+        private void Run_FolderLoaded(object sender, MP3GainFolder e)
+        {
+            UpdateFileListLabel();
+        }
+
+        private void Run_TaskProgressed(object sender, int progress)
+        {
+            UpdateProgressBar(progress);
+        }
+
+        private void Run_RowUpdated(object sender, int index)
+        {
+            if (index > -1 && index < this.source.Count)
+            {
+                this.source.ResetItem(index);
+                this.fileGridView.Update();
+            }
+        }
+
+        private void Run_UpdateReadTagTaskProgress(object sender, TaskUpdate progress)
+        {
+            UpdateProgressBar(progress.ProgressPercent);
+
+            if (progress.Index > -1)
+            {
+                this.source.ResetItem(progress.Index);
+            }
+
+            /*var start = this.fileGridView.FirstDisplayedScrollingRowIndex;
+            var end = start + this.fileGridView.DisplayedRowCount(true);
+
+
+            for (int i = start; i < end; i++)
+            {
+                if (run.DataSource[i].Updated)
+                {
+                    
+                    run.DataSource[i].Updated = false;
+                }
+            }*/
+
+            this.fileGridView.Update();
         }
 
         private void Run_AskSearchQuestion(object sender, string question)
@@ -85,12 +136,8 @@ namespace MP3GainMT
             {
                 this.fileListLabel.Text = $"Loaded Files [Searching folders..]";
             }
-        }
 
-        private void Run_RefreshProgress(object sender, int progress)
-        {
-            UpdateFileListLabel();
-            UpdateProgressBar(progress);
+            this.fileListLabel.Refresh();
         }
 
         private void UpdateProgressBar(int progress)
@@ -111,9 +158,16 @@ namespace MP3GainMT
 
         private void UpdataDataGridView()
         {
+            var index = this.fileGridView.FirstDisplayedScrollingRowIndex;
+
             this.fileGridView.SuspendLayout();
             run.RefreshDataSource();
             this.fileGridView.ResumeLayout();
+
+            if (index >= 0)
+            {
+                this.fileGridView.FirstDisplayedScrollingRowIndex = index;
+            }
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -152,6 +206,7 @@ namespace MP3GainMT
         private void Run_RefreshTable(object sender, EventArgs e)
         {
             UpdataDataGridView();
+            this.fileLabel.Text = "Finished.";
         }
 
         private void Run_ChangedFile(object sender, MP3GainFile e)
@@ -264,10 +319,13 @@ namespace MP3GainMT
             this.run.Clear();
         }
 
-        private void ExtractCheckBox_CheckStateChanged(object sender, EventArgs e)
+
+        private void ReadTagsButton_Click(object sender, EventArgs e)
         {
-            this.run.ExtractTags = this.extractCheckBox.Checked;
-            this.settings.ExtractTags = this.extractCheckBox.Checked;
+            if (CheckFolderPath())
+            {
+                this.run.ReadTags();
+            }
         }
     }
 }

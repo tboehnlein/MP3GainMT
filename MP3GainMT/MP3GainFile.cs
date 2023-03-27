@@ -13,7 +13,6 @@ namespace WinFormMP3Gain
         public int SuggestedGain { get; set; } = 0;
 
         public string FilePath { get; set; } = string.Empty;
-        public TagLib.File TagFile { get; private set; } = null;
         public string Artist { get; private set; } = string.Empty;
         public string Album { get; private set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
@@ -23,32 +22,19 @@ namespace WinFormMP3Gain
         public string FolderPath { get; set; } = string.Empty;
         public int Progress { get; internal set; } = 0;
 
-        public bool HasTags => TagFile != null;
+        public bool HasTags { get; internal set; } = false;
 
         public bool HasErrors => this.ErrorMessages.Count > 0;
 
         public List<string> ErrorMessages { get; private set; } = new List<string>();
+        public bool Updated { get; internal set; }
 
-        public MP3GainFile(string file, bool extractMetaData = false)
+        public MP3GainFile(string file)
         {
             this.FilePath = file;
             this.Progress = 0;
             this.FileName = Path.GetFileName(this.FilePath);
             this.FolderPath = Path.GetDirectoryName(this.FilePath);
-
-            if (extractMetaData)
-            {
-                try
-                {
-                    this.TagFile = TagLib.File.Create(file);
-                    this.Artist = this.TagFile.Tag.Performers[0];
-                    this.Album = this.TagFile.Tag.Album;
-                }
-                catch (CorruptFileException ex)
-                {
-                    GenerateErrorMessage("Tag Extract Error", ex);                   
-                }
-            }
 
             try
             {
@@ -74,6 +60,26 @@ namespace WinFormMP3Gain
             this.ErrorMessages.Add(message);
 
             Debug.WriteLine($"{message} ({this.FilePath})");
+        }
+
+        internal void ExtractTags()
+        {
+            if (!this.HasTags)
+            {
+                try
+                {
+                    this.HasTags = true;
+                    var tagFile = TagLib.File.Create(this.FilePath);
+                    if (tagFile.Tag.Performers.Length > 0) { this.Artist = tagFile.Tag.Performers[0]; }
+                    this.Album = tagFile.Tag.Album;
+                    this.Updated = true;
+                }
+                catch (CorruptFileException ex)
+                {
+                    GenerateErrorMessage("Tag Extract Error", ex);
+                }
+            }
+            
         }
     }
 }

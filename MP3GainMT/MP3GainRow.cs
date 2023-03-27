@@ -1,6 +1,5 @@
 ﻿using System;
 using WinFormMP3Gain;
-using MP3GainMT.Helpers;
 
 namespace MP3GainMT
 {
@@ -24,6 +23,18 @@ namespace MP3GainMT
 
         public string Album => this.file.Album;
         public string Artist => this.file.Artist;
+
+        public bool Updated
+        {
+            get
+            {
+                return this.file.Updated;
+            }
+            set
+            {
+                this.file.Updated = value;
+            }
+        }
 
         public MP3GainRow(MP3GainFile file, MP3GainFolder folder)
         {
