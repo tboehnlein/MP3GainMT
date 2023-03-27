@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace WinFormMP3Gain
@@ -344,7 +345,8 @@ namespace WinFormMP3Gain
             this.ContinueSearch = true;
 
             searchWorker.ReportProgress(-1);
-
+            
+            
             var folders = Directory.GetDirectories(parentFolder, "*", SearchOption.AllDirectories).ToList();
             var songs = Directory.GetFiles(parentFolder, "*.MP3", SearchOption.AllDirectories).ToList();
 

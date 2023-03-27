@@ -1,8 +1,15 @@
-﻿namespace MP3GainMT
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MP3GainMT
 {
     internal class TaskUpdate
     {
-        public TaskUpdate(int progressPercent, string message, int index)
+        public TaskUpdate(int progressPercent, string message, int index) 
         {
             ProgressPercent = progressPercent;
             Message = message;
@@ -23,12 +30,15 @@
             Index = -1;
         }
 
+
         public TaskUpdate(int completedCount, int totalCount, string message)
         {
             ProgressPercent = Helpers.GetProgress(completedCount, totalCount);
             Message = message;
             Index = completedCount - 1;
         }
+
+
 
         public int ProgressPercent { get; set; }
         public string Message { get; set; }
