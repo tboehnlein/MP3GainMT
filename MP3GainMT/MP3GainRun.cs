@@ -31,7 +31,7 @@ namespace WinFormMP3Gain
         public event EventHandler<MP3GainFile> TagRead;
 
         public event EventHandler<TimeSpan> SearchTimeElasped;
-        public event EventHandler SearchTimeFinished;
+        public event EventHandler<string> AcitityFinished;
 
         private System.Windows.Forms.Timer searchTimeElaspedTimer = null;
 
@@ -43,11 +43,11 @@ namespace WinFormMP3Gain
             }
         }
 
-        private void RaiseSearchTimeFinished()
+        private void RaiseAcivityFinished(string message)
         {
-            if (SearchTimeFinished != null)
+            if (AcitityFinished != null)
             {
-                SearchTimeFinished.Invoke(this, new EventArgs());
+                AcitityFinished.Invoke(this, message);
             }
         }
 
@@ -126,7 +126,7 @@ namespace WinFormMP3Gain
                 else
                 {
                     this.StopSearchTimer();
-                    this.RaiseSearchTimeFinished();
+                    this.RaiseAcivityFinished("Loading files");
                 }
             }
             else
@@ -138,6 +138,7 @@ namespace WinFormMP3Gain
                     if (findFileEventCheck.CheckTime(e.ProgressPercentage == 100))
                     {
                         this.RaiseFolderLoaded(folder);
+                        this.RaiseAcivityFinished("Finished");
                     }
                 }
             }

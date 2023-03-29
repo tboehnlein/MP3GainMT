@@ -36,7 +36,7 @@ namespace MP3GainMT
             this.run.FolderLoaded += Run_FolderLoaded;
             this.run.TagRead += Run_TagRead;
             this.run.SearchTimeElasped += this.Run_SearchTimeElasped;
-            this.run.SearchTimeFinished += this.Run_SearchTimeFinished;
+            this.run.AcitityFinished += this.Run_SearchTimeFinished;
             this.run.AnalysisFinished += Run_AnalysisFinished;
             this.run.AskSearchQuestion += Run_AskSearchQuestion;
             this.folderPathTextBox.Text = run.ParentFolder;
@@ -48,7 +48,7 @@ namespace MP3GainMT
             this.CheckFolderPath();
         }
 
-        private void Run_SearchTimeFinished(object sender, EventArgs e)
+        private void Run_ActivityFinished(object sender, EventArgs e)
         {
             this.activityLabel.Text = "Loading files";
         }
