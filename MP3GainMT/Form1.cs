@@ -50,7 +50,7 @@ namespace MP3GainMT
 
         private void Run_SearchTimeFinished(object sender, EventArgs e)
         {
-            this.activityLabel.Text = "Finished searching";
+            this.activityLabel.Text = "Loading files";
         }
 
         private void ReadSettings(MP3GainRun run)
@@ -65,7 +65,7 @@ namespace MP3GainMT
 
         private void Run_TagRead(object sender, MP3GainFile e)
         {
-            this.activityLabel.Text = $"Read Tag: {e.FileName}";
+            this.activityLabel.Text = $"Reading tag for {e.FileName}";
             this.activityLabel.Refresh();
         }
 

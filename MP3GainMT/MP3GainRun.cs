@@ -60,8 +60,8 @@ namespace WinFormMP3Gain
         private Stack<FolderWorker> processQueue;
         private DateTime startSearchTime;
 
-        private TimeCheck findFileEventCheck = new TimeCheck(15);
-        private TimeCheck readTagEventCheck = new TimeCheck(15);
+        private TimeCheck findFileEventCheck = new TimeCheck(8);
+        private TimeCheck readTagEventCheck = new TimeCheck(8);
 
         public event EventHandler AnalysisFinished;
 

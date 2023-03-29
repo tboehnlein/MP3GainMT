@@ -64,7 +64,7 @@ namespace MP3GainMT
             // browseButton
             // 
             this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.browseButton.Location = new System.Drawing.Point(409, 23);
+            this.browseButton.Location = new System.Drawing.Point(409, 55);
             this.browseButton.Name = "browseButton";
             this.browseButton.Size = new System.Drawing.Size(64, 28);
             this.browseButton.TabIndex = 2;
@@ -76,15 +76,17 @@ namespace MP3GainMT
             // 
             this.folderPathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.folderPathTextBox.Location = new System.Drawing.Point(19, 27);
+            this.folderPathTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.folderPathTextBox.Location = new System.Drawing.Point(19, 59);
             this.folderPathTextBox.Name = "folderPathTextBox";
+            this.folderPathTextBox.ReadOnly = true;
             this.folderPathTextBox.Size = new System.Drawing.Size(384, 20);
             this.folderPathTextBox.TabIndex = 1;
             // 
             // runButton
             // 
             this.runButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.runButton.Location = new System.Drawing.Point(790, 23);
+            this.runButton.Location = new System.Drawing.Point(790, 55);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(87, 28);
             this.runButton.TabIndex = 6;
@@ -95,7 +97,7 @@ namespace MP3GainMT
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 8);
+            this.label1.Location = new System.Drawing.Point(22, 43);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 0;
@@ -122,10 +124,10 @@ namespace MP3GainMT
             this.AlbumDB,
             this.AlbumGain,
             this.ErrorMessage});
-            this.fileGridView.Location = new System.Drawing.Point(12, 104);
+            this.fileGridView.Location = new System.Drawing.Point(12, 112);
             this.fileGridView.Name = "fileGridView";
             this.fileGridView.ReadOnly = true;
-            this.fileGridView.Size = new System.Drawing.Size(960, 145);
+            this.fileGridView.Size = new System.Drawing.Size(960, 137);
             this.fileGridView.TabIndex = 9;
             // 
             // FullPath
@@ -241,7 +243,7 @@ namespace MP3GainMT
             // fileListLabel
             // 
             this.fileListLabel.AutoSize = true;
-            this.fileListLabel.Location = new System.Drawing.Point(14, 85);
+            this.fileListLabel.Location = new System.Drawing.Point(15, 96);
             this.fileListLabel.Name = "fileListLabel";
             this.fileListLabel.Size = new System.Drawing.Size(271, 13);
             this.fileListLabel.TabIndex = 8;
@@ -250,7 +252,7 @@ namespace MP3GainMT
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(699, 23);
+            this.button1.Location = new System.Drawing.Point(699, 55);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(87, 28);
             this.button1.TabIndex = 5;
@@ -261,7 +263,7 @@ namespace MP3GainMT
             // clearButton
             // 
             this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearButton.Location = new System.Drawing.Point(881, 23);
+            this.clearButton.Location = new System.Drawing.Point(881, 55);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(87, 28);
             this.clearButton.TabIndex = 7;
@@ -272,11 +274,11 @@ namespace MP3GainMT
             // searchButton
             // 
             this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchButton.Location = new System.Drawing.Point(479, 22);
+            this.searchButton.Location = new System.Drawing.Point(479, 54);
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(87, 28);
             this.searchButton.TabIndex = 3;
-            this.searchButton.Text = "&Search Folder";
+            this.searchButton.Text = "Add &Files";
             this.searchButton.UseVisualStyleBackColor = true;
             this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
@@ -284,16 +286,16 @@ namespace MP3GainMT
             // 
             this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityProgressBar.Location = new System.Drawing.Point(731, 5);
+            this.activityProgressBar.Location = new System.Drawing.Point(713, 5);
             this.activityProgressBar.Name = "activityProgressBar";
-            this.activityProgressBar.Size = new System.Drawing.Size(240, 19);
+            this.activityProgressBar.Size = new System.Drawing.Size(259, 19);
             this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.activityProgressBar.TabIndex = 11;
             // 
             // readTagsButton
             // 
             this.readTagsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.readTagsButton.Location = new System.Drawing.Point(606, 23);
+            this.readTagsButton.Location = new System.Drawing.Point(606, 55);
             this.readTagsButton.Name = "readTagsButton";
             this.readTagsButton.Size = new System.Drawing.Size(87, 28);
             this.readTagsButton.TabIndex = 4;
@@ -306,10 +308,11 @@ namespace MP3GainMT
             this.activityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.activityLabel.AutoSize = true;
+            this.activityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.activityLabel.ForeColor = System.Drawing.Color.White;
-            this.activityLabel.Location = new System.Drawing.Point(55, 7);
+            this.activityLabel.Location = new System.Drawing.Point(62, 7);
             this.activityLabel.Name = "activityLabel";
-            this.activityLabel.Size = new System.Drawing.Size(58, 13);
+            this.activityLabel.Size = new System.Drawing.Size(69, 13);
             this.activityLabel.TabIndex = 10;
             this.activityLabel.Text = "No Activity";
             // 
@@ -318,11 +321,12 @@ namespace MP3GainMT
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(11, 7);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 13);
+            this.label2.Size = new System.Drawing.Size(57, 13);
             this.label2.TabIndex = 10;
             this.label2.Text = "Activity: ";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -331,14 +335,14 @@ namespace MP3GainMT
             // 
             this.activityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityPanel.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.activityPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.activityPanel.Controls.Add(this.label3);
             this.activityPanel.Controls.Add(this.activityProgressBar);
             this.activityPanel.Controls.Add(this.activityLabel);
             this.activityPanel.Controls.Add(this.label2);
-            this.activityPanel.Location = new System.Drawing.Point(1, 55);
+            this.activityPanel.Location = new System.Drawing.Point(0, 0);
             this.activityPanel.Name = "activityPanel";
-            this.activityPanel.Size = new System.Drawing.Size(983, 29);
+            this.activityPanel.Size = new System.Drawing.Size(984, 29);
             this.activityPanel.TabIndex = 12;
             // 
             // label3
@@ -346,10 +350,12 @@ namespace MP3GainMT
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(655, 7);
+            this.label3.Location = new System.Drawing.Point(652, 7);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(51, 13);
+            this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Progress:";
             // 
