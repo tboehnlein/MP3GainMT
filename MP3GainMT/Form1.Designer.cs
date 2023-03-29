@@ -288,7 +288,7 @@ namespace MP3GainMT
             | System.Windows.Forms.AnchorStyles.Right)));
             this.activityProgressBar.Location = new System.Drawing.Point(713, 5);
             this.activityProgressBar.Name = "activityProgressBar";
-            this.activityProgressBar.Size = new System.Drawing.Size(259, 19);
+            this.activityProgressBar.Size = new System.Drawing.Size(266, 19);
             this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.activityProgressBar.TabIndex = 11;
             // 
@@ -305,14 +305,16 @@ namespace MP3GainMT
             // 
             // activityLabel
             // 
-            this.activityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.activityLabel.AutoSize = true;
+            this.activityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityLabel.AutoEllipsis = true;
             this.activityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.activityLabel.ForeColor = System.Drawing.Color.White;
-            this.activityLabel.Location = new System.Drawing.Point(62, 7);
+            this.activityLabel.Location = new System.Drawing.Point(55, 7);
+            this.activityLabel.Margin = new System.Windows.Forms.Padding(3, 0, 20, 0);
             this.activityLabel.Name = "activityLabel";
-            this.activityLabel.Size = new System.Drawing.Size(69, 13);
+            this.activityLabel.Size = new System.Drawing.Size(589, 13);
             this.activityLabel.TabIndex = 10;
             this.activityLabel.Text = "No Activity";
             // 
@@ -323,7 +325,7 @@ namespace MP3GainMT
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(11, 7);
+            this.label2.Location = new System.Drawing.Point(4, 7);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(57, 13);
@@ -335,7 +337,7 @@ namespace MP3GainMT
             // 
             this.activityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.activityPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
             this.activityPanel.Controls.Add(this.label3);
             this.activityPanel.Controls.Add(this.activityProgressBar);
             this.activityPanel.Controls.Add(this.activityLabel);
@@ -352,10 +354,11 @@ namespace MP3GainMT
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(652, 7);
-            this.label3.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label3.Location = new System.Drawing.Point(633, 7);
+            this.label3.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
+            this.label3.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.label3.Size = new System.Drawing.Size(80, 13);
             this.label3.TabIndex = 12;
             this.label3.Text = "Progress:";
             // 

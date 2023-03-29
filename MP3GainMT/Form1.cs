@@ -65,7 +65,7 @@ namespace MP3GainMT
 
         private void Run_TagRead(object sender, MP3GainFile e)
         {
-            this.activityLabel.Text = $"Reading tag for {e.FileName}";
+            this.activityLabel.Text = $"Reading tag for {e.Folder}\\{e.FileName}";
             this.activityLabel.Refresh();
         }
 
