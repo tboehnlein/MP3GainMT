@@ -35,12 +35,6 @@ namespace MP3GainMT
             this.runButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.fileGridView = new System.Windows.Forms.DataGridView();
-            this.fileListLabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.clearButton = new System.Windows.Forms.Button();
-            this.searchButton = new System.Windows.Forms.Button();
-            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
-            this.readTagsButton = new System.Windows.Forms.Button();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -53,14 +47,24 @@ namespace MP3GainMT
             this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fileLabel = new System.Windows.Forms.Label();
+            this.fileListLabel = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.clearButton = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
+            this.readTagsButton = new System.Windows.Forms.Button();
+            this.activityLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.activityPanel = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).BeginInit();
+            this.activityPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // browseButton
             // 
             this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.browseButton.Location = new System.Drawing.Point(650, 23);
+            this.browseButton.Location = new System.Drawing.Point(409, 23);
             this.browseButton.Name = "browseButton";
             this.browseButton.Size = new System.Drawing.Size(64, 28);
             this.browseButton.TabIndex = 2;
@@ -74,13 +78,13 @@ namespace MP3GainMT
             | System.Windows.Forms.AnchorStyles.Right)));
             this.folderPathTextBox.Location = new System.Drawing.Point(19, 27);
             this.folderPathTextBox.Name = "folderPathTextBox";
-            this.folderPathTextBox.Size = new System.Drawing.Size(625, 20);
+            this.folderPathTextBox.Size = new System.Drawing.Size(384, 20);
             this.folderPathTextBox.TabIndex = 1;
             // 
             // runButton
             // 
             this.runButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.runButton.Location = new System.Drawing.Point(1031, 23);
+            this.runButton.Location = new System.Drawing.Point(790, 23);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(87, 28);
             this.runButton.TabIndex = 6;
@@ -118,73 +122,11 @@ namespace MP3GainMT
             this.AlbumDB,
             this.AlbumGain,
             this.ErrorMessage});
-            this.fileGridView.Location = new System.Drawing.Point(12, 68);
+            this.fileGridView.Location = new System.Drawing.Point(12, 104);
             this.fileGridView.Name = "fileGridView";
             this.fileGridView.ReadOnly = true;
-            this.fileGridView.Size = new System.Drawing.Size(1201, 296);
+            this.fileGridView.Size = new System.Drawing.Size(960, 145);
             this.fileGridView.TabIndex = 9;
-            // 
-            // fileListLabel
-            // 
-            this.fileListLabel.AutoSize = true;
-            this.fileListLabel.Location = new System.Drawing.Point(16, 52);
-            this.fileListLabel.Name = "fileListLabel";
-            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
-            this.fileListLabel.TabIndex = 8;
-            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(940, 23);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(87, 28);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "&Analyze";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
-            // 
-            // clearButton
-            // 
-            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearButton.Location = new System.Drawing.Point(1122, 23);
-            this.clearButton.Name = "clearButton";
-            this.clearButton.Size = new System.Drawing.Size(87, 28);
-            this.clearButton.TabIndex = 7;
-            this.clearButton.Text = "&Clear";
-            this.clearButton.UseVisualStyleBackColor = true;
-            this.clearButton.Click += new System.EventHandler(this.ClearButton_Click);
-            // 
-            // searchButton
-            // 
-            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchButton.Location = new System.Drawing.Point(720, 22);
-            this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(87, 28);
-            this.searchButton.TabIndex = 4;
-            this.searchButton.Text = "&Search Folder";
-            this.searchButton.UseVisualStyleBackColor = true;
-            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
-            // 
-            // activityProgressBar
-            // 
-            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityProgressBar.Location = new System.Drawing.Point(964, 370);
-            this.activityProgressBar.Name = "activityProgressBar";
-            this.activityProgressBar.Size = new System.Drawing.Size(249, 16);
-            this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.activityProgressBar.TabIndex = 10;
-            // 
-            // readTagsButton
-            // 
-            this.readTagsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.readTagsButton.Location = new System.Drawing.Point(847, 23);
-            this.readTagsButton.Name = "readTagsButton";
-            this.readTagsButton.Size = new System.Drawing.Size(87, 28);
-            this.readTagsButton.TabIndex = 11;
-            this.readTagsButton.Text = "&Read Tags";
-            this.readTagsButton.UseVisualStyleBackColor = true;
-            this.readTagsButton.Click += new System.EventHandler(this.ReadTagsButton_Click);
             // 
             // FullPath
             // 
@@ -296,37 +238,146 @@ namespace MP3GainMT
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
             // 
-            // fileLabel
+            // fileListLabel
             // 
-            this.fileLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.fileLabel.AutoSize = true;
-            this.fileLabel.Location = new System.Drawing.Point(12, 370);
-            this.fileLabel.Name = "fileLabel";
-            this.fileLabel.Size = new System.Drawing.Size(0, 13);
-            this.fileLabel.TabIndex = 8;
+            this.fileListLabel.AutoSize = true;
+            this.fileListLabel.Location = new System.Drawing.Point(14, 85);
+            this.fileListLabel.Name = "fileListLabel";
+            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
+            this.fileListLabel.TabIndex = 8;
+            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(699, 23);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(87, 28);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "&Analyze";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
+            // 
+            // clearButton
+            // 
+            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearButton.Location = new System.Drawing.Point(881, 23);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(87, 28);
+            this.clearButton.TabIndex = 7;
+            this.clearButton.Text = "&Clear";
+            this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.ClearButton_Click);
+            // 
+            // searchButton
+            // 
+            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchButton.Location = new System.Drawing.Point(479, 22);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(87, 28);
+            this.searchButton.TabIndex = 3;
+            this.searchButton.Text = "&Search Folder";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
+            // 
+            // activityProgressBar
+            // 
+            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityProgressBar.Location = new System.Drawing.Point(731, 5);
+            this.activityProgressBar.Name = "activityProgressBar";
+            this.activityProgressBar.Size = new System.Drawing.Size(240, 19);
+            this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.activityProgressBar.TabIndex = 11;
+            // 
+            // readTagsButton
+            // 
+            this.readTagsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.readTagsButton.Location = new System.Drawing.Point(606, 23);
+            this.readTagsButton.Name = "readTagsButton";
+            this.readTagsButton.Size = new System.Drawing.Size(87, 28);
+            this.readTagsButton.TabIndex = 4;
+            this.readTagsButton.Text = "&Read Tags";
+            this.readTagsButton.UseVisualStyleBackColor = true;
+            this.readTagsButton.Click += new System.EventHandler(this.ReadTagsButton_Click);
+            // 
+            // activityLabel
+            // 
+            this.activityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.activityLabel.AutoSize = true;
+            this.activityLabel.ForeColor = System.Drawing.Color.White;
+            this.activityLabel.Location = new System.Drawing.Point(55, 7);
+            this.activityLabel.Name = "activityLabel";
+            this.activityLabel.Size = new System.Drawing.Size(58, 13);
+            this.activityLabel.TabIndex = 10;
+            this.activityLabel.Text = "No Activity";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(11, 7);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(47, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Activity: ";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // activityPanel
+            // 
+            this.activityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityPanel.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.activityPanel.Controls.Add(this.label3);
+            this.activityPanel.Controls.Add(this.activityProgressBar);
+            this.activityPanel.Controls.Add(this.activityLabel);
+            this.activityPanel.Controls.Add(this.label2);
+            this.activityPanel.Location = new System.Drawing.Point(1, 55);
+            this.activityPanel.Name = "activityPanel";
+            this.activityPanel.Size = new System.Drawing.Size(983, 29);
+            this.activityPanel.TabIndex = 12;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(655, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(51, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Progress:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1225, 390);
+            this.ClientSize = new System.Drawing.Size(984, 261);
+            this.Controls.Add(this.activityPanel);
             this.Controls.Add(this.readTagsButton);
-            this.Controls.Add(this.activityProgressBar);
             this.Controls.Add(this.searchButton);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.fileGridView);
-            this.Controls.Add(this.fileLabel);
             this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.folderPathTextBox);
             this.Controls.Add(this.runButton);
             this.Controls.Add(this.browseButton);
+            this.MinimumSize = new System.Drawing.Size(1000, 300);
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MP3Gain Multi-Threaded";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).EndInit();
+            this.activityPanel.ResumeLayout(false);
+            this.activityPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -357,7 +408,10 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn AlbumDB;
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewTextBoxColumn ErrorMessage;
-        private Label fileLabel;
+        private Label activityLabel;
+        private Label label2;
+        private Panel activityPanel;
+        private Label label3;
     }
 }
 

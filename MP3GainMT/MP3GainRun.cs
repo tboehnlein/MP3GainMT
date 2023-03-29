@@ -31,6 +31,7 @@ namespace WinFormMP3Gain
         public event EventHandler<MP3GainFile> TagRead;
 
         public event EventHandler<TimeSpan> SearchTimeElasped;
+        public event EventHandler SearchTimeFinished;
 
         private System.Windows.Forms.Timer searchTimeElaspedTimer = null;
 
@@ -39,6 +40,14 @@ namespace WinFormMP3Gain
             if (SearchTimeElasped != null)
             {
                 SearchTimeElasped.Invoke(this, this.ElaspedSearchTime);
+            }
+        }
+
+        private void RaiseSearchTimeFinished()
+        {
+            if (SearchTimeFinished != null)
+            {
+                SearchTimeFinished.Invoke(this, new EventArgs());
             }
         }
 
@@ -78,7 +87,7 @@ namespace WinFormMP3Gain
 
             searchTimeElaspedTimer.Enabled = false;
             searchTimeElaspedTimer.Tick += FindFilesUpdateTimer_Tick;
-            searchTimeElaspedTimer.Interval = 500;
+            searchTimeElaspedTimer.Interval = 250;
 
             this.processQueue = new Stack<FolderWorker>();
         }
@@ -117,6 +126,7 @@ namespace WinFormMP3Gain
                 else
                 {
                     this.StopSearchTimer();
+                    this.RaiseSearchTimeFinished();
                 }
             }
             else

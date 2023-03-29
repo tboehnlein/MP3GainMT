@@ -24,6 +24,8 @@ namespace MP3GainMT
             this.source = new BindingSource();
             this.run = new MP3GainRun(@"C:\MP3Gain\mp3gain.exe");
 
+            this.ReadSettings(run);
+
             this.run.FolderFinished += Run_FolderFinished;
             this.run.FoundFile += Run_FoundFile;
             this.run.ChangedFile += Run_ChangedFile;
@@ -32,9 +34,9 @@ namespace MP3GainMT
             this.run.TaskProgressed += Run_TaskProgressed;
             this.run.RowUpdated += Run_RowUpdated;
             this.run.FolderLoaded += Run_FolderLoaded;
-            this.run.ParentFolder = settings.ParentFolder;
             this.run.TagRead += Run_TagRead;
             this.run.SearchTimeElasped += this.Run_SearchTimeElasped;
+            this.run.SearchTimeFinished += this.Run_SearchTimeFinished;
             this.run.AnalysisFinished += Run_AnalysisFinished;
             this.run.AskSearchQuestion += Run_AskSearchQuestion;
             this.folderPathTextBox.Text = run.ParentFolder;
@@ -46,10 +48,25 @@ namespace MP3GainMT
             this.CheckFolderPath();
         }
 
+        private void Run_SearchTimeFinished(object sender, EventArgs e)
+        {
+            this.activityLabel.Text = "Finished searching";
+        }
+
+        private void ReadSettings(MP3GainRun run)
+        {
+            this.Left = this.settings.LeftPosition;
+            this.Top = this.settings.TopPosition;            
+            this.Height = this.settings.HeightSize;
+            this.Width = this.settings.WidthSize;
+
+            run.ParentFolder = this.settings.ParentFolder;
+        }
+
         private void Run_TagRead(object sender, MP3GainFile e)
         {
-            this.fileLabel.Text = $"Read Tag: {e.FileName}";
-            this.fileLabel.Refresh();
+            this.activityLabel.Text = $"Read Tag: {e.FileName}";
+            this.activityLabel.Refresh();
         }
 
         private void Run_FolderLoaded(object sender, MP3GainFolder e)
@@ -111,34 +128,19 @@ namespace MP3GainMT
 
         private void Run_SearchTimeElasped(object sender, TimeSpan e)
         {
-            this.TickFileListLabel();
+            this.TickActivityLabel();
         }
 
-        private void TickFileListLabel()
+        private void TickActivityLabel()
         {
-            if (!this.fileListLabel.Text.EndsWith(".]"))
-            {
-                this.fileListLabel.Text = $"Loaded Files [Searching folders.]";
-            }
-            else if (this.fileListLabel.Text.EndsWith("...]"))
-            {
-                this.fileListLabel.Text = $"Loaded Files [Searching folders]";
-            }
-            else if (this.fileListLabel.Text.EndsWith("..]"))
-            {
-                this.fileListLabel.Text = $"Loaded Files [Searching folders...]";
-            }
-            else if (this.fileListLabel.Text.EndsWith(".]"))
-            {
-                this.fileListLabel.Text = $"Loaded Files [Searching folders..]";
-            }
-
-            this.fileListLabel.Refresh();
+            Helpers.UpdateProgressTick(this.SearchingActivity, this.activityLabel, 3);
         }
+
+        
 
         private void UpdateProgressBar(int progress)
         {
-            this.activityProgressBar.Value = progress;
+            this.activityProgressBar.Value = progress;            
 
             if (progress == 100)
             {
@@ -151,6 +153,8 @@ namespace MP3GainMT
         }
 
         public DateTime StartTime { get; private set; }
+        public string SearchingActivity { get; private set; } = "[Searching folders]";
+        public string LoadingFilesActivity { get; private set; } = "[Loading files]";
 
         private void UpdataDataGridView()
         {
@@ -202,7 +206,7 @@ namespace MP3GainMT
         private void Run_RefreshTable(object sender, EventArgs e)
         {
             UpdataDataGridView();
-            this.fileLabel.Text = "Finished.";
+            this.activityLabel.Text = "Finished.";
         }
 
         private void Run_ChangedFile(object sender, MP3GainFile e)
@@ -281,6 +285,18 @@ namespace MP3GainMT
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            WriteSettings();
+        }
+
+        private void WriteSettings()
+        {
+            this.settings.HeightSize = this.Height;
+            this.settings.WidthSize = this.Width;
+            this.settings.LeftPosition = this.Left;
+            this.settings.TopPosition = this.Top;
+
+            this.settings.ParentFolder = run.ParentFolder;
+
             this.settings.WriteSettingsFile();
         }
 
@@ -288,6 +304,7 @@ namespace MP3GainMT
         {
             if (CheckFolderPath())
             {
+                this.activityLabel.Text = SearchingActivity;
                 this.run.SearchFolders(this.run.ParentFolder);
             }
         }
