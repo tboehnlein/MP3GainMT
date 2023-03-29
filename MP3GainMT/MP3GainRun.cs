@@ -33,6 +33,7 @@ namespace WinFormMP3Gain
         public event EventHandler<TimeSpan> SearchTimeElasped;
         public event EventHandler<string> ActivityUpdated;
 
+        private const string CancelMessage = "Cancellation successful.";
         private System.Windows.Forms.Timer searchTimeElaspedTimer = null;
 
         private void RaiseSearchTimeElapsed()
@@ -62,6 +63,8 @@ namespace WinFormMP3Gain
 
         private TimeCheck findFileEventCheck = new TimeCheck(8);
         private TimeCheck readTagEventCheck = new TimeCheck(8);
+        private BackgroundWorker readTagsWorker;
+        private BackgroundWorker searchWorker;
 
         public event EventHandler AnalysisFinished;
 
@@ -99,9 +102,10 @@ namespace WinFormMP3Gain
 
         public void SearchFolders(string parentFolder = "")
         {
-            var searchWorker = new BackgroundWorker();
+            this.searchWorker = new BackgroundWorker();
 
             searchWorker.WorkerReportsProgress = true;
+            searchWorker.WorkerSupportsCancellation = true;
 
             searchWorker.DoWork += SearchWorker_DoWork;
             searchWorker.ProgressChanged += SearchWorker_ProgressChanged;
@@ -140,6 +144,10 @@ namespace WinFormMP3Gain
                         this.RaiseFolderLoaded(folder);
                         this.RaiseAcivityUpdated("Finished");
                     }
+                }
+                else if (e.UserState is string message)
+                {
+                    this.RaiseAcivityUpdated(message);
                 }
             }
         }
@@ -363,6 +371,12 @@ namespace WinFormMP3Gain
 
             searchWorker.ReportProgress(-1);
 
+            if (searchWorker.CancellationPending)
+            {
+                searchWorker.ReportProgress(100, CancelMessage);
+                return;
+            }
+
             folders.Add(parentFolder);
 
             var newFilesCount = this.GetNewFileCount(songs);
@@ -400,6 +414,12 @@ namespace WinFormMP3Gain
 
                         var progress = Helpers.GetProgress(addedFilesCount, newFilesCount);
                         searchWorker.ReportProgress(progress, mp3Folder);
+
+                        if (searchWorker.CancellationPending)
+                        {
+                            searchWorker.ReportProgress(100, CancelMessage);
+                            break;
+                        }
                     }
                 }
             }
@@ -480,6 +500,12 @@ namespace WinFormMP3Gain
         public TimeSpan ElaspedSearchTime => DateTime.Now - this.startSearchTime;
 
         public bool ContinueSearch { get; internal set; }
+        public bool ActiveActivities => this.AnyWorkersActive();
+
+        private bool AnyWorkersActive()
+        {
+            return ActiveWorker(this.readTagsWorker) || ActiveWorker(this.searchWorker);
+        }
 
         public event EventHandler<string> AskSearchQuestion;
 
@@ -550,9 +576,10 @@ namespace WinFormMP3Gain
 
         internal void ReadTags()
         {
-            var readTagsWorker = new BackgroundWorker();
+            this.readTagsWorker = new BackgroundWorker();
 
             readTagsWorker.WorkerReportsProgress = true;
+            readTagsWorker.WorkerSupportsCancellation = true;
 
             readTagsWorker.DoWork += ReadTagsWorker_DoWork;
             readTagsWorker.ProgressChanged += ReadTagsWorker_ProgressChanged;
@@ -578,6 +605,10 @@ namespace WinFormMP3Gain
                 {
                     this.RaiseTagRead(this.AllFiles[index]);
                 }
+            }
+            else if (e.UserState is string message)
+            {
+                this.RaiseAcivityUpdated(message);
             }
         }
 
@@ -613,10 +644,42 @@ namespace WinFormMP3Gain
                     var progress = Helpers.GetProgress(filesDone, totalFiles);
                     worker.ReportProgress(progress, filesDone - 1);
                     filesDone++;
+
+                    if (worker.CancellationPending)
+                    {
+                        worker.ReportProgress(100, CancelMessage);
+                        break;
+                    }
                 }
 
                 worker.ReportProgress(100);
             }
+        }
+
+        internal void CancelActivity()
+        {
+            CancelWorker(this.readTagsWorker);
+            CancelWorker(this.searchWorker);
+        }
+
+        private static void CancelWorker(BackgroundWorker worker)
+        {
+            if (worker is BackgroundWorker cancel && cancel.WorkerSupportsCancellation)
+            {
+                cancel.CancelAsync();
+            }
+        }
+
+        private static bool ActiveWorker(BackgroundWorker worker)
+        {
+            bool active = false;
+
+            if (worker is BackgroundWorker cancel)
+            {
+                active = cancel.IsBusy;
+            }
+
+            return active;
         }
     }
 }

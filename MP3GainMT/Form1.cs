@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using WinFormMP3Gain;
 using WK.Libraries.BetterFolderBrowserNS;
@@ -206,7 +207,7 @@ namespace MP3GainMT
         private void Run_RefreshTable(object sender, EventArgs e)
         {
             UpdataDataGridView();
-            this.activityLabel.Text = "Finished.";
+            //this.activityLabel.Text = "Finished.";
         }
 
         private void Run_ChangedFile(object sender, MP3GainFile e)
@@ -285,6 +286,15 @@ namespace MP3GainMT
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            this.run.CancelActivity();
+
+            while (run.ActiveActivities)
+            {
+                this.run.CancelActivity();
+                Application.DoEvents();
+                Thread.Sleep(1000);                
+            }
+
             WriteSettings();
         }
 
@@ -334,6 +344,11 @@ namespace MP3GainMT
             {
                 this.run.ReadTags();
             }
+        }
+
+        private void CancelButton_Click(object sender, EventArgs e)
+        {
+            this.run.CancelActivity();
         }
     }
 }
