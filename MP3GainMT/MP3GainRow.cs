@@ -8,7 +8,7 @@ namespace MP3GainMT
         public string FullPath => this.file.FilePath;
         public string Folder => this.file.Folder;
         public string FileName => this.file.FileName;
-        public double TrackDB => Math.Round(89.0 - this.file.DBOffset, 1);
+        public double TrackDB => this.file.GainUndoTrack;//Math.Round(89.0 - this.file.DBOffset, 1);
         public double TrackFinal => Math.Round(this.TrackDB + this.folder.SuggestedGain, 1);
 
         public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
