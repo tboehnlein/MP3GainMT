@@ -128,7 +128,7 @@ namespace MP3GainMT
             this.fileGridView.Location = new System.Drawing.Point(12, 112);
             this.fileGridView.Name = "fileGridView";
             this.fileGridView.ReadOnly = true;
-            this.fileGridView.Size = new System.Drawing.Size(1096, 137);
+            this.fileGridView.Size = new System.Drawing.Size(1096, 250);
             this.fileGridView.TabIndex = 9;
             // 
             // fileListLabel
@@ -283,42 +283,44 @@ namespace MP3GainMT
             // 
             // Folder
             // 
-            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Folder.DataPropertyName = "Folder";
             this.Folder.HeaderText = "Folder";
             this.Folder.Name = "Folder";
             this.Folder.ReadOnly = true;
             this.Folder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Folder.Width = 468;
             // 
             // FileName
             // 
-            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.FileName.DataPropertyName = "FileName";
             this.FileName.HeaderText = "File Name";
             this.FileName.Name = "FileName";
             this.FileName.ReadOnly = true;
             this.FileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.FileName.Width = 79;
             // 
             // Album
             // 
-            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Album.DataPropertyName = "Album";
             this.Album.HeaderText = "Album";
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
+            this.Album.Width = 61;
             // 
             // Artist
             // 
-            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Artist.DataPropertyName = "Artist";
             this.Artist.HeaderText = "Artist";
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
+            this.Artist.Width = 55;
             // 
             // Progress
             // 
-            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Progress.DataPropertyName = "Progress";
             this.Progress.HeaderText = "%";
             this.Progress.Name = "Progress";
@@ -328,56 +330,58 @@ namespace MP3GainMT
             // 
             // TrackDB
             // 
-            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.TrackDB.DataPropertyName = "TrackDB";
             this.TrackDB.HeaderText = "Volume";
             this.TrackDB.Name = "TrackDB";
             this.TrackDB.ReadOnly = true;
             this.TrackDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.TrackDB.Width = 94;
+            this.TrackDB.Width = 67;
             // 
             // TrackFinal
             // 
-            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.TrackFinal.DataPropertyName = "TrackFinal";
             this.TrackFinal.HeaderText = "Track Gain";
             this.TrackFinal.Name = "TrackFinal";
             this.TrackFinal.ReadOnly = true;
             this.TrackFinal.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.TrackFinal.Width = 85;
             // 
             // AlbumDB
             // 
-            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.AlbumDB.DataPropertyName = "AlbumDB";
             this.AlbumDB.HeaderText = "Album Volume";
             this.AlbumDB.Name = "AlbumDB";
             this.AlbumDB.ReadOnly = true;
             this.AlbumDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumDB.Width = 95;
+            this.AlbumDB.Width = 99;
             // 
             // AlbumGain
             // 
-            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.AlbumGain.DataPropertyName = "AlbumFinal";
             this.AlbumGain.HeaderText = "Album Gain";
             this.AlbumGain.Name = "AlbumGain";
             this.AlbumGain.ReadOnly = true;
             this.AlbumGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumGain.Width = 79;
+            this.AlbumGain.Width = 86;
             // 
             // ErrorMessage
             // 
-            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.ErrorMessage.DataPropertyName = "ErrorMessage";
             this.ErrorMessage.HeaderText = "Error";
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
+            this.ErrorMessage.Width = 54;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1120, 261);
+            this.ClientSize = new System.Drawing.Size(1120, 374);
             this.Controls.Add(this.activityPanel);
             this.Controls.Add(this.readTagsButton);
             this.Controls.Add(this.searchButton);
