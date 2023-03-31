@@ -35,6 +35,17 @@ namespace MP3GainMT
             this.runButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.fileGridView = new System.Windows.Forms.DataGridView();
+            this.fileListLabel = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.clearButton = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
+            this.readTagsButton = new System.Windows.Forms.Button();
+            this.activityLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.activityPanel = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cancelButton = new System.Windows.Forms.Button();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,17 +58,6 @@ namespace MP3GainMT
             this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fileListLabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.clearButton = new System.Windows.Forms.Button();
-            this.searchButton = new System.Windows.Forms.Button();
-            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
-            this.readTagsButton = new System.Windows.Forms.Button();
-            this.activityLabel = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.activityPanel = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cancelButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).BeginInit();
             this.activityPanel.SuspendLayout();
             this.SuspendLayout();
@@ -130,116 +130,6 @@ namespace MP3GainMT
             this.fileGridView.ReadOnly = true;
             this.fileGridView.Size = new System.Drawing.Size(1096, 137);
             this.fileGridView.TabIndex = 9;
-            // 
-            // FullPath
-            // 
-            this.FullPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.FullPath.DataPropertyName = "FullPath";
-            this.FullPath.HeaderText = "Full Path";
-            this.FullPath.Name = "FullPath";
-            this.FullPath.ReadOnly = true;
-            this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.FullPath.Visible = false;
-            // 
-            // Updated
-            // 
-            this.Updated.DataPropertyName = "Updated";
-            this.Updated.HeaderText = "Updated";
-            this.Updated.Name = "Updated";
-            this.Updated.ReadOnly = true;
-            this.Updated.Visible = false;
-            // 
-            // Folder
-            // 
-            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Folder.DataPropertyName = "Folder";
-            this.Folder.HeaderText = "Folder";
-            this.Folder.Name = "Folder";
-            this.Folder.ReadOnly = true;
-            this.Folder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Folder.Width = 468;
-            // 
-            // FileName
-            // 
-            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.FileName.DataPropertyName = "FileName";
-            this.FileName.HeaderText = "File Name";
-            this.FileName.Name = "FileName";
-            this.FileName.ReadOnly = true;
-            this.FileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // Album
-            // 
-            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Album.DataPropertyName = "Album";
-            this.Album.HeaderText = "Album";
-            this.Album.Name = "Album";
-            this.Album.ReadOnly = true;
-            // 
-            // Artist
-            // 
-            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Artist.DataPropertyName = "Artist";
-            this.Artist.HeaderText = "Artist";
-            this.Artist.Name = "Artist";
-            this.Artist.ReadOnly = true;
-            // 
-            // Progress
-            // 
-            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Progress.DataPropertyName = "Progress";
-            this.Progress.HeaderText = "%";
-            this.Progress.Name = "Progress";
-            this.Progress.ReadOnly = true;
-            this.Progress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Progress.Width = 40;
-            // 
-            // TrackDB
-            // 
-            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.TrackDB.DataPropertyName = "TrackDB";
-            this.TrackDB.HeaderText = "Track Before";
-            this.TrackDB.Name = "TrackDB";
-            this.TrackDB.ReadOnly = true;
-            this.TrackDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.TrackDB.Width = 94;
-            // 
-            // TrackFinal
-            // 
-            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.TrackFinal.DataPropertyName = "TrackFinal";
-            this.TrackFinal.HeaderText = "Track After";
-            this.TrackFinal.Name = "TrackFinal";
-            this.TrackFinal.ReadOnly = true;
-            this.TrackFinal.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // AlbumDB
-            // 
-            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.AlbumDB.DataPropertyName = "AlbumDB";
-            this.AlbumDB.HeaderText = "Album Before";
-            this.AlbumDB.Name = "AlbumDB";
-            this.AlbumDB.ReadOnly = true;
-            this.AlbumDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumDB.Width = 95;
-            // 
-            // AlbumGain
-            // 
-            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.AlbumGain.DataPropertyName = "AlbumFinal";
-            this.AlbumGain.HeaderText = "Album After";
-            this.AlbumGain.Name = "AlbumGain";
-            this.AlbumGain.ReadOnly = true;
-            this.AlbumGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumGain.Width = 79;
-            // 
-            // ErrorMessage
-            // 
-            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ErrorMessage.DataPropertyName = "ErrorMessage";
-            this.ErrorMessage.HeaderText = "Error";
-            this.ErrorMessage.Name = "ErrorMessage";
-            this.ErrorMessage.ReadOnly = true;
             // 
             // fileListLabel
             // 
@@ -373,6 +263,116 @@ namespace MP3GainMT
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
+            // FullPath
+            // 
+            this.FullPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.FullPath.DataPropertyName = "FullPath";
+            this.FullPath.HeaderText = "Full Path";
+            this.FullPath.Name = "FullPath";
+            this.FullPath.ReadOnly = true;
+            this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.FullPath.Visible = false;
+            // 
+            // Updated
+            // 
+            this.Updated.DataPropertyName = "Updated";
+            this.Updated.HeaderText = "Updated";
+            this.Updated.Name = "Updated";
+            this.Updated.ReadOnly = true;
+            this.Updated.Visible = false;
+            // 
+            // Folder
+            // 
+            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Folder.DataPropertyName = "Folder";
+            this.Folder.HeaderText = "Folder";
+            this.Folder.Name = "Folder";
+            this.Folder.ReadOnly = true;
+            this.Folder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Folder.Width = 468;
+            // 
+            // FileName
+            // 
+            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.FileName.DataPropertyName = "FileName";
+            this.FileName.HeaderText = "File Name";
+            this.FileName.Name = "FileName";
+            this.FileName.ReadOnly = true;
+            this.FileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // Album
+            // 
+            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Album.DataPropertyName = "Album";
+            this.Album.HeaderText = "Album";
+            this.Album.Name = "Album";
+            this.Album.ReadOnly = true;
+            // 
+            // Artist
+            // 
+            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Artist.DataPropertyName = "Artist";
+            this.Artist.HeaderText = "Artist";
+            this.Artist.Name = "Artist";
+            this.Artist.ReadOnly = true;
+            // 
+            // Progress
+            // 
+            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Progress.DataPropertyName = "Progress";
+            this.Progress.HeaderText = "%";
+            this.Progress.Name = "Progress";
+            this.Progress.ReadOnly = true;
+            this.Progress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Progress.Width = 40;
+            // 
+            // TrackDB
+            // 
+            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackDB.DataPropertyName = "TrackDB";
+            this.TrackDB.HeaderText = "Volume";
+            this.TrackDB.Name = "TrackDB";
+            this.TrackDB.ReadOnly = true;
+            this.TrackDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.TrackDB.Width = 94;
+            // 
+            // TrackFinal
+            // 
+            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackFinal.DataPropertyName = "TrackFinal";
+            this.TrackFinal.HeaderText = "Track Gain";
+            this.TrackFinal.Name = "TrackFinal";
+            this.TrackFinal.ReadOnly = true;
+            this.TrackFinal.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            // 
+            // AlbumDB
+            // 
+            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumDB.DataPropertyName = "AlbumDB";
+            this.AlbumDB.HeaderText = "Album Volume";
+            this.AlbumDB.Name = "AlbumDB";
+            this.AlbumDB.ReadOnly = true;
+            this.AlbumDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.AlbumDB.Width = 95;
+            // 
+            // AlbumGain
+            // 
+            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumGain.DataPropertyName = "AlbumFinal";
+            this.AlbumGain.HeaderText = "Album Gain";
+            this.AlbumGain.Name = "AlbumGain";
+            this.AlbumGain.ReadOnly = true;
+            this.AlbumGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.AlbumGain.Width = 79;
+            // 
+            // ErrorMessage
+            // 
+            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ErrorMessage.DataPropertyName = "ErrorMessage";
+            this.ErrorMessage.HeaderText = "Error";
+            this.ErrorMessage.Name = "ErrorMessage";
+            this.ErrorMessage.ReadOnly = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -417,6 +417,11 @@ namespace MP3GainMT
         private Button searchButton;
         private ProgressBar activityProgressBar;
         private Button readTagsButton;
+        private Label activityLabel;
+        private Label label2;
+        private Panel activityPanel;
+        private Label label3;
+        private Button cancelButton;
         private DataGridViewTextBoxColumn FullPath;
         private DataGridViewCheckBoxColumn Updated;
         private DataGridViewTextBoxColumn Folder;
@@ -429,11 +434,6 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn AlbumDB;
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewTextBoxColumn ErrorMessage;
-        private Label activityLabel;
-        private Label label2;
-        private Panel activityPanel;
-        private Label label3;
-        private Button cancelButton;
     }
 }
 

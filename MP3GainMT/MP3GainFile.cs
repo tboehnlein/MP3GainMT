@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -31,6 +32,28 @@ namespace WinFormMP3Gain
         public double ReplayTrackPeak = 0.0;
         public double ReplayAlbumGain = 0.0;
         public double ReplayAlbumPeak = 0.0;
+
+        private const double divide = 2.0 / 3.0;
+
+        public double ReplayTrackGainRounded
+        {
+            get
+            {
+                var gain = Math.Round(ReplayTrackGain * divide) / divide;
+
+                return gain;
+            }
+        }
+
+        public double ReplayAlbumGainRounded
+        {
+            get
+            {
+                var gain = Math.Round(ReplayAlbumGain * divide) / divide;
+
+                return gain;
+            }
+        }
 
         public string FilePath { get; set; } = string.Empty;
         public string Artist { get; private set; } = string.Empty;
@@ -124,7 +147,7 @@ namespace WinFormMP3Gain
                 var item = apeTag.GetItem(key);
                 var vector = item.ToString().Split(',');
 
-                Double.TryParse(vector[0], out value);
+                Double.TryParse(vector[0].Replace(" dB", string.Empty), out value);
             }
         }
 
@@ -139,7 +162,7 @@ namespace WinFormMP3Gain
                 var vector = item.ToString().Split(',');
 
                 Double.TryParse(vector[0], out value0);
-                Double.TryParse(vector[1], out value0);
+                Double.TryParse(vector[1], out value1);
             }
         }
 
@@ -155,7 +178,7 @@ namespace WinFormMP3Gain
                 var vector = item.ToString().Split(',');
 
                 Double.TryParse(vector[0], out value0);
-                Double.TryParse(vector[1], out value0);
+                Double.TryParse(vector[1], out value1);
                 label = vector[2];
             }
         }
