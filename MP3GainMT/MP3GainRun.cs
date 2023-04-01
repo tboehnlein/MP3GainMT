@@ -1,4 +1,5 @@
-﻿using MP3GainMT;
+﻿using Equin.ApplicationFramework;
+using MP3GainMT;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -68,7 +69,9 @@ namespace WinFormMP3Gain
 
         public event EventHandler AnalysisFinished;
 
-        public BindingList<MP3GainRow> DataSource { get; private set; } = new BindingList<MP3GainRow>();
+        public BindingListView<MP3GainRow> DataSource { get; private set; } = null;
+
+        public BindingList<MP3GainRow> Source { get; private set; } = new BindingList<MP3GainRow>();
 
         public Dictionary<string, MP3GainFolder> Folders { get; set; } = new Dictionary<string, MP3GainFolder>();
 
@@ -91,6 +94,8 @@ namespace WinFormMP3Gain
             searchTimeElaspedTimer.Enabled = false;
             searchTimeElaspedTimer.Tick += FindFilesUpdateTimer_Tick;
             searchTimeElaspedTimer.Interval = 250;
+
+            this.DataSource = new BindingListView<MP3GainRow>(Source);
 
             this.processQueue = new Stack<FolderWorker>();
         }
@@ -475,7 +480,7 @@ namespace WinFormMP3Gain
         internal void Clear()
         {
             this.foundFiles.Clear();
-            this.DataSource.Clear();
+            this.DataSource.SourceLists.Clear();
             this.Folders.Clear();
             this.finished.Clear();
             this.SourceDictionary.Clear();
@@ -511,16 +516,16 @@ namespace WinFormMP3Gain
 
         internal void RefreshDataSource(List<MP3GainFile> folderFiles)
         {
-            this.DataSource.RaiseListChangedEvents = false;
+            this.Source.RaiseListChangedEvents = false;
 
             foreach (var file in folderFiles)
             {
                 UpdateFile(file);
             }
 
-            this.DataSource.RaiseListChangedEvents = true;
+            this.Source.RaiseListChangedEvents = true;
 
-            this.DataSource.ResetBindings();
+            this.Source.ResetBindings();
         }
 
         public void UpdateFile(MP3GainFile file)
@@ -531,7 +536,7 @@ namespace WinFormMP3Gain
                 {
                     var row = new MP3GainRow(file, this.Folders[file.FolderPath]);
                     this.SourceDictionary.Add(file.FilePath, row);
-                    this.DataSource.Add(row);
+                    this.Source.Add(row);
                 }
             }
         }
@@ -565,13 +570,13 @@ namespace WinFormMP3Gain
 
         internal void SuspendDataSource()
         {
-            this.DataSource.RaiseListChangedEvents = false;
+            this.Source.RaiseListChangedEvents = false;
         }
 
         internal void ResumeDataSource()
         {
-            this.DataSource.RaiseListChangedEvents = true;
-            this.DataSource.ResetBindings();
+            this.Source.RaiseListChangedEvents = true;
+            this.Source.ResetBindings();
         }
 
         internal void ReadTags()
