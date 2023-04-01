@@ -35,17 +35,6 @@ namespace MP3GainMT
             this.runButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.fileGridView = new System.Windows.Forms.DataGridView();
-            this.fileListLabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.clearButton = new System.Windows.Forms.Button();
-            this.searchButton = new System.Windows.Forms.Button();
-            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
-            this.readTagsButton = new System.Windows.Forms.Button();
-            this.activityLabel = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.activityPanel = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cancelButton = new System.Windows.Forms.Button();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -58,6 +47,17 @@ namespace MP3GainMT
             this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fileListLabel = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.clearButton = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
+            this.readTagsButton = new System.Windows.Forms.Button();
+            this.activityLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.activityPanel = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cancelButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).BeginInit();
             this.activityPanel.SuspendLayout();
             this.SuspendLayout();
@@ -130,138 +130,6 @@ namespace MP3GainMT
             this.fileGridView.ReadOnly = true;
             this.fileGridView.Size = new System.Drawing.Size(1096, 250);
             this.fileGridView.TabIndex = 9;
-            // 
-            // fileListLabel
-            // 
-            this.fileListLabel.AutoSize = true;
-            this.fileListLabel.Location = new System.Drawing.Point(15, 96);
-            this.fileListLabel.Name = "fileListLabel";
-            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
-            this.fileListLabel.TabIndex = 8;
-            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(747, 55);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(87, 28);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "&Analyze";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
-            // 
-            // clearButton
-            // 
-            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearButton.Location = new System.Drawing.Point(929, 55);
-            this.clearButton.Name = "clearButton";
-            this.clearButton.Size = new System.Drawing.Size(87, 28);
-            this.clearButton.TabIndex = 7;
-            this.clearButton.Text = "&Clear";
-            this.clearButton.UseVisualStyleBackColor = true;
-            this.clearButton.Click += new System.EventHandler(this.ClearButton_Click);
-            // 
-            // searchButton
-            // 
-            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchButton.Location = new System.Drawing.Point(532, 55);
-            this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(87, 28);
-            this.searchButton.TabIndex = 3;
-            this.searchButton.Text = "Add &Files";
-            this.searchButton.UseVisualStyleBackColor = true;
-            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
-            // 
-            // activityProgressBar
-            // 
-            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityProgressBar.Location = new System.Drawing.Point(849, 5);
-            this.activityProgressBar.Name = "activityProgressBar";
-            this.activityProgressBar.Size = new System.Drawing.Size(266, 19);
-            this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.activityProgressBar.TabIndex = 11;
-            // 
-            // readTagsButton
-            // 
-            this.readTagsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.readTagsButton.Location = new System.Drawing.Point(654, 55);
-            this.readTagsButton.Name = "readTagsButton";
-            this.readTagsButton.Size = new System.Drawing.Size(87, 28);
-            this.readTagsButton.TabIndex = 4;
-            this.readTagsButton.Text = "&Read Tags";
-            this.readTagsButton.UseVisualStyleBackColor = true;
-            this.readTagsButton.Click += new System.EventHandler(this.ReadTagsButton_Click);
-            // 
-            // activityLabel
-            // 
-            this.activityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityLabel.AutoEllipsis = true;
-            this.activityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.activityLabel.ForeColor = System.Drawing.Color.White;
-            this.activityLabel.Location = new System.Drawing.Point(55, 7);
-            this.activityLabel.Margin = new System.Windows.Forms.Padding(3, 0, 20, 0);
-            this.activityLabel.Name = "activityLabel";
-            this.activityLabel.Size = new System.Drawing.Size(725, 13);
-            this.activityLabel.TabIndex = 10;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(4, 7);
-            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "Activity: ";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // activityPanel
-            // 
-            this.activityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.activityPanel.Controls.Add(this.label3);
-            this.activityPanel.Controls.Add(this.activityProgressBar);
-            this.activityPanel.Controls.Add(this.activityLabel);
-            this.activityPanel.Controls.Add(this.label2);
-            this.activityPanel.Location = new System.Drawing.Point(0, 0);
-            this.activityPanel.Name = "activityPanel";
-            this.activityPanel.Size = new System.Drawing.Size(1120, 29);
-            this.activityPanel.TabIndex = 12;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(769, 7);
-            this.label3.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
-            this.label3.Name = "label3";
-            this.label3.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
-            this.label3.Size = new System.Drawing.Size(80, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Progress:";
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cancelButton.Location = new System.Drawing.Point(1021, 54);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(87, 28);
-            this.cancelButton.TabIndex = 7;
-            this.cancelButton.Text = "Ca&ncel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // FullPath
             // 
@@ -376,6 +244,138 @@ namespace MP3GainMT
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
             this.ErrorMessage.Width = 54;
+            // 
+            // fileListLabel
+            // 
+            this.fileListLabel.AutoSize = true;
+            this.fileListLabel.Location = new System.Drawing.Point(15, 96);
+            this.fileListLabel.Name = "fileListLabel";
+            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
+            this.fileListLabel.TabIndex = 8;
+            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(747, 55);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(87, 28);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "&Analyze";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
+            // 
+            // clearButton
+            // 
+            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearButton.Location = new System.Drawing.Point(929, 55);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(87, 28);
+            this.clearButton.TabIndex = 7;
+            this.clearButton.Text = "&Clear";
+            this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.ClearButton_Click);
+            // 
+            // searchButton
+            // 
+            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchButton.Location = new System.Drawing.Point(532, 55);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(87, 28);
+            this.searchButton.TabIndex = 3;
+            this.searchButton.Text = "Add &Files";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
+            // 
+            // activityProgressBar
+            // 
+            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityProgressBar.Location = new System.Drawing.Point(838, 5);
+            this.activityProgressBar.Name = "activityProgressBar";
+            this.activityProgressBar.Size = new System.Drawing.Size(277, 19);
+            this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.activityProgressBar.TabIndex = 11;
+            // 
+            // readTagsButton
+            // 
+            this.readTagsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.readTagsButton.Location = new System.Drawing.Point(654, 55);
+            this.readTagsButton.Name = "readTagsButton";
+            this.readTagsButton.Size = new System.Drawing.Size(87, 28);
+            this.readTagsButton.TabIndex = 4;
+            this.readTagsButton.Text = "&Read Tags";
+            this.readTagsButton.UseVisualStyleBackColor = true;
+            this.readTagsButton.Click += new System.EventHandler(this.ReadTagsButton_Click);
+            // 
+            // activityLabel
+            // 
+            this.activityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityLabel.AutoEllipsis = true;
+            this.activityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.activityLabel.ForeColor = System.Drawing.Color.White;
+            this.activityLabel.Location = new System.Drawing.Point(55, 7);
+            this.activityLabel.Margin = new System.Windows.Forms.Padding(3, 0, 20, 0);
+            this.activityLabel.Name = "activityLabel";
+            this.activityLabel.Size = new System.Drawing.Size(719, 17);
+            this.activityLabel.TabIndex = 10;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(4, 7);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(57, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Activity: ";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // activityPanel
+            // 
+            this.activityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.activityPanel.Controls.Add(this.label3);
+            this.activityPanel.Controls.Add(this.activityProgressBar);
+            this.activityPanel.Controls.Add(this.activityLabel);
+            this.activityPanel.Controls.Add(this.label2);
+            this.activityPanel.Location = new System.Drawing.Point(0, 0);
+            this.activityPanel.Name = "activityPanel";
+            this.activityPanel.Size = new System.Drawing.Size(1120, 29);
+            this.activityPanel.TabIndex = 12;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(756, 7);
+            this.label3.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.label3.Name = "label3";
+            this.label3.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.label3.Size = new System.Drawing.Size(80, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Progress:";
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelButton.Location = new System.Drawing.Point(1021, 54);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(87, 28);
+            this.cancelButton.TabIndex = 7;
+            this.cancelButton.Text = "Ca&ncel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // Form1
             // 
