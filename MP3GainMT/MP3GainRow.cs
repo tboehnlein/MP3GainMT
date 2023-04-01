@@ -5,21 +5,28 @@ namespace MP3GainMT
 {
     internal class MP3GainRow : IComparable<MP3GainRow>, IEquatable<MP3GainRow>
     {
+        private MP3GainFile file = null;
+
+        private MP3GainFolder folder;
+
         public string FullPath => this.file.FilePath;
         public string Folder => this.file.Folder;
         public string FileName => this.file.FileName;
-        public double TrackDB => Math.Round(89.0 - this.file.ReplayTrackGain, 1);
-        public double TrackFinal => Math.Round(this.file.ReplayTrackGainRounded, 1);
+        public double TrackDB => Math.Round(MP3GainRow.TargetDefault - this.file.ReplayTrackGain, 1);
+        public double TrackFinal => Math.Round(this.file.ReplayTrackGainRounded - TargetDifference, 1);
+
+        private static double TargetDifference => MP3GainRow.TargetDefault - MP3GainRow.TargetDB;
+
+        public bool TrackClipping => this.file.TrackClipping;
+
+        public double AlbumDB => Math.Round(MP3GainRow.TargetDefault - this.file.ReplayAlbumGain, 1);
+        public double AlbumFinal => Math.Round(this.file.ReplayAlbumGainRounded - TargetDifference, 1);
+
+        public bool AlbumClipping => this.file.AlbumClipping;
 
         public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
 
         public int Progress => this.file.Progress;
-
-        private MP3GainFile file = null;
-        private MP3GainFolder folder;
-
-        public double AlbumDB => Math.Round(89.0 - this.file.ReplayAlbumGain, 1);
-        public double AlbumFinal => Math.Round(this.file.ReplayAlbumGainRounded, 1);
 
         public string Album => this.file.Album;
         public string Artist => this.file.Artist;
@@ -35,6 +42,9 @@ namespace MP3GainMT
                 this.file.Updated = value;
             }
         }
+
+        public static double TargetDB { get; set; } = 89.0;
+        public const double TargetDefault = 89.0;
 
         public MP3GainRow(MP3GainFile file, MP3GainFolder folder)
         {

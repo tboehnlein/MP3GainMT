@@ -55,11 +55,17 @@ namespace WinFormMP3Gain
             }
         }
 
+        public bool TrackClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
+        public bool AlbumClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
+
         public string FilePath { get; set; } = string.Empty;
         public string Artist { get; private set; } = string.Empty;
         public string Album { get; private set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
 
+        public string Title { get; set; } = string.Empty;
+        public uint Track { get; private set; }
+        public string AlbumArtist { get; private set; }
         public string Folder { get; set; } = string.Empty;
 
         public string FolderPath { get; set; } = string.Empty;
@@ -109,8 +115,7 @@ namespace WinFormMP3Gain
             if (!this.HasTags)
             {
                 try
-                {
-                    this.HasTags = true;
+                {   
                     var tagFile = TagLib.File.Create(this.FilePath);
                     if (tagFile.Tag.Performers.Length > 0) { this.Artist = tagFile.Tag.Performers[0]; }
                     var types = tagFile.TagTypes;
@@ -129,13 +134,31 @@ namespace WinFormMP3Gain
                     }
 
                     this.Album = tagFile.Tag.Album;
+                    this.Title = tagFile.Tag.Title;
+                    this.Track = tagFile.Tag.Track;
+                    this.AlbumArtist = tagFile.Tag.FirstAlbumArtist;
                     this.Updated = true;
+                    this.HasTags = true;
+
+                    this.WriteDebug();
                 }
                 catch (CorruptFileException ex)
                 {
                     GenerateErrorMessage("Tag Extract Error", ex);
                 }
             }
+        }
+
+        public void WriteDebug()
+        {
+            Debug.WriteLine($"[{this.AlbumArtist} - {this.Album}] \\ {this.Track} - {this.Artist} - {this.Title}");
+            Debug.WriteLine($"MIN: {this.GainMin} MAX: {this.GainMax}");
+            Debug.WriteLine($"TRACK UNDO: {this.GainUndoTrack} ALBUM UNDO: {this.GainUndoAlbum} LABEL UNDO: {this.GainUndoLabel}");
+            Debug.WriteLine($"ALBUM GAIN: {this.ReplayAlbumGain} ALBUM PEAK: {this.ReplayAlbumPeak}");
+            Debug.WriteLine($"TRACK GAIN: {this.ReplayTrackGain} TRACK PEAK: {this.ReplayTrackPeak}");
+            Debug.WriteLine($"ALBUM GAIN ROUNDED: {this.ReplayAlbumGainRounded}");
+            Debug.WriteLine($"TRACK GAIN ROUNDED: {this.ReplayTrackGainRounded}");
+
         }
 
         private static void GetTagValue(TagLib.Ape.Tag apeTag, string key, out double value)

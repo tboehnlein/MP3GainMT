@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using WinFormMP3Gain;
@@ -62,6 +63,11 @@ namespace MP3GainMT
             this.Width = this.settings.WidthSize;
 
             run.ParentFolder = this.settings.ParentFolder;
+
+            if (this.settings.TargetDb.CompareTo((double)this.targetDbNumeric.Value) > -1)
+            {
+                this.targetDbNumeric.Value = (decimal)this.settings.TargetDb;
+            }
         }
 
         private void Run_TagRead(object sender, MP3GainFile e)
@@ -349,6 +355,23 @@ namespace MP3GainMT
         private void CancelButton_Click(object sender, EventArgs e)
         {
             this.run.CancelActivity();
+        }
+
+        private void TargetDbNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            MP3GainRow.TargetDB = (double)this.targetDbNumeric.Value;
+
+            var index = 0;
+
+            foreach ( var row in this.run.DataSource)
+            {
+                this.source.ResetItem(index);
+                this.fileGridView.Update();
+                index++;
+            }
+
+            this.fileGridView.Refresh();
+
         }
     }
 }

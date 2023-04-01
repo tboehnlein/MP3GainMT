@@ -12,6 +12,7 @@ namespace MP3GainMT
         private static readonly string TopPositionLabel = "Top Position";
         private static readonly string HeightSizeLabel = "Heigth Size";
         private static readonly string WidthSizeLabel = "Width Size";
+        private static readonly string TargetDbLabel = "Target dB";
         private JObject _json = null;
 
         public string ParentFolder
@@ -59,6 +60,18 @@ namespace MP3GainMT
             set
             {
                 WriteKey<int>(value, HeightSizeLabel);
+            }
+        }
+
+        public double TargetDb
+        {
+            get
+            {
+                return ReadKey<double>(TargetDbLabel);
+            }
+            set
+            {
+                WriteKey<double>(value, TargetDbLabel);
             }
         }
 
@@ -130,6 +143,7 @@ namespace MP3GainMT
                     PrepareKey<int>(TopPositionLabel);
                     PrepareKey<int>(WidthSizeLabel);
                     PrepareKey<int>(HeightSizeLabel);
+                    PrepareKey<double>(TargetDbLabel);
                 }
             }
             else
