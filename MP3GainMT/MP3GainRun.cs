@@ -481,7 +481,7 @@ namespace WinFormMP3Gain
         internal void Clear()
         {
             this.foundFiles.Clear();
-            this.DataSource.SourceLists.Clear();
+            this.Source.Clear();
             this.Folders.Clear();
             this.finished.Clear();
             this.SourceDictionary.Clear();
