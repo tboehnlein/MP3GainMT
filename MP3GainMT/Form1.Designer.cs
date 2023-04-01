@@ -35,20 +35,6 @@ namespace MP3GainMT
             this.runButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.fileGridView = new System.Windows.Forms.DataGridView();
-            this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Album = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Artist = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Progress = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TrackDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TrackFinal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TrackClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.AlbumClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fileListLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.clearButton = new System.Windows.Forms.Button();
@@ -63,9 +49,26 @@ namespace MP3GainMT
             this.targetDbNumeric = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
+            this.filterGroupBox = new System.Windows.Forms.GroupBox();
+            this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Album = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Artist = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Progress = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TrackDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TrackFinal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TrackClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AlbumClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).BeginInit();
             this.activityPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
+            this.filterGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // browseButton
@@ -133,144 +136,16 @@ namespace MP3GainMT
             this.AlbumClip,
             this.AlbumGain,
             this.ErrorMessage});
-            this.fileGridView.Location = new System.Drawing.Point(12, 112);
+            this.fileGridView.Location = new System.Drawing.Point(12, 162);
             this.fileGridView.Name = "fileGridView";
             this.fileGridView.ReadOnly = true;
-            this.fileGridView.Size = new System.Drawing.Size(960, 496);
+            this.fileGridView.Size = new System.Drawing.Size(960, 446);
             this.fileGridView.TabIndex = 9;
-            // 
-            // FullPath
-            // 
-            this.FullPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.FullPath.DataPropertyName = "FullPath";
-            this.FullPath.HeaderText = "Full Path";
-            this.FullPath.Name = "FullPath";
-            this.FullPath.ReadOnly = true;
-            this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.FullPath.Visible = false;
-            // 
-            // Updated
-            // 
-            this.Updated.DataPropertyName = "Updated";
-            this.Updated.HeaderText = "Updated";
-            this.Updated.Name = "Updated";
-            this.Updated.ReadOnly = true;
-            this.Updated.Visible = false;
-            // 
-            // Folder
-            // 
-            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Folder.DataPropertyName = "Folder";
-            this.Folder.HeaderText = "Folder";
-            this.Folder.Name = "Folder";
-            this.Folder.ReadOnly = true;
-            this.Folder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            // 
-            // FileName
-            // 
-            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.FileName.DataPropertyName = "FileName";
-            this.FileName.HeaderText = "File Name";
-            this.FileName.Name = "FileName";
-            this.FileName.ReadOnly = true;
-            this.FileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.FileName.Width = 79;
-            // 
-            // Album
-            // 
-            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.Album.DataPropertyName = "Album";
-            this.Album.HeaderText = "Album";
-            this.Album.Name = "Album";
-            this.Album.ReadOnly = true;
-            this.Album.Visible = false;
-            // 
-            // Artist
-            // 
-            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.Artist.DataPropertyName = "Artist";
-            this.Artist.HeaderText = "Artist";
-            this.Artist.Name = "Artist";
-            this.Artist.ReadOnly = true;
-            this.Artist.Visible = false;
-            // 
-            // Progress
-            // 
-            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.Progress.DataPropertyName = "Progress";
-            this.Progress.HeaderText = "%";
-            this.Progress.Name = "Progress";
-            this.Progress.ReadOnly = true;
-            this.Progress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Progress.Width = 40;
-            // 
-            // TrackDB
-            // 
-            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.TrackDB.DataPropertyName = "TrackDB";
-            this.TrackDB.HeaderText = "Volume";
-            this.TrackDB.Name = "TrackDB";
-            this.TrackDB.ReadOnly = true;
-            this.TrackDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.TrackDB.Width = 67;
-            // 
-            // TrackFinal
-            // 
-            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.TrackFinal.DataPropertyName = "TrackFinal";
-            this.TrackFinal.HeaderText = "Gain";
-            this.TrackFinal.Name = "TrackFinal";
-            this.TrackFinal.ReadOnly = true;
-            this.TrackFinal.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.TrackFinal.Width = 54;
-            // 
-            // TrackClip
-            // 
-            this.TrackClip.DataPropertyName = "TrackClipping";
-            this.TrackClip.HeaderText = "Clip";
-            this.TrackClip.Name = "TrackClip";
-            this.TrackClip.ReadOnly = true;
-            // 
-            // AlbumDB
-            // 
-            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.AlbumDB.DataPropertyName = "AlbumDB";
-            this.AlbumDB.HeaderText = "Album Volume";
-            this.AlbumDB.Name = "AlbumDB";
-            this.AlbumDB.ReadOnly = true;
-            this.AlbumDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumDB.Width = 99;
-            // 
-            // AlbumClip
-            // 
-            this.AlbumClip.DataPropertyName = "AlbumClipping";
-            this.AlbumClip.HeaderText = "Album Clip";
-            this.AlbumClip.Name = "AlbumClip";
-            this.AlbumClip.ReadOnly = true;
-            // 
-            // AlbumGain
-            // 
-            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.AlbumGain.DataPropertyName = "AlbumFinal";
-            this.AlbumGain.HeaderText = "Album Gain";
-            this.AlbumGain.Name = "AlbumGain";
-            this.AlbumGain.ReadOnly = true;
-            this.AlbumGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumGain.Width = 86;
-            // 
-            // ErrorMessage
-            // 
-            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.ErrorMessage.DataPropertyName = "ErrorMessage";
-            this.ErrorMessage.HeaderText = "Error";
-            this.ErrorMessage.Name = "ErrorMessage";
-            this.ErrorMessage.ReadOnly = true;
-            this.ErrorMessage.Width = 54;
             // 
             // fileListLabel
             // 
             this.fileListLabel.AutoSize = true;
-            this.fileListLabel.Location = new System.Drawing.Point(15, 96);
+            this.fileListLabel.Location = new System.Drawing.Point(16, 146);
             this.fileListLabel.Name = "fileListLabel";
             this.fileListLabel.Size = new System.Drawing.Size(271, 13);
             this.fileListLabel.TabIndex = 8;
@@ -444,11 +319,161 @@ namespace MP3GainMT
             this.label5.TabIndex = 0;
             this.label5.Text = "dB";
             // 
+            // clipOnlyCheckBox
+            // 
+            this.clipOnlyCheckBox.AutoSize = true;
+            this.clipOnlyCheckBox.Location = new System.Drawing.Point(18, 19);
+            this.clipOnlyCheckBox.Name = "clipOnlyCheckBox";
+            this.clipOnlyCheckBox.Size = new System.Drawing.Size(85, 17);
+            this.clipOnlyCheckBox.TabIndex = 14;
+            this.clipOnlyCheckBox.Text = "Clipped Only";
+            this.clipOnlyCheckBox.UseVisualStyleBackColor = true;
+            this.clipOnlyCheckBox.CheckedChanged += new System.EventHandler(this.ClipOnlyCheckBox_CheckedChanged);
+            // 
+            // filterGroupBox
+            // 
+            this.filterGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.filterGroupBox.Controls.Add(this.clipOnlyCheckBox);
+            this.filterGroupBox.Location = new System.Drawing.Point(518, 89);
+            this.filterGroupBox.Name = "filterGroupBox";
+            this.filterGroupBox.Size = new System.Drawing.Size(454, 42);
+            this.filterGroupBox.TabIndex = 15;
+            this.filterGroupBox.TabStop = false;
+            this.filterGroupBox.Text = "Filter Options";
+            // 
+            // FullPath
+            // 
+            this.FullPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.FullPath.DataPropertyName = "FullPath";
+            this.FullPath.HeaderText = "Full Path";
+            this.FullPath.Name = "FullPath";
+            this.FullPath.ReadOnly = true;
+            this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.FullPath.Visible = false;
+            // 
+            // Updated
+            // 
+            this.Updated.DataPropertyName = "Updated";
+            this.Updated.HeaderText = "Updated";
+            this.Updated.Name = "Updated";
+            this.Updated.ReadOnly = true;
+            this.Updated.Visible = false;
+            // 
+            // Folder
+            // 
+            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Folder.DataPropertyName = "Folder";
+            this.Folder.HeaderText = "Folder";
+            this.Folder.Name = "Folder";
+            this.Folder.ReadOnly = true;
+            // 
+            // FileName
+            // 
+            this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.FileName.DataPropertyName = "FileName";
+            this.FileName.HeaderText = "File Name";
+            this.FileName.Name = "FileName";
+            this.FileName.ReadOnly = true;
+            // 
+            // Album
+            // 
+            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.Album.DataPropertyName = "Album";
+            this.Album.HeaderText = "Album";
+            this.Album.Name = "Album";
+            this.Album.ReadOnly = true;
+            this.Album.Visible = false;
+            this.Album.Width = 61;
+            // 
+            // Artist
+            // 
+            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.Artist.DataPropertyName = "Artist";
+            this.Artist.HeaderText = "Artist";
+            this.Artist.Name = "Artist";
+            this.Artist.ReadOnly = true;
+            this.Artist.Visible = false;
+            this.Artist.Width = 55;
+            // 
+            // Progress
+            // 
+            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Progress.DataPropertyName = "Progress";
+            this.Progress.HeaderText = "%";
+            this.Progress.Name = "Progress";
+            this.Progress.ReadOnly = true;
+            this.Progress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.Progress.Width = 30;
+            // 
+            // TrackDB
+            // 
+            this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackDB.DataPropertyName = "TrackDB";
+            this.TrackDB.HeaderText = "Track Volume";
+            this.TrackDB.Name = "TrackDB";
+            this.TrackDB.ReadOnly = true;
+            this.TrackDB.Width = 50;
+            // 
+            // TrackFinal
+            // 
+            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackFinal.DataPropertyName = "TrackFinal";
+            this.TrackFinal.HeaderText = "Track Gain";
+            this.TrackFinal.Name = "TrackFinal";
+            this.TrackFinal.ReadOnly = true;
+            this.TrackFinal.Width = 50;
+            // 
+            // TrackClip
+            // 
+            this.TrackClip.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackClip.DataPropertyName = "TrackClipping";
+            this.TrackClip.HeaderText = "Track Clip";
+            this.TrackClip.Name = "TrackClip";
+            this.TrackClip.ReadOnly = true;
+            this.TrackClip.Width = 50;
+            // 
+            // AlbumDB
+            // 
+            this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumDB.DataPropertyName = "AlbumDB";
+            this.AlbumDB.HeaderText = "Album Volume";
+            this.AlbumDB.Name = "AlbumDB";
+            this.AlbumDB.ReadOnly = true;
+            this.AlbumDB.Width = 50;
+            // 
+            // AlbumClip
+            // 
+            this.AlbumClip.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumClip.DataPropertyName = "AlbumClipping";
+            this.AlbumClip.HeaderText = "Album Clip";
+            this.AlbumClip.Name = "AlbumClip";
+            this.AlbumClip.ReadOnly = true;
+            this.AlbumClip.Width = 50;
+            // 
+            // AlbumGain
+            // 
+            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumGain.DataPropertyName = "AlbumFinal";
+            this.AlbumGain.HeaderText = "Album Gain";
+            this.AlbumGain.Name = "AlbumGain";
+            this.AlbumGain.ReadOnly = true;
+            this.AlbumGain.Width = 50;
+            // 
+            // ErrorMessage
+            // 
+            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.ErrorMessage.DataPropertyName = "ErrorMessage";
+            this.ErrorMessage.HeaderText = "Error";
+            this.ErrorMessage.Name = "ErrorMessage";
+            this.ErrorMessage.ReadOnly = true;
+            this.ErrorMessage.Width = 54;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 620);
+            this.Controls.Add(this.filterGroupBox);
             this.Controls.Add(this.targetDbNumeric);
             this.Controls.Add(this.activityPanel);
             this.Controls.Add(this.readTagsButton);
@@ -474,6 +499,8 @@ namespace MP3GainMT
             this.activityPanel.ResumeLayout(false);
             this.activityPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).EndInit();
+            this.filterGroupBox.ResumeLayout(false);
+            this.filterGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -497,6 +524,11 @@ namespace MP3GainMT
         private Panel activityPanel;
         private Label label3;
         private Button cancelButton;
+        private NumericUpDown targetDbNumeric;
+        private Label label4;
+        private Label label5;
+        private CheckBox clipOnlyCheckBox;
+        private GroupBox filterGroupBox;
         private DataGridViewTextBoxColumn FullPath;
         private DataGridViewCheckBoxColumn Updated;
         private DataGridViewTextBoxColumn Folder;
@@ -511,9 +543,6 @@ namespace MP3GainMT
         private DataGridViewCheckBoxColumn AlbumClip;
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewTextBoxColumn ErrorMessage;
-        private NumericUpDown targetDbNumeric;
-        private Label label4;
-        private Label label5;
     }
 }
 

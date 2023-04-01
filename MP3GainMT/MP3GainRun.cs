@@ -66,6 +66,7 @@ namespace WinFormMP3Gain
         private TimeCheck readTagEventCheck = new TimeCheck(8);
         private BackgroundWorker readTagsWorker;
         private BackgroundWorker searchWorker;
+        private int filesDone;
 
         public event EventHandler AnalysisFinished;
 
@@ -602,13 +603,13 @@ namespace WinFormMP3Gain
         {
             this.RaiseTaskProgressed(e.ProgressPercentage);
 
-            if (e.UserState is int index)
+            if (e.UserState is MP3GainFile file)
             {
-                this.RaiseRowUpdated(index);
+                this.RaiseRowUpdated(this.filesDone);
 
                 if (this.readTagEventCheck.CheckTime(e.ProgressPercentage == 100))
                 {
-                    this.RaiseTagRead(this.AllFiles[index]);
+                    this.RaiseTagRead(file);
                 }
             }
             else if (e.UserState is string message)
@@ -638,7 +639,7 @@ namespace WinFormMP3Gain
             if (sender is BackgroundWorker worker)
             {
                 var files = this.AllFiles;
-                var filesDone = 1;
+                this.filesDone = 1;
                 var totalFiles = files.Count;
 
                 worker.ReportProgress(0);
@@ -646,9 +647,9 @@ namespace WinFormMP3Gain
                 foreach (var file in files)
                 {
                     file.ExtractTags();
-                    var progress = Helpers.GetProgress(filesDone, totalFiles);
-                    worker.ReportProgress(progress, filesDone - 1);
-                    filesDone++;
+                    var progress = Helpers.GetProgress(this.filesDone, totalFiles);
+                    worker.ReportProgress(progress, file);
+                    this.filesDone++;
 
                     if (worker.CancellationPending)
                     {

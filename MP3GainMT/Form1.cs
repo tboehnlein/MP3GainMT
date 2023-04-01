@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -372,6 +373,18 @@ namespace MP3GainMT
 
             this.fileGridView.Refresh();
 
+        }
+
+        private void ClipOnlyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.clipOnlyCheckBox.Checked)
+            {
+                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return row.TrackClipping || row.AlbumClipping; });
+            }
+            else
+            {
+                this.run.DataSource.RemoveFilter();
+            }
         }
     }
 }
