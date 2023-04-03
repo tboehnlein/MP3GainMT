@@ -603,9 +603,12 @@ namespace WinFormMP3Gain
         {
             this.RaiseTaskProgressed(e.ProgressPercentage);
 
-            if (e.UserState is MP3GainFile file)
+            if (e.UserState is Tuple<MP3GainFile, int> tuple)
             {
-                this.RaiseRowUpdated(this.filesDone);
+                var file = tuple.Item1;
+                var index = tuple.Item2;
+
+                this.RaiseRowUpdated(index);
 
                 if (this.readTagEventCheck.CheckTime(e.ProgressPercentage == 100))
                 {
@@ -639,7 +642,7 @@ namespace WinFormMP3Gain
             if (sender is BackgroundWorker worker)
             {
                 var files = this.AllFiles;
-                this.filesDone = 1;
+                this.filesDone = 0;
                 var totalFiles = files.Count;
 
                 worker.ReportProgress(0);
@@ -648,7 +651,7 @@ namespace WinFormMP3Gain
                 {
                     file.ExtractTags();
                     var progress = Helpers.GetProgress(this.filesDone, totalFiles);
-                    worker.ReportProgress(progress, file);
+                    worker.ReportProgress(progress, new Tuple<MP3GainFile, int>(file, this.filesDone));
                     this.filesDone++;
 
                     if (worker.CancellationPending)

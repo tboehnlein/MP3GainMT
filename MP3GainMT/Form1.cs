@@ -92,7 +92,7 @@ namespace MP3GainMT
             if (index > -1 && index < this.source.Count)
             {
                 this.source.ResetItem(index);
-                this.fileGridView.Update();
+                //Debug.WriteLine(index);
             }
         }
 

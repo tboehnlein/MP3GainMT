@@ -140,7 +140,7 @@ namespace WinFormMP3Gain
                     this.Updated = true;
                     this.HasTags = true;
 
-                    this.WriteDebug();
+                    //this.WriteDebug();
                 }
                 catch (CorruptFileException ex)
                 {
