@@ -9,7 +9,16 @@ namespace MP3GainMT
 
         private MP3GainFolder folder;
 
+
+
         public string FullPath => this.file.FilePath;
+
+        public string AlbumArtist => this.file.AlbumArtist;
+
+        public string Artist => this.file.Artist;
+
+        public string Album => this.file.Album;
+        
         public string Folder => this.file.Folder;
         public string FileName => this.file.FileName;
         public double TrackDB => Math.Round(MP3GainRow.TargetDefault - this.file.ReplayTrackGain, 1);
@@ -27,10 +36,7 @@ namespace MP3GainMT
         public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
 
         public int Progress => this.file.Progress;
-
-        public string Album => this.file.Album;
-        public string Artist => this.file.Artist;
-
+        
         public bool Updated
         {
             get

@@ -52,6 +52,7 @@ namespace MP3GainMT
             this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.filterGroupBox = new System.Windows.Forms.GroupBox();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AlbumArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -123,6 +124,7 @@ namespace MP3GainMT
             this.fileGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FullPath,
+            this.AlbumArtist,
             this.Updated,
             this.Folder,
             this.FileName,
@@ -351,6 +353,15 @@ namespace MP3GainMT
             this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.FullPath.Visible = false;
             // 
+            // AlbumArtist
+            // 
+            this.AlbumArtist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.AlbumArtist.DataPropertyName = "AlbumArtist";
+            this.AlbumArtist.HeaderText = "Album Artist";
+            this.AlbumArtist.Name = "AlbumArtist";
+            this.AlbumArtist.ReadOnly = true;
+            this.AlbumArtist.Width = 87;
+            // 
             // Updated
             // 
             this.Updated.DataPropertyName = "Updated";
@@ -382,7 +393,6 @@ namespace MP3GainMT
             this.Album.HeaderText = "Album";
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
-            this.Album.Visible = false;
             this.Album.Width = 61;
             // 
             // Artist
@@ -392,7 +402,6 @@ namespace MP3GainMT
             this.Artist.HeaderText = "Artist";
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
-            this.Artist.Visible = false;
             this.Artist.Width = 55;
             // 
             // Progress
@@ -530,6 +539,7 @@ namespace MP3GainMT
         private CheckBox clipOnlyCheckBox;
         private GroupBox filterGroupBox;
         private DataGridViewTextBoxColumn FullPath;
+        private DataGridViewTextBoxColumn AlbumArtist;
         private DataGridViewCheckBoxColumn Updated;
         private DataGridViewTextBoxColumn Folder;
         private DataGridViewTextBoxColumn FileName;
