@@ -117,7 +117,7 @@ namespace MP3GainMT
         {
             if (_json == null)
             {
-                this.ReadSettingsFile();
+                this.ReadSettings();
             }
         }
 
@@ -125,31 +125,36 @@ namespace MP3GainMT
 
         public MP3GainSettings()
         {
-            this.ReadSettingsFile();
+            this.ReadSettings();
         }
 
-        private void ReadSettingsFile()
+        private void ReadSettings()
         {
+            JsonTextReader  reader = null;
+
             if (File.Exists(SettingsFileLocation))
             {
-                using (var reader = new JsonTextReader(File.OpenText(SettingsFileLocation)))
-                {
-                    reader.Read();
+                reader = new JsonTextReader(File.OpenText(SettingsFileLocation));
+                
+                reader.Read();
 
-                    this._json = (JObject)JToken.ReadFrom(reader);
-
-                    PrepareKey<string>(ParentFolderLabel);
-                    PrepareKey<int>(LeftPositionLabel);
-                    PrepareKey<int>(TopPositionLabel);
-                    PrepareKey<int>(WidthSizeLabel);
-                    PrepareKey<int>(HeightSizeLabel);
-                    PrepareKey<double>(TargetDbLabel);
-                }
+                this._json = (JObject)JToken.ReadFrom(reader);
             }
             else
             {
                 this._json = new JObject();
-                _json.Add(ParentFolderLabel, string.Empty);
+            }
+
+            PrepareKey<string>(ParentFolderLabel);
+            PrepareKey<int>(LeftPositionLabel);
+            PrepareKey<int>(TopPositionLabel);
+            PrepareKey<int>(WidthSizeLabel);
+            PrepareKey<int>(HeightSizeLabel);
+            PrepareKey<double>(TargetDbLabel);
+
+            if (reader != null)
+            {
+                reader.Close();
             }
         }
 
@@ -157,7 +162,14 @@ namespace MP3GainMT
         {
             if (!_json.ContainsKey(key))
             {
-                _json.Add(key, JToken.FromObject(default(T)));
+                T obj = default(T);
+
+                if (obj == null)
+                {
+                    obj = (T)Convert.ChangeType(string.Empty, typeof(T));
+                }
+
+                _json.Add(key, JToken.FromObject(obj));
             }
         }
 
