@@ -636,7 +636,6 @@ namespace WinFormMP3Gain
                 this.RowUpdated.Invoke(this, index);
             }
         }
-
         private void ReadTagsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             if (sender is BackgroundWorker worker)

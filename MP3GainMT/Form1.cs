@@ -47,13 +47,25 @@ namespace MP3GainMT
 
             fileGridView.DataSource = source;
 
+            this.ColumnTimer.Interval = 250;
+            this.ColumnTimer.Tick += ColumnTimer_Tick;
+
             this.UpdateFileListLabel();
             this.CheckFolderPath();
+        }
+
+        private void ColumnTimer_Tick(object sender, EventArgs e)
+        {
+            this.ResizeAllColumns();
+
+            this.ColumnTimer.Stop();
         }
 
         private void Run_ActivityFinished(object sender, string message)
         {
             this.activityLabel.Text = message;
+
+            //ResizeAllColumns();
         }
 
         private void ReadSettings(MP3GainRun run)
@@ -92,31 +104,7 @@ namespace MP3GainMT
             if (index > -1 && index < this.source.Count)
             {
                 this.source.ResetItem(index);
-                //Debug.WriteLine(index);
             }
-        }
-
-        private void Run_UpdateReadTagTaskProgress(object sender, TaskUpdate progress)
-        {
-            UpdateProgressBar(progress.ProgressPercent);
-
-            if (progress.Index > -1)
-            {
-                this.source.ResetItem(progress.Index);
-            }
-
-            /*var start = this.fileGridView.FirstDisplayedScrollingRowIndex;
-            var end = start + this.fileGridView.DisplayedRowCount(true);
-
-            for (int i = start; i < end; i++)
-            {
-                if (run.DataSource[i].Updated)
-                {
-                    run.DataSource[i].Updated = false;
-                }
-            }*/
-
-            this.fileGridView.Update();
         }
 
         private void Run_AskSearchQuestion(object sender, string question)
@@ -176,6 +164,8 @@ namespace MP3GainMT
             {
                 this.fileGridView.FirstDisplayedScrollingRowIndex = index;
             }
+
+            ResizeAllColumns();
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -385,6 +375,37 @@ namespace MP3GainMT
             {
                 this.run.DataSource.RemoveFilter();
             }
+        }
+
+        private void ResizeAllColumns()
+        {
+            ResizeColumnWidth(this.Folder.Name);
+            ResizeColumnWidth(this.AlbumArtist.Name);
+            ResizeColumnWidth(this.Album.Name);
+            ResizeColumnWidth(this.Artist.Name);
+        }
+
+        /// <summary>
+        /// Resizes a column to fit the width of the displayed cells and make that the minimum width.
+        /// </summary>
+        /// <param name="name">Name of the column.</param>
+        private void ResizeColumnWidth(string name)
+        {
+            var artistColumn = this.fileGridView.Columns[name];
+            this.fileGridView.AutoResizeColumn(artistColumn.Index, DataGridViewAutoSizeColumnMode.DisplayedCells);
+            var artistMinWidth = artistColumn.GetPreferredWidth(DataGridViewAutoSizeColumnMode.DisplayedCells, true);
+            if (artistColumn.MinimumWidth < artistMinWidth)
+            {
+                artistColumn.MinimumWidth = artistMinWidth;
+            }
+        }
+
+        private System.Windows.Forms.Timer ColumnTimer = new System.Windows.Forms.Timer();
+
+        private void FileGridView_Scroll(object sender, ScrollEventArgs e)
+        {
+            this.ColumnTimer.Stop();
+            this.ColumnTimer.Start();
         }
     }
 }

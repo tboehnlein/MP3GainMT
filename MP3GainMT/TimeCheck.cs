@@ -28,6 +28,24 @@ namespace MP3GainMT
             return result;
         }
 
+        public bool EnoughTime(bool force = false)
+        {
+            var result = TimeCheck.Enough(force, ref LastTime, MinimumTime);
+
+            return result;
+        }
+
+        public static bool Enough(bool force, ref DateTime lastTime, double minTime = .25)
+        {
+            var current = DateTime.Now;
+            var result = (current - lastTime).TotalSeconds > minTime || force;
+
+            // for reference next time
+            lastTime = current;
+
+            return result;
+        }
+
         public static bool Check(bool force, ref DateTime lastTime, double minTime = .25)
         {
             var current = DateTime.Now;
