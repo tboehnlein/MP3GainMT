@@ -636,6 +636,12 @@ namespace WinFormMP3Gain
                 this.RowUpdated.Invoke(this, index);
             }
         }
+
+        /// <summary>
+        /// Read tags from all files in the folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReadTagsWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             if (sender is BackgroundWorker worker)
