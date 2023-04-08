@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MP3GainMT
 {
@@ -23,7 +18,8 @@ namespace MP3GainMT
             MinimumTime = minimum;
         }
 
-        public TimeCheck() { }
+        public TimeCheck()
+        { }
 
         public bool CheckTime(bool force = false)
         {
@@ -31,7 +27,25 @@ namespace MP3GainMT
 
             return result;
         }
-        
+
+        public bool EnoughTime(bool force = false)
+        {
+            var result = TimeCheck.Enough(force, ref LastTime, MinimumTime);
+
+            return result;
+        }
+
+        public static bool Enough(bool force, ref DateTime lastTime, double minTime = .25)
+        {
+            var current = DateTime.Now;
+            var result = (current - lastTime).TotalSeconds > minTime || force;
+
+            // for reference next time
+            lastTime = current;
+
+            return result;
+        }
+
         public static bool Check(bool force, ref DateTime lastTime, double minTime = .25)
         {
             var current = DateTime.Now;

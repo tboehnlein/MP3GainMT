@@ -7,47 +7,117 @@ namespace MP3GainMT
 {
     internal class MP3GainSettings
     {
-        private static readonly string FolderPathLabel = "Last Used Folder";
-        private static readonly string ExtractTagLabel = "Last Used Extract";
+        private static readonly string ParentFolderLabel = "Last Used Folder";
+        private static readonly string LeftPositionLabel = "Left Position";
+        private static readonly string TopPositionLabel = "Top Position";
+        private static readonly string HeightSizeLabel = "Heigth Size";
+        private static readonly string WidthSizeLabel = "Width Size";
+        private static readonly string TargetDbLabel = "Target dB";
         private JObject _json = null;
 
         public string ParentFolder
         {
             get
             {
-                CheckFile();
-
-                return _json[FolderPathLabel].ToString();
+                return ReadKey<string>(ParentFolderLabel);
             }
             set
             {
-                CheckFile();
-
-                this._json[FolderPathLabel] = value;
+                WriteKey<string>(value, ParentFolderLabel);
             }
         }
 
-        public bool ExtractTags
+        public int LeftPosition
         {
             get
             {
-                CheckFile();
-
-                return Convert.ToBoolean(_json[ExtractTagLabel]);
+                return ReadKey<int>(LeftPositionLabel);
             }
             set
             {
-                CheckFile();
-
-                this._json[ExtractTagLabel] = value;
+                WriteKey<int>(value, LeftPositionLabel);
             }
+        }
+
+        public int TopPosition
+        {
+            get
+            {
+                return ReadKey<int>(TopPositionLabel);
+            }
+            set
+            {
+                WriteKey<int>(value, TopPositionLabel);
+            }
+        }
+
+        public int HeightSize
+        {
+            get
+            {
+                return NoZero(ReadKey<int>(HeightSizeLabel));
+            }
+            set
+            {
+                WriteKey<int>(value, HeightSizeLabel);
+            }
+        }
+
+        public double TargetDb
+        {
+            get
+            {
+                return ReadKey<double>(TargetDbLabel);
+            }
+            set
+            {
+                WriteKey<double>(value, TargetDbLabel);
+            }
+        }
+
+        private static int NoZero(int result)
+        {
+            if (result == 0)
+            {
+                result = 1;
+            }
+
+            return result;
+        }
+
+        public int WidthSize
+        {
+            get
+            {
+                return NoZero(ReadKey<int>(WidthSizeLabel));
+            }
+            set
+            {
+                WriteKey<int>(value, WidthSizeLabel);
+            }
+        }
+
+        private void WriteKey<T>(T value, string key)
+        {
+            CheckFile();
+
+            this._json[key] = JToken.FromObject(value);
+        }
+
+        private T ReadKey<T>(string key)
+        {
+            CheckFile();
+
+            var result = (T)Convert.ChangeType(_json[key], typeof(T));
+
+            return result;
         }
 
         private void CheckFile()
         {
             if (_json == null)
             {
-                this.ReadSettingsFile();
+                this.ReadSettings();
             }
         }
 
@@ -55,35 +125,51 @@ namespace MP3GainMT
 
         public MP3GainSettings()
         {
-            this.ReadSettingsFile();
+            this.ReadSettings();
         }
 
-        private void ReadSettingsFile()
+        private void ReadSettings()
         {
+            JsonTextReader  reader = null;
+
             if (File.Exists(SettingsFileLocation))
             {
-                using (var reader = new JsonTextReader(File.OpenText(SettingsFileLocation)))
-                {
-                    reader.Read();
+                reader = new JsonTextReader(File.OpenText(SettingsFileLocation));
+                
+                reader.Read();
 
-                    this._json = (JObject)JToken.ReadFrom(reader);
-
-                    if (!_json.ContainsKey(FolderPathLabel))
-                    {
-                        _json.Add(FolderPathLabel, string.Empty);
-                    }
-
-                    if (!_json.ContainsKey(ExtractTagLabel))
-                    {
-                        _json.Add(ExtractTagLabel, false);
-                    }
-                }
+                this._json = (JObject)JToken.ReadFrom(reader);
             }
             else
             {
                 this._json = new JObject();
-                _json.Add(FolderPathLabel, string.Empty);
-                _json.Add(ExtractTagLabel, false);
+            }
+
+            PrepareKey<string>(ParentFolderLabel);
+            PrepareKey<int>(LeftPositionLabel);
+            PrepareKey<int>(TopPositionLabel);
+            PrepareKey<int>(WidthSizeLabel);
+            PrepareKey<int>(HeightSizeLabel);
+            PrepareKey<double>(TargetDbLabel);
+
+            if (reader != null)
+            {
+                reader.Close();
+            }
+        }
+
+        private void PrepareKey<T>(string key)
+        {
+            if (!_json.ContainsKey(key))
+            {
+                T obj = default(T);
+
+                if (obj == null)
+                {
+                    obj = (T)Convert.ChangeType(string.Empty, typeof(T));
+                }
+
+                _json.Add(key, JToken.FromObject(obj));
             }
         }
 

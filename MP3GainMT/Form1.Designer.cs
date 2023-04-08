@@ -35,13 +35,9 @@ namespace MP3GainMT
             this.runButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.fileGridView = new System.Windows.Forms.DataGridView();
-            this.fileListLabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.clearButton = new System.Windows.Forms.Button();
-            this.searchButton = new System.Windows.Forms.Button();
-            this.extractCheckBox = new System.Windows.Forms.CheckBox();
-            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AlbumArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Album = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -49,16 +45,38 @@ namespace MP3GainMT
             this.Progress = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TrackDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TrackFinal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TrackClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AlbumClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fileListLabel = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.clearButton = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.activityProgressBar = new System.Windows.Forms.ProgressBar();
+            this.readTagsButton = new System.Windows.Forms.Button();
+            this.activityLabel = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.activityPanel = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cancelButton = new System.Windows.Forms.Button();
+            this.targetDbNumeric = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
+            this.filterGroupBox = new System.Windows.Forms.GroupBox();
+            this.undoButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).BeginInit();
+            this.activityPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
+            this.filterGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // browseButton
             // 
             this.browseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.browseButton.Location = new System.Drawing.Point(650, 23);
+            this.browseButton.Location = new System.Drawing.Point(371, 55);
             this.browseButton.Name = "browseButton";
             this.browseButton.Size = new System.Drawing.Size(64, 28);
             this.browseButton.TabIndex = 2;
@@ -70,15 +88,17 @@ namespace MP3GainMT
             // 
             this.folderPathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.folderPathTextBox.Location = new System.Drawing.Point(19, 27);
+            this.folderPathTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.folderPathTextBox.Location = new System.Drawing.Point(19, 59);
             this.folderPathTextBox.Name = "folderPathTextBox";
-            this.folderPathTextBox.Size = new System.Drawing.Size(625, 20);
+            this.folderPathTextBox.ReadOnly = true;
+            this.folderPathTextBox.Size = new System.Drawing.Size(346, 20);
             this.folderPathTextBox.TabIndex = 1;
             // 
             // runButton
             // 
             this.runButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.runButton.Location = new System.Drawing.Point(1031, 23);
+            this.runButton.Location = new System.Drawing.Point(780, 54);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(87, 28);
             this.runButton.TabIndex = 6;
@@ -89,7 +109,7 @@ namespace MP3GainMT
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 8);
+            this.label1.Location = new System.Drawing.Point(22, 43);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 0;
@@ -105,6 +125,8 @@ namespace MP3GainMT
             this.fileGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FullPath,
+            this.AlbumArtist,
+            this.Updated,
             this.Folder,
             this.FileName,
             this.Album,
@@ -112,78 +134,17 @@ namespace MP3GainMT
             this.Progress,
             this.TrackDB,
             this.TrackFinal,
+            this.TrackClip,
             this.AlbumDB,
+            this.AlbumClip,
             this.AlbumGain,
             this.ErrorMessage});
-            this.fileGridView.Location = new System.Drawing.Point(12, 68);
+            this.fileGridView.Location = new System.Drawing.Point(12, 162);
             this.fileGridView.Name = "fileGridView";
             this.fileGridView.ReadOnly = true;
-            this.fileGridView.Size = new System.Drawing.Size(1201, 296);
+            this.fileGridView.Size = new System.Drawing.Size(1061, 446);
             this.fileGridView.TabIndex = 9;
-            // 
-            // fileListLabel
-            // 
-            this.fileListLabel.AutoSize = true;
-            this.fileListLabel.Location = new System.Drawing.Point(16, 52);
-            this.fileListLabel.Name = "fileListLabel";
-            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
-            this.fileListLabel.TabIndex = 8;
-            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(940, 23);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(87, 28);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "&Analyze";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
-            // 
-            // clearButton
-            // 
-            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearButton.Location = new System.Drawing.Point(1122, 23);
-            this.clearButton.Name = "clearButton";
-            this.clearButton.Size = new System.Drawing.Size(87, 28);
-            this.clearButton.TabIndex = 7;
-            this.clearButton.Text = "&Clear";
-            this.clearButton.UseVisualStyleBackColor = true;
-            this.clearButton.Click += new System.EventHandler(this.ClearButton_Click);
-            // 
-            // searchButton
-            // 
-            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchButton.Location = new System.Drawing.Point(849, 23);
-            this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(87, 28);
-            this.searchButton.TabIndex = 4;
-            this.searchButton.Text = "&Search";
-            this.searchButton.UseVisualStyleBackColor = true;
-            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
-            // 
-            // extractCheckBox
-            // 
-            this.extractCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.extractCheckBox.AutoSize = true;
-            this.extractCheckBox.Location = new System.Drawing.Point(726, 30);
-            this.extractCheckBox.Name = "extractCheckBox";
-            this.extractCheckBox.Size = new System.Drawing.Size(111, 17);
-            this.extractCheckBox.TabIndex = 3;
-            this.extractCheckBox.Text = "&Extract MP3 Tags";
-            this.extractCheckBox.UseVisualStyleBackColor = true;
-            this.extractCheckBox.CheckStateChanged += new System.EventHandler(this.ExtractCheckBox_CheckStateChanged);
-            // 
-            // activityProgressBar
-            // 
-            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityProgressBar.Location = new System.Drawing.Point(12, 371);
-            this.activityProgressBar.Name = "activityProgressBar";
-            this.activityProgressBar.Size = new System.Drawing.Size(1202, 10);
-            this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.activityProgressBar.TabIndex = 10;
+            this.fileGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.FileGridView_Scroll);
             // 
             // FullPath
             // 
@@ -195,15 +156,30 @@ namespace MP3GainMT
             this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.FullPath.Visible = false;
             // 
+            // AlbumArtist
+            // 
+            this.AlbumArtist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.AlbumArtist.DataPropertyName = "AlbumArtist";
+            this.AlbumArtist.HeaderText = "Album Artist";
+            this.AlbumArtist.Name = "AlbumArtist";
+            this.AlbumArtist.ReadOnly = true;
+            this.AlbumArtist.Width = 87;
+            // 
+            // Updated
+            // 
+            this.Updated.DataPropertyName = "Updated";
+            this.Updated.HeaderText = "Updated";
+            this.Updated.Name = "Updated";
+            this.Updated.ReadOnly = true;
+            this.Updated.Visible = false;
+            // 
             // Folder
             // 
-            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Folder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Folder.DataPropertyName = "Folder";
             this.Folder.HeaderText = "Folder";
             this.Folder.Name = "Folder";
             this.Folder.ReadOnly = true;
-            this.Folder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Folder.Width = 468;
             // 
             // FileName
             // 
@@ -212,23 +188,24 @@ namespace MP3GainMT
             this.FileName.HeaderText = "File Name";
             this.FileName.Name = "FileName";
             this.FileName.ReadOnly = true;
-            this.FileName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             // 
             // Album
             // 
-            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Album.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Album.DataPropertyName = "Album";
             this.Album.HeaderText = "Album";
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
+            this.Album.Width = 61;
             // 
             // Artist
             // 
-            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Artist.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Artist.DataPropertyName = "Artist";
             this.Artist.HeaderText = "Artist";
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
+            this.Artist.Width = 55;
             // 
             // Progress
             // 
@@ -238,76 +215,315 @@ namespace MP3GainMT
             this.Progress.Name = "Progress";
             this.Progress.ReadOnly = true;
             this.Progress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Progress.Width = 40;
+            this.Progress.Width = 30;
             // 
             // TrackDB
             // 
             this.TrackDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.TrackDB.DataPropertyName = "TrackDB";
-            this.TrackDB.HeaderText = "Track Before";
+            this.TrackDB.HeaderText = "Track Volume";
             this.TrackDB.Name = "TrackDB";
             this.TrackDB.ReadOnly = true;
-            this.TrackDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.TrackDB.Width = 94;
+            this.TrackDB.Width = 50;
             // 
             // TrackFinal
             // 
             this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.TrackFinal.DataPropertyName = "TrackFinal";
-            this.TrackFinal.HeaderText = "Track After";
+            this.TrackFinal.HeaderText = "Track Gain";
             this.TrackFinal.Name = "TrackFinal";
             this.TrackFinal.ReadOnly = true;
-            this.TrackFinal.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
+            this.TrackFinal.Width = 50;
+            // 
+            // TrackClip
+            // 
+            this.TrackClip.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackClip.DataPropertyName = "TrackClipping";
+            this.TrackClip.HeaderText = "Track Clip";
+            this.TrackClip.Name = "TrackClip";
+            this.TrackClip.ReadOnly = true;
+            this.TrackClip.Width = 50;
             // 
             // AlbumDB
             // 
             this.AlbumDB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.AlbumDB.DataPropertyName = "AlbumDB";
-            this.AlbumDB.HeaderText = "Album Before";
+            this.AlbumDB.HeaderText = "Album Volume";
             this.AlbumDB.Name = "AlbumDB";
             this.AlbumDB.ReadOnly = true;
-            this.AlbumDB.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumDB.Width = 95;
+            this.AlbumDB.Width = 50;
+            // 
+            // AlbumClip
+            // 
+            this.AlbumClip.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumClip.DataPropertyName = "AlbumClipping";
+            this.AlbumClip.HeaderText = "Album Clip";
+            this.AlbumClip.Name = "AlbumClip";
+            this.AlbumClip.ReadOnly = true;
+            this.AlbumClip.Width = 50;
             // 
             // AlbumGain
             // 
             this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.AlbumGain.DataPropertyName = "AlbumFinal";
-            this.AlbumGain.HeaderText = "Album After";
+            this.AlbumGain.HeaderText = "Album Gain";
             this.AlbumGain.Name = "AlbumGain";
             this.AlbumGain.ReadOnly = true;
-            this.AlbumGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.AlbumGain.Width = 79;
+            this.AlbumGain.Width = 50;
             // 
             // ErrorMessage
             // 
-            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.ErrorMessage.DataPropertyName = "ErrorMessage";
             this.ErrorMessage.HeaderText = "Error";
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
+            this.ErrorMessage.Width = 54;
+            // 
+            // fileListLabel
+            // 
+            this.fileListLabel.AutoSize = true;
+            this.fileListLabel.Location = new System.Drawing.Point(16, 146);
+            this.fileListLabel.Name = "fileListLabel";
+            this.fileListLabel.Size = new System.Drawing.Size(271, 13);
+            this.fileListLabel.TabIndex = 8;
+            this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(712, 55);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(62, 28);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "&Analyze";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
+            // 
+            // clearButton
+            // 
+            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearButton.Location = new System.Drawing.Point(873, 54);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(56, 28);
+            this.clearButton.TabIndex = 7;
+            this.clearButton.Text = "&Clear";
+            this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.ClearButton_Click);
+            // 
+            // searchButton
+            // 
+            this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchButton.Location = new System.Drawing.Point(441, 55);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(87, 28);
+            this.searchButton.TabIndex = 3;
+            this.searchButton.Text = "Add &Files";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
+            // 
+            // activityProgressBar
+            // 
+            this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityProgressBar.Location = new System.Drawing.Point(803, 5);
+            this.activityProgressBar.Name = "activityProgressBar";
+            this.activityProgressBar.Size = new System.Drawing.Size(277, 19);
+            this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.activityProgressBar.TabIndex = 11;
+            // 
+            // readTagsButton
+            // 
+            this.readTagsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.readTagsButton.Location = new System.Drawing.Point(619, 55);
+            this.readTagsButton.Name = "readTagsButton";
+            this.readTagsButton.Size = new System.Drawing.Size(87, 28);
+            this.readTagsButton.TabIndex = 4;
+            this.readTagsButton.Text = "&Read Tags";
+            this.readTagsButton.UseVisualStyleBackColor = true;
+            this.readTagsButton.Click += new System.EventHandler(this.ReadTagsButton_Click);
+            // 
+            // activityLabel
+            // 
+            this.activityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityLabel.AutoEllipsis = true;
+            this.activityLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.activityLabel.ForeColor = System.Drawing.Color.White;
+            this.activityLabel.Location = new System.Drawing.Point(55, 7);
+            this.activityLabel.Margin = new System.Windows.Forms.Padding(3, 0, 20, 0);
+            this.activityLabel.Name = "activityLabel";
+            this.activityLabel.Size = new System.Drawing.Size(665, 17);
+            this.activityLabel.TabIndex = 10;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(4, 7);
+            this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(57, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Activity: ";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // activityPanel
+            // 
+            this.activityPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.activityPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.activityPanel.Controls.Add(this.label3);
+            this.activityPanel.Controls.Add(this.activityProgressBar);
+            this.activityPanel.Controls.Add(this.activityLabel);
+            this.activityPanel.Controls.Add(this.label2);
+            this.activityPanel.Location = new System.Drawing.Point(0, 0);
+            this.activityPanel.Name = "activityPanel";
+            this.activityPanel.Size = new System.Drawing.Size(1085, 29);
+            this.activityPanel.TabIndex = 12;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(721, 7);
+            this.label3.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.label3.Name = "label3";
+            this.label3.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.label3.Size = new System.Drawing.Size(80, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Progress:";
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelButton.Location = new System.Drawing.Point(935, 55);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(55, 28);
+            this.cancelButton.TabIndex = 7;
+            this.cancelButton.Text = "Ca&ncel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            // 
+            // targetDbNumeric
+            // 
+            this.targetDbNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.targetDbNumeric.DecimalPlaces = 1;
+            this.targetDbNumeric.Location = new System.Drawing.Point(544, 60);
+            this.targetDbNumeric.Maximum = new decimal(new int[] {
+            1059,
+            0,
+            0,
+            65536});
+            this.targetDbNumeric.Minimum = new decimal(new int[] {
+            757,
+            0,
+            0,
+            65536});
+            this.targetDbNumeric.Name = "targetDbNumeric";
+            this.targetDbNumeric.Size = new System.Drawing.Size(50, 20);
+            this.targetDbNumeric.TabIndex = 13;
+            this.targetDbNumeric.Value = new decimal(new int[] {
+            89,
+            0,
+            0,
+            0});
+            this.targetDbNumeric.ValueChanged += new System.EventHandler(this.TargetDbNumeric_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(546, 43);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(38, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Target";
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(597, 63);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(20, 13);
+            this.label5.TabIndex = 0;
+            this.label5.Text = "dB";
+            // 
+            // clipOnlyCheckBox
+            // 
+            this.clipOnlyCheckBox.AutoSize = true;
+            this.clipOnlyCheckBox.Location = new System.Drawing.Point(18, 19);
+            this.clipOnlyCheckBox.Name = "clipOnlyCheckBox";
+            this.clipOnlyCheckBox.Size = new System.Drawing.Size(85, 17);
+            this.clipOnlyCheckBox.TabIndex = 14;
+            this.clipOnlyCheckBox.Text = "Clipped Only";
+            this.clipOnlyCheckBox.UseVisualStyleBackColor = true;
+            this.clipOnlyCheckBox.CheckedChanged += new System.EventHandler(this.ClipOnlyCheckBox_CheckedChanged);
+            // 
+            // filterGroupBox
+            // 
+            this.filterGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.filterGroupBox.Controls.Add(this.clipOnlyCheckBox);
+            this.filterGroupBox.Location = new System.Drawing.Point(619, 89);
+            this.filterGroupBox.Name = "filterGroupBox";
+            this.filterGroupBox.Size = new System.Drawing.Size(454, 42);
+            this.filterGroupBox.TabIndex = 15;
+            this.filterGroupBox.TabStop = false;
+            this.filterGroupBox.Text = "Filter Options";
+            // 
+            // undoButton
+            // 
+            this.undoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.undoButton.Location = new System.Drawing.Point(996, 55);
+            this.undoButton.Name = "undoButton";
+            this.undoButton.Size = new System.Drawing.Size(56, 28);
+            this.undoButton.TabIndex = 7;
+            this.undoButton.Text = "&Undo";
+            this.undoButton.UseVisualStyleBackColor = true;
+            this.undoButton.Click += new System.EventHandler(this.UndoButton_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1225, 390);
-            this.Controls.Add(this.activityProgressBar);
-            this.Controls.Add(this.extractCheckBox);
+            this.ClientSize = new System.Drawing.Size(1085, 620);
+            this.Controls.Add(this.filterGroupBox);
+            this.Controls.Add(this.targetDbNumeric);
+            this.Controls.Add(this.activityPanel);
+            this.Controls.Add(this.readTagsButton);
             this.Controls.Add(this.searchButton);
+            this.Controls.Add(this.cancelButton);
+            this.Controls.Add(this.undoButton);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.fileGridView);
             this.Controls.Add(this.fileListLabel);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.folderPathTextBox);
             this.Controls.Add(this.runButton);
             this.Controls.Add(this.browseButton);
+            this.MinimumSize = new System.Drawing.Size(1000, 300);
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MP3Gain Multi-Threaded";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).EndInit();
+            this.activityPanel.ResumeLayout(false);
+            this.activityPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).EndInit();
+            this.filterGroupBox.ResumeLayout(false);
+            this.filterGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -324,9 +540,21 @@ namespace MP3GainMT
         private Button button1;
         private Button clearButton;
         private Button searchButton;
-        private CheckBox extractCheckBox;
         private ProgressBar activityProgressBar;
+        private Button readTagsButton;
+        private Label activityLabel;
+        private Label label2;
+        private Panel activityPanel;
+        private Label label3;
+        private Button cancelButton;
+        private NumericUpDown targetDbNumeric;
+        private Label label4;
+        private Label label5;
+        private CheckBox clipOnlyCheckBox;
+        private GroupBox filterGroupBox;
         private DataGridViewTextBoxColumn FullPath;
+        private DataGridViewTextBoxColumn AlbumArtist;
+        private DataGridViewCheckBoxColumn Updated;
         private DataGridViewTextBoxColumn Folder;
         private DataGridViewTextBoxColumn FileName;
         private DataGridViewTextBoxColumn Album;
@@ -334,9 +562,12 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn Progress;
         private DataGridViewTextBoxColumn TrackDB;
         private DataGridViewTextBoxColumn TrackFinal;
+        private DataGridViewCheckBoxColumn TrackClip;
         private DataGridViewTextBoxColumn AlbumDB;
+        private DataGridViewCheckBoxColumn AlbumClip;
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewTextBoxColumn ErrorMessage;
+        private Button undoButton;
     }
 }
 
