@@ -6,7 +6,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using WinFormMP3Gain;
 using WK.Libraries.BetterFolderBrowserNS;
 
 namespace MP3GainMT
