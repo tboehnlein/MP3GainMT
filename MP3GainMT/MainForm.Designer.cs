@@ -2,7 +2,7 @@
 
 namespace MP3GainMT
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -490,7 +490,7 @@ namespace MP3GainMT
             this.undoButton.UseVisualStyleBackColor = true;
             this.undoButton.Click += new System.EventHandler(this.UndoButton_Click);
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -513,7 +513,7 @@ namespace MP3GainMT
             this.Controls.Add(this.runButton);
             this.Controls.Add(this.browseButton);
             this.MinimumSize = new System.Drawing.Size(1000, 300);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MP3Gain Multi-Threaded";
