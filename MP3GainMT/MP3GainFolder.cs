@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace WinFormMP3Gain
 {
@@ -87,7 +89,36 @@ namespace WinFormMP3Gain
 
         private void RunApplyGain(string executable)
         {
-            var gainStart = new ProcessStartInfo(executable, $"/g {this.SuggestedGain} \"{Path.Combine(FolderPath, "*.mp3")}\"");
+            this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
+            sortedFiles.Sort();
+
+            /*foreach (var file in sortedFiles)
+            {
+                var parameters = $"/o /g {this.SuggestedGain} \"{file}\"";
+                var gainStart = new ProcessStartInfo(executable, parameters);
+                gainStart.UseShellExecute = false;
+                gainStart.RedirectStandardOutput = false;
+                gainStart.RedirectStandardError = true;
+                gainStart.CreateNoWindow = true;
+                var gainProcess = new Process();
+                gainProcess.StartInfo = gainStart;
+                //this.sortOutput = new StringBuilder();
+                //this.sortError = new StringBuilder();
+
+                //gainProcess.OutputDataReceived += GainProcess_OutputDataReceived;
+                gainProcess.ErrorDataReceived += GainProcess_ErrorDataReceived;
+
+                this.activeFile = this.Files[file];
+                gainProcess.Start();
+                //gainProcess.BeginOutputReadLine();
+                gainProcess.BeginErrorReadLine();
+                Debug.WriteLine($"STARTED ANALYSIS FOR {file}");
+                gainProcess.WaitForExit();
+                Debug.WriteLine($"FINISHED ANALYSIS FOR {file}");
+            }*/
+
+            var parameters = $"/o /g {this.SuggestedGain} \"{Path.Combine(FolderPath, "*.mp3")}\"";
+            var gainStart = new ProcessStartInfo(executable, parameters);
             gainStart.UseShellExecute = false;
             gainStart.RedirectStandardOutput = true;
             gainStart.RedirectStandardError = true;
@@ -96,16 +127,90 @@ namespace WinFormMP3Gain
             var gainProcess = new Process();
 
             gainProcess.StartInfo = gainStart;
+
+            //this.sortOutput = new StringBuilder();
+            //this.sortError = new StringBuilder();
+
+            gainProcess.OutputDataReceived += GainProcess_OutputDataReceived;
+            gainProcess.ErrorDataReceived += GainProcess_ErrorDataReceived;
+
+
+            this.activeFile = this.Files[sortedFiles.First()];
+
             gainProcess.Start();
 
-            Debug.WriteLine($"{this.FolderName} started applying gain of {this.SuggestedGain}!");
+            gainProcess.BeginOutputReadLine();
+            gainProcess.BeginErrorReadLine();
 
-            var stream = gainProcess.StandardError;
-            this.GainOutput = stream.ReadToEnd();
-
-            ProcessGainOutput(this.GainOutput);
+            Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
 
             gainProcess.WaitForExit();
+
+            gainProcess.OutputDataReceived -= GainProcess_OutputDataReceived;
+            gainProcess.ErrorDataReceived -= GainProcess_ErrorDataReceived;
+        }
+
+        private void GainProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            //Debug.Write(e.Data);
+
+            if (!String.IsNullOrEmpty(e.Data))
+            {
+                if (e.Data.Contains("Applying gain"))
+                {
+                    var toIndex = e.Data.IndexOf(" to ");
+                    var endToIndex = toIndex + 4;
+
+                    var fileStartString = e.Data.Substring(endToIndex);
+
+                    if (fileStartString.Contains("..."))
+                    {
+                        var fileEndIndex = fileStartString.IndexOf("...");
+                        var fileString = fileStartString.Substring(0, fileEndIndex);
+                        if (this.sortedFiles.Contains(fileString))
+                        {
+                            this.activeFile = this.Files[fileString];
+                        }
+                    }
+                }
+
+                // Add the text to the collected output.
+                //sortError.Append(e.Data);
+                //Debug.WriteLine(e.Data);
+
+                //Debug.WriteLine(e.Data);
+
+                if (e.Data.Contains("%"))
+                {
+                    var items = e.Data.Split('%');
+                    var percentItems = items[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    var percent = Convert.ToInt32(percentItems[0]);
+
+                    if (percent != this.activeFile.Progress)
+                    {
+                        this.activeFile.Progress = percent;
+                        ////Debug.WriteLine($"PROGRESS: {percent} {this.activeFile.FilePath}");
+                        this.worker.ReportProgress(this.activeFile.Progress, this.activeFile);
+                        //Application.DoEvents();
+                        this.RaiseChangedFile(this.activeFile);
+                        lastWrite = DateTime.Now;
+                    }
+                }
+
+                if (e.Data.StartsWith("done"))
+                {
+
+                    Debug.WriteLine($"DONE: {activeFile.FilePath}");
+                    this.activeFile.Progress = 100;
+                    this.activeFile.UpdateTags();
+                    this.worker.ReportProgress(100, this.activeFile);
+                }
+            }
+        }
+
+        private void GainProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            //Debug.Write(e.Data);
         }
 
         private void ProcessGainOutput(string output)
@@ -145,6 +250,9 @@ namespace WinFormMP3Gain
             Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
 
             analysisProcess.WaitForExit();
+
+            analysisProcess.OutputDataReceived -= AnalysisProcess_OutputDataReceived;
+            analysisProcess.ErrorDataReceived -= AnalysisProcess_ErrorDataReceived;
         }
 
         private void AnalysisProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)

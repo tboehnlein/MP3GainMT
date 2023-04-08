@@ -232,6 +232,7 @@ namespace WinFormMP3Gain
                 var index = Folders.Values.ToList().IndexOf(folder);
                 var worker = new BackgroundWorker();
                 worker.WorkerReportsProgress = true;
+                worker.WorkerSupportsCancellation = true;
 
                 worker.DoWork += ProcessFiles_DoWork;
                 worker.ProgressChanged += ProcessFiles_ProgressChanged;
@@ -310,10 +311,21 @@ namespace WinFormMP3Gain
 
         private void ApplyGain_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if ((DateTime.Now - this.lastRefresh).TotalSeconds > .250)
+            this.RaiseTaskProgressed(e.ProgressPercentage);
+
+            if (e.UserState is MP3GainFile file)
             {
-                this.RaiseRefreshTable();
-                this.lastRefresh = DateTime.Now;
+                if (this.readTagEventCheck.CheckTime(e.ProgressPercentage == 100))
+                {
+                    this.DataSource[file.SourceIndex].Object.Progress = e.ProgressPercentage;
+
+                    this.RaiseRowUpdated(file.SourceIndex);
+                    //this.RaiseTagRead(file);
+                }
+            }
+            else if (e.UserState is string message)
+            {
+                this.RaiseAcivityUpdated(message);
             }
         }
 
@@ -481,11 +493,13 @@ namespace WinFormMP3Gain
         internal void Clear()
         {
             this.foundFiles.Clear();
-            this.Source.Clear();
+            this.Source = new BindingList<MP3GainRow>();
+            this.DataSource = new BindingListView<MP3GainRow>(Source);
             this.Folders.Clear();
             this.finished.Clear();
             this.SourceDictionary.Clear();
             this.RaiseRefreshTable();
+            this.filesDone = 0;
         }
 
         internal void RefreshDataSource()
@@ -603,12 +617,9 @@ namespace WinFormMP3Gain
         {
             this.RaiseTaskProgressed(e.ProgressPercentage);
 
-            if (e.UserState is Tuple<MP3GainFile, int> tuple)
+            if (e.UserState is MP3GainFile file)
             {
-                var file = tuple.Item1;
-                var index = tuple.Item2;
-
-                this.RaiseRowUpdated(index);
+                this.RaiseRowUpdated(file.SourceIndex);
 
                 if (this.readTagEventCheck.CheckTime(e.ProgressPercentage == 100))
                 {
@@ -650,8 +661,9 @@ namespace WinFormMP3Gain
                 foreach (var file in files)
                 {
                     file.ExtractTags();
+                    file.SourceIndex = this.filesDone;
                     var progress = Helpers.GetProgress(this.filesDone, totalFiles);
-                    worker.ReportProgress(progress, new Tuple<MP3GainFile, int>(file, this.filesDone));
+                    worker.ReportProgress(progress, file);
                     this.filesDone++;
 
                     if (worker.CancellationPending)

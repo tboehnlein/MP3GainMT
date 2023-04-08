@@ -19,7 +19,7 @@ namespace WinFormMP3Gain
         public const string TagReplayAlbumPeak = "REPLAYGAIN_ALBUM_PEAK";
 
         public double DBOffset { get; set; } = 0.0;
-        public int SuggestedGain { get; set; } = 0;
+        public double SuggestedGain { get; set; } = 0;
 
         public double GainMin = 0.0;
         public double GainMax = 0.0;
@@ -77,6 +77,7 @@ namespace WinFormMP3Gain
 
         public List<string> ErrorMessages { get; private set; } = new List<string>();
         public bool Updated { get; internal set; }
+        public int SourceIndex { get; internal set; }
 
         public MP3GainFile(string file)
         {
@@ -204,6 +205,12 @@ namespace WinFormMP3Gain
                 Double.TryParse(vector[1], out value1);
                 label = vector[2];
             }
+        }
+
+        internal void UpdateTags()
+        {
+            this.HasTags = false;
+            ExtractTags();
         }
     }
 }

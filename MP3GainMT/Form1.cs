@@ -333,6 +333,7 @@ namespace MP3GainMT
         private void ClearButton_Click(object sender, EventArgs e)
         {
             this.run.Clear();
+            this.source.DataSource = this.run.DataSource;
         }
 
         private void ReadTagsButton_Click(object sender, EventArgs e)

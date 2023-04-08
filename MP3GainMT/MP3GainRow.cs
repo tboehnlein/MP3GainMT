@@ -35,7 +35,7 @@ namespace MP3GainMT
 
         public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
 
-        public int Progress => this.file.Progress;
+        public int Progress { get; set; } = 0;
         
         public bool Updated
         {
