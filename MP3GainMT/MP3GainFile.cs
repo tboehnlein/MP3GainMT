@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using TagLib;
 
-namespace WinFormMP3Gain
+namespace MP3GainMT
 {
     internal class MP3GainFile
     {

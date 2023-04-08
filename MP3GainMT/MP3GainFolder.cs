@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace WinFormMP3Gain
+namespace MP3GainMT
 {
     internal class MP3GainFolder
     {

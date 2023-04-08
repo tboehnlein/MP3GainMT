@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace WinFormMP3Gain
+namespace MP3GainMT
 {
     internal class MP3GainRun
     {

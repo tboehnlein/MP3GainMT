@@ -1,5 +1,4 @@
 ﻿using System;
-using WinFormMP3Gain;
 
 namespace MP3GainMT
 {
