@@ -143,6 +143,8 @@ namespace MP3GainMT
             {
                 this.activityProgressBar.Enabled = true;
             }
+
+            Debug.WriteLine($"TASK PROGRESS: {progress}");
         }
 
         public DateTime StartTime { get; private set; }

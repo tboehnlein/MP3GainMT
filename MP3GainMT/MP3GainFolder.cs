@@ -16,6 +16,9 @@ namespace MP3GainMT
         private StringBuilder sortError;
         private MP3GainFile activeFile;
         private BackgroundWorker worker;
+
+        public ExecuteMP3Gain UndoGainExecution { get; private set; }
+
         private List<string> sortedFiles;
         private static DateTime lastWrite = DateTime.Now;
 
@@ -46,6 +49,7 @@ namespace MP3GainMT
         public string GainOutput { get; private set; } = string.Empty;
         public List<string> AnalysisLines { get; private set; } = new List<string>();
         public List<string> GainLines { get; private set; } = new List<string>();
+        public ExecuteMP3Gain ApplyGainExecution { get; private set; }
 
         public MP3GainFolder(string path)
         {
@@ -78,7 +82,7 @@ namespace MP3GainMT
         internal void ApplyGainFolder(string executable, BackgroundWorker worker)
         {
             this.worker = worker;
-            this.RunApplyGain(executable);
+            this.ExecuteApplyGain(executable);
         }
 
         internal void ProcessFiles(string executable, BackgroundWorker worker)
@@ -464,106 +468,38 @@ namespace MP3GainMT
             }
         }
 
-        internal void UndoGainFolder(string executable, BackgroundWorker worker)
+        internal void UndoGain(string executable, BackgroundWorker worker)
         {
             this.worker = worker;
-            this.RunUndoGain(executable);
+            this.ExecuteUndoGain(executable);
         }
 
-        private void RunUndoGain(string executable)
+        private void ExecuteUndoGain(string executable)
         {
-            this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
-            sortedFiles.Sort();
+            this.UndoGainExecution = new ExecuteMP3Gain(executable,
+                                                        "/u",
+                                                        this.Files,
+                                                        this.FolderPath,
+                                                        "UNDO GAIN",
+                                                        this.worker,
+                                                        "Undoing mp3gain changes",
+                                                        "                                                   ");
 
-            var parameters = $"/u \"{Path.Combine(FolderPath, "*.mp3")}\"";
-            var gainStart = new ProcessStartInfo(executable, parameters);
-            gainStart.UseShellExecute = false;
-            gainStart.RedirectStandardOutput = true;
-            gainStart.RedirectStandardError = true;
-            gainStart.CreateNoWindow = true;
-
-            var gainProcess = new Process();
-
-            gainProcess.StartInfo = gainStart;
-
-            //this.sortOutput = new StringBuilder();
-            //this.sortError = new StringBuilder();
-
-            gainProcess.OutputDataReceived += UndoGain_OutputDataReceived;
-            gainProcess.ErrorDataReceived += UndoGain_ErrorDataReceived;
-
-
-            this.activeFile = this.Files[sortedFiles.First()];
-
-            gainProcess.Start();
-
-            gainProcess.BeginOutputReadLine();
-            gainProcess.BeginErrorReadLine();
-
-            Debug.WriteLine($"STARTED UNDO GAIN FOR {this.FolderName}");
-
-            gainProcess.WaitForExit();
-
-            gainProcess.OutputDataReceived -= UndoGain_OutputDataReceived;
-            gainProcess.ErrorDataReceived -= UndoGain_ErrorDataReceived;
-
-            Debug.WriteLine($"FINISHED UNDO GAIN FOR {this.FolderName}");
+            this.UndoGainExecution.Execute();
         }
 
-        private void UndoGain_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private void ExecuteApplyGain(string executable)
         {
-            //Debug.WriteLine($"ERROR \"{e.Data}\"");
+            this.ApplyGainExecution = new ExecuteMP3Gain(executable,
+                                                        $"/o /g {this.SuggestedGain}",
+                                                        this.Files,
+                                                        this.FolderPath,
+                                                        "APPLY GAIN",
+                                                        this.worker,
+                                                        "Applying gain",
+                                                        "done");
 
-            if (!String.IsNullOrEmpty(e.Data))
-            {
-                if (e.Data.Contains("Undoing mp3gain changes"))
-                {
-                    var toIndex = e.Data.IndexOf(" to ");
-                    var endToIndex = toIndex + 4;
-
-                    var fileStartString = e.Data.Substring(endToIndex);
-
-                    if (fileStartString.Contains("..."))
-                    {
-                        var fileEndIndex = fileStartString.IndexOf("...");
-                        var fileString = fileStartString.Substring(0, fileEndIndex);
-                        if (this.sortedFiles.Contains(fileString))
-                        {
-                            this.activeFile = this.Files[fileString];
-                        }
-                    }
-                }
-
-                if (e.Data == "                                                   ")
-                {
-                    FileStream fileStream = null;
-
-                    while(fileStream == null)
-                    {
-                        try
-                        {
-                            fileStream = File.OpenWrite(activeFile.FilePath);
-                        }
-                        catch { System.Threading.Thread.Sleep(10); }
-
-                    }
-
-                    if (fileStream != null)
-                    {
-                        fileStream.Close();
-                    }
-
-                    Debug.WriteLine($"UNDONE: {activeFile.FilePath}");
-                    this.activeFile.Progress = 100;
-                    this.activeFile.UpdateTags();
-                    this.worker.ReportProgress(100, this.activeFile);
-                }
-            }
-        }
-
-        private void UndoGain_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            //Debug.WriteLine($"OUTPUT \"{e.Data}\"");
+            this.ApplyGainExecution.Execute();
         }
     }
 }

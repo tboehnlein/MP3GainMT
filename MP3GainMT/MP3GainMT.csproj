@@ -61,6 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecuteMP3Gain.cs" />
+    <Compile Include="FileProgress.cs" />
     <Compile Include="FolderWorker.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

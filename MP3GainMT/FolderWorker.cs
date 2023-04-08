@@ -2,7 +2,7 @@
 
 namespace MP3GainMT
 {
-    internal class FolderWorker
+    public class FolderWorker
     {
         public BackgroundWorker Worker;
         public MP3GainFolder Folder;
