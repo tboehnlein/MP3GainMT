@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace MP3GainMT
 {
-    internal class MP3GainFolder
+    public class MP3GainFolder
     {
         private StringBuilder sortOutput;
         private StringBuilder sortError;

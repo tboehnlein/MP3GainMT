@@ -8,7 +8,7 @@ using TagLib;
 
 namespace MP3GainMT
 {
-    internal class MP3GainFile
+    public class MP3GainFile
     {
         public const string TagMp3GainMinMax = "MP3GAIN_MINMAX";
         public const string TagMp3GainAlbumMinMax = "MP3GAIN_ALBUM_MINMAX";

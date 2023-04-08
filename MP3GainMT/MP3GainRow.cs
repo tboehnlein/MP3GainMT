@@ -2,7 +2,7 @@
 
 namespace MP3GainMT
 {
-    internal class MP3GainRow : IComparable<MP3GainRow>, IEquatable<MP3GainRow>
+    public class MP3GainRow : IComparable<MP3GainRow>, IEquatable<MP3GainRow>
     {
         private MP3GainFile file = null;
 

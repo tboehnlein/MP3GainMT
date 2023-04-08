@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MP3GainMT
 {
-    internal class TaskUpdate
+    public class TaskUpdate
     {
         public TaskUpdate(int progressPercent, string message, int index) 
         {

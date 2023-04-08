@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace MP3GainMT
 {
-    internal class MP3GainRun
+    public class MP3GainRun
     {
         public event EventHandler<MP3GainFolder> FolderFinished;
 
