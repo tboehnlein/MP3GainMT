@@ -7,23 +7,29 @@ namespace MP3GainMT
 {
     public class MP3GainSettings
     {
-        private static readonly string ParentFolderLabel = "Last Used Folder";
-        private static readonly string LeftPositionLabel = "Left Position";
-        private static readonly string TopPositionLabel = "Top Position";
+        public readonly string SettingsFileLocation = @".\settings.json";
         private static readonly string HeightSizeLabel = "Heigth Size";
-        private static readonly string WidthSizeLabel = "Width Size";
+        private static readonly string LeftPositionLabel = "Left Position";
+        private static readonly string ParentFolderLabel = "Last Used Folder";
         private static readonly string TargetDbLabel = "Target dB";
+        private static readonly string TopPositionLabel = "Top Position";
+        private static readonly string WidthSizeLabel = "Width Size";
         private JObject _json = null;
 
-        public string ParentFolder
+        public MP3GainSettings()
+        {
+            this.ReadSettings();
+        }
+
+        public int HeightSize
         {
             get
             {
-                return ReadKey<string>(ParentFolderLabel);
+                return NoZero(ReadKey<int>(HeightSizeLabel));
             }
             set
             {
-                WriteKey<string>(value, ParentFolderLabel);
+                WriteKey<int>(value, HeightSizeLabel);
             }
         }
 
@@ -39,27 +45,15 @@ namespace MP3GainMT
             }
         }
 
-        public int TopPosition
+        public string ParentFolder
         {
             get
             {
-                return ReadKey<int>(TopPositionLabel);
+                return ReadKey<string>(ParentFolderLabel);
             }
             set
             {
-                WriteKey<int>(value, TopPositionLabel);
-            }
-        }
-
-        public int HeightSize
-        {
-            get
-            {
-                return NoZero(ReadKey<int>(HeightSizeLabel));
-            }
-            set
-            {
-                WriteKey<int>(value, HeightSizeLabel);
+                WriteKey<string>(value, ParentFolderLabel);
             }
         }
 
@@ -75,14 +69,16 @@ namespace MP3GainMT
             }
         }
 
-        private static int NoZero(int result)
+        public int TopPosition
         {
-            if (result == 0)
+            get
             {
-                result = 1;
+                return ReadKey<int>(TopPositionLabel);
             }
-
-            return result;
+            set
+            {
+                WriteKey<int>(value, TopPositionLabel);
+            }
         }
 
         public int WidthSize
@@ -97,18 +93,20 @@ namespace MP3GainMT
             }
         }
 
-        private void WriteKey<T>(T value, string key)
+        public void WriteSettingsFile()
         {
-            CheckFile();
-
-            this._json[key] = JToken.FromObject(value);
+            using (JsonTextWriter writer = new JsonTextWriter(File.CreateText(SettingsFileLocation)))
+            {
+                this._json.WriteTo(writer);
+            }
         }
 
-        private T ReadKey<T>(string key)
+        private static int NoZero(int result)
         {
-            CheckFile();
-
-            var result = (T)Convert.ChangeType(_json[key], typeof(T));
+            if (result == 0)
+            {
+                result = 1;
+            }
 
             return result;
         }
@@ -121,21 +119,38 @@ namespace MP3GainMT
             }
         }
 
-        public readonly string SettingsFileLocation = @".\settings.json";
-
-        public MP3GainSettings()
+        private void PrepareKey<T>(string key)
         {
-            this.ReadSettings();
+            if (!_json.ContainsKey(key))
+            {
+                T obj = default(T);
+
+                if (obj == null)
+                {
+                    obj = (T)Convert.ChangeType(string.Empty, typeof(T));
+                }
+
+                _json.Add(key, JToken.FromObject(obj));
+            }
+        }
+
+        private T ReadKey<T>(string key)
+        {
+            CheckFile();
+
+            var result = (T)Convert.ChangeType(_json[key], typeof(T));
+
+            return result;
         }
 
         private void ReadSettings()
         {
-            JsonTextReader  reader = null;
+            JsonTextReader reader = null;
 
             if (File.Exists(SettingsFileLocation))
             {
                 reader = new JsonTextReader(File.OpenText(SettingsFileLocation));
-                
+
                 reader.Read();
 
                 this._json = (JObject)JToken.ReadFrom(reader);
@@ -158,27 +173,11 @@ namespace MP3GainMT
             }
         }
 
-        private void PrepareKey<T>(string key)
+        private void WriteKey<T>(T value, string key)
         {
-            if (!_json.ContainsKey(key))
-            {
-                T obj = default(T);
+            CheckFile();
 
-                if (obj == null)
-                {
-                    obj = (T)Convert.ChangeType(string.Empty, typeof(T));
-                }
-
-                _json.Add(key, JToken.FromObject(obj));
-            }
-        }
-
-        public void WriteSettingsFile()
-        {
-            using (JsonTextWriter writer = new JsonTextWriter(File.CreateText(SettingsFileLocation)))
-            {
-                this._json.WriteTo(writer);
-            }
+            this._json[key] = JToken.FromObject(value);
         }
     }
 }

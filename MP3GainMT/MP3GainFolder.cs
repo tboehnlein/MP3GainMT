@@ -4,38 +4,34 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Windows.Forms;
 
 namespace MP3GainMT
 {
     public class MP3GainFolder
     {
-        private StringBuilder sortOutput;
-        private StringBuilder sortError;
+        private static DateTime lastWrite = DateTime.Now;
         private MP3GainFile activeFile;
+        private List<string> sortedFiles;
+        private StringBuilder sortError;
+        private StringBuilder sortOutput;
         private BackgroundWorker worker;
 
-        public ExecuteMP3Gain UndoGainExecution { get; private set; }
-
-        private List<string> sortedFiles;
-        private static DateTime lastWrite = DateTime.Now;
-
-        public event EventHandler<MP3GainFile> FoundFile;
+        public MP3GainFolder(string path)
+        {
+            this.FolderPath = path;
+            this.FolderName = Path.GetFileName(path);
+        }
 
         public event EventHandler<MP3GainFile> ChangedFile;
 
-        public Dictionary<string, MP3GainFile> Files { get; set; } = new Dictionary<string, MP3GainFile>();
+        public event EventHandler<MP3GainFile> FoundFile;
 
-        public string FolderPath { get; set; } = string.Empty;
-
-        public string FolderName { get; set; } = string.Empty;
-
-        public int SuggestedGain { get; set; } = 0;
-
+        public ExecuteMP3Gain ApplyGainExecution { get; private set; }
         public double DBOffset { get; set; } = 0.0;
-
+        public Dictionary<string, MP3GainFile> Files { get; set; } = new Dictionary<string, MP3GainFile>();
+        public string FolderName { get; set; } = string.Empty;
+        public string FolderPath { get; set; } = string.Empty;
         public List<string> MP3Files
         {
             get
@@ -44,39 +40,11 @@ namespace MP3GainMT
             }
         }
 
-        public string AnalaysisOutput { get; set; } = string.Empty;
-        public string RunOutput { get; private set; } = string.Empty;
-        public string GainOutput { get; private set; } = string.Empty;
-        public List<string> AnalysisLines { get; private set; } = new List<string>();
-        public List<string> GainLines { get; private set; } = new List<string>();
-        public ExecuteMP3Gain ApplyGainExecution { get; private set; }
-
-        public MP3GainFolder(string path)
-        {
-            this.FolderPath = path;
-            this.FolderName = Path.GetFileName(path);
-        }
-
+        public int SuggestedGain { get; set; } = 0;
+        public ExecuteMP3Gain UndoGainExecution { get; private set; }
         public void SearchFolder()
         {
             this.FindFiles(this.FolderPath);
-        }
-
-        private void FindFiles(string folderPath)
-        {
-            var files = Directory.GetFiles(folderPath, "*.mp3", SearchOption.TopDirectoryOnly);
-
-            foreach (var file in files)
-            {
-                if (File.Exists(file))
-                {
-                    var mp3File = new MP3GainFile(file);
-
-                    this.Files.Add(mp3File.FilePath, mp3File);
-
-                    this.RaiseFoundFile(mp3File);
-                }
-            }
         }
 
         internal void ApplyGainFolder(string executable, BackgroundWorker worker)
@@ -91,174 +59,10 @@ namespace MP3GainMT
             this.RunAnalysis(executable);
         }
 
-        private void RunApplyGain(string executable)
+        internal void UndoGain(string executable, BackgroundWorker worker)
         {
-            this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
-            sortedFiles.Sort();
-
-            /*foreach (var file in sortedFiles)
-            {
-                var parameters = $"/o /g {this.SuggestedGain} \"{file}\"";
-                var gainStart = new ProcessStartInfo(executable, parameters);
-                gainStart.UseShellExecute = false;
-                gainStart.RedirectStandardOutput = false;
-                gainStart.RedirectStandardError = true;
-                gainStart.CreateNoWindow = true;
-                var gainProcess = new Process();
-                gainProcess.StartInfo = gainStart;
-                //this.sortOutput = new StringBuilder();
-                //this.sortError = new StringBuilder();
-
-                //gainProcess.OutputDataReceived += GainProcess_OutputDataReceived;
-                gainProcess.ErrorDataReceived += GainProcess_ErrorDataReceived;
-
-                this.activeFile = this.Files[file];
-                gainProcess.Start();
-                //gainProcess.BeginOutputReadLine();
-                gainProcess.BeginErrorReadLine();
-                Debug.WriteLine($"STARTED ANALYSIS FOR {file}");
-                gainProcess.WaitForExit();
-                Debug.WriteLine($"FINISHED ANALYSIS FOR {file}");
-            }*/
-
-            var parameters = $"/o /g {this.SuggestedGain} \"{Path.Combine(FolderPath, "*.mp3")}\"";
-            var gainStart = new ProcessStartInfo(executable, parameters);
-            gainStart.UseShellExecute = false;
-            gainStart.RedirectStandardOutput = true;
-            gainStart.RedirectStandardError = true;
-            gainStart.CreateNoWindow = true;
-
-            var gainProcess = new Process();
-
-            gainProcess.StartInfo = gainStart;
-
-            //this.sortOutput = new StringBuilder();
-            //this.sortError = new StringBuilder();
-
-            gainProcess.OutputDataReceived += GainProcess_OutputDataReceived;
-            gainProcess.ErrorDataReceived += GainProcess_ErrorDataReceived;
-
-
-            this.activeFile = this.Files[sortedFiles.First()];
-
-            gainProcess.Start();
-
-            gainProcess.BeginOutputReadLine();
-            gainProcess.BeginErrorReadLine();
-
-            Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
-
-            gainProcess.WaitForExit();
-
-            gainProcess.OutputDataReceived -= GainProcess_OutputDataReceived;
-            gainProcess.ErrorDataReceived -= GainProcess_ErrorDataReceived;
-        }
-
-        private void GainProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            //Debug.Write(e.Data);
-
-            if (!String.IsNullOrEmpty(e.Data))
-            {
-                if (e.Data.Contains("Applying gain"))
-                {
-                    var toIndex = e.Data.IndexOf(" to ");
-                    var endToIndex = toIndex + 4;
-
-                    var fileStartString = e.Data.Substring(endToIndex);
-
-                    if (fileStartString.Contains("..."))
-                    {
-                        var fileEndIndex = fileStartString.IndexOf("...");
-                        var fileString = fileStartString.Substring(0, fileEndIndex);
-                        if (this.sortedFiles.Contains(fileString))
-                        {
-                            this.activeFile = this.Files[fileString];
-                        }
-                    }
-                }
-
-                // Add the text to the collected output.
-                //sortError.Append(e.Data);
-                //Debug.WriteLine(e.Data);
-
-                //Debug.WriteLine(e.Data);
-
-                if (e.Data.Contains("%"))
-                {
-                    var items = e.Data.Split('%');
-                    var percentItems = items[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    var percent = Convert.ToInt32(percentItems[0]);
-
-                    if (percent != this.activeFile.Progress)
-                    {
-                        this.activeFile.Progress = percent;
-                        ////Debug.WriteLine($"PROGRESS: {percent} {this.activeFile.FilePath}");
-                        this.worker.ReportProgress(this.activeFile.Progress, this.activeFile);
-                        //Application.DoEvents();
-                        this.RaiseChangedFile(this.activeFile);
-                        lastWrite = DateTime.Now;
-                    }
-                }
-
-                if (e.Data.StartsWith("done"))
-                {
-
-                    Debug.WriteLine($"DONE: {activeFile.FilePath}");
-                    this.activeFile.Progress = 100;
-                    this.activeFile.UpdateTags();
-                    this.worker.ReportProgress(100, this.activeFile);
-                }
-            }
-        }
-
-        private void GainProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            //Debug.Write(e.Data);
-        }
-
-        private void ProcessGainOutput(string output)
-        {
-            this.GainLines = output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        }
-
-        private void RunAnalysis(string executable)
-        {
-            var parameters = $"\"{Path.Combine(FolderPath, "*.mp3")}\"";
-            var analysisStart = new ProcessStartInfo(executable, parameters);
-            analysisStart.UseShellExecute = false;
-            analysisStart.RedirectStandardOutput = true;
-            analysisStart.RedirectStandardError = true;
-            analysisStart.CreateNoWindow = true;
-
-            var analysisProcess = new Process();
-
-            analysisProcess.StartInfo = analysisStart;
-
-            this.sortOutput = new StringBuilder();
-            this.sortError = new StringBuilder();
-
-            analysisProcess.OutputDataReceived += AnalysisProcess_OutputDataReceived;
-            analysisProcess.ErrorDataReceived += AnalysisProcess_ErrorDataReceived;
-
-            this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
-            sortedFiles.Sort();
-
-            this.activeFile = this.Files[sortedFiles.First()];
-
-            analysisProcess.Start();
-
-            analysisProcess.BeginOutputReadLine();
-            analysisProcess.BeginErrorReadLine();
-
-            Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
-
-            analysisProcess.WaitForExit();
-
-            analysisProcess.OutputDataReceived -= AnalysisProcess_OutputDataReceived;
-            analysisProcess.ErrorDataReceived -= AnalysisProcess_ErrorDataReceived;
-
-            Debug.WriteLine($"FNISHED ANALYSIS FOR {this.FolderName}");
+            this.worker = worker;
+            this.ExecuteUndoGain(executable);
         }
 
         private void AnalysisProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
@@ -306,50 +110,50 @@ namespace MP3GainMT
             }
         }
 
-        private void ProcessAnalysisOutputLine(string line, ref MP3GainFile gainFile)
+        private void ExecuteApplyGain(string executable)
         {
-            //start mp3 file
-            if (ProcessFilePath(ref gainFile, line))
-            {
-                return;
-            }
+            this.ApplyGainExecution = new ExecuteMP3Gain(executable,
+                                                        $"/o /g {this.SuggestedGain}",
+                                                        this.Files,
+                                                        this.FolderPath,
+                                                        "APPLY GAIN",
+                                                        this.worker,
+                                                        "Applying gain",
+                                                        "done");
 
-            if (ProcessFileGain(gainFile, line))
-            {
-                return;
-            }
-
-            if (ProcessAlbumGain(line))
-            {
-                return;
-            }
+            this.ApplyGainExecution.Execute();
         }
 
-        private void ProcessAnalysisOutput(string output)
+        private void ExecuteUndoGain(string executable)
         {
-            this.AnalysisLines = output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            MP3GainFile gainFile = null;
+            this.UndoGainExecution = new ExecuteMP3Gain(executable,
+                                                        "/u",
+                                                        this.Files,
+                                                        this.FolderPath,
+                                                        "UNDO GAIN",
+                                                        this.worker,
+                                                        "Undoing mp3gain changes",
+                                                        "                                                   ");
 
-            foreach (var line in this.AnalysisLines)
+            this.UndoGainExecution.Execute();
+        }
+
+        private void FindFiles(string folderPath)
+        {
+            var files = Directory.GetFiles(folderPath, "*.mp3", SearchOption.TopDirectoryOnly);
+
+            foreach (var file in files)
             {
-                //start mp3 file
-                if (ProcessFilePath(ref gainFile, line))
+                if (File.Exists(file))
                 {
-                    continue;
-                }
+                    var mp3File = new MP3GainFile(file);
 
-                if (ProcessFileGain(gainFile, line))
-                {
-                    continue;
-                }
+                    this.Files.Add(mp3File.FilePath, mp3File);
 
-                if (ProcessAlbumGain(line))
-                {
-                    break;
+                    this.RaiseFoundFile(mp3File);
                 }
             }
         }
-
         private bool ProcessAlbumGain(string line)
         {
             bool found = false;
@@ -381,6 +185,25 @@ namespace MP3GainMT
             }
 
             return found;
+        }
+
+        private void ProcessAnalysisOutputLine(string line, ref MP3GainFile gainFile)
+        {
+            //start mp3 file
+            if (ProcessFilePath(ref gainFile, line))
+            {
+                return;
+            }
+
+            if (ProcessFileGain(gainFile, line))
+            {
+                return;
+            }
+
+            if (ProcessAlbumGain(line))
+            {
+                return;
+            }
         }
 
         private bool ProcessFileGain(MP3GainFile gainFile, string line)
@@ -426,18 +249,6 @@ namespace MP3GainMT
             return found;
         }
 
-        private void MoveToNextFile()
-        {
-            var index = this.sortedFiles.IndexOf(this.activeFile.FilePath);
-
-            index++;
-
-            if (index < this.sortedFiles.Count)
-            {
-                this.activeFile = this.Files[this.sortedFiles[index]];
-            }
-        }
-
         private bool ProcessFilePath(ref MP3GainFile gainFile, string line)
         {
             bool found = false;
@@ -451,14 +262,6 @@ namespace MP3GainMT
             return found;
         }
 
-        private void RaiseFoundFile(MP3GainFile file)
-        {
-            if (FoundFile != null)
-            {
-                this.FoundFile.Invoke(this, file);
-            }
-        }
-
         private void RaiseChangedFile(MP3GainFile file)
         {
             if (ChangedFile != null)
@@ -468,38 +271,51 @@ namespace MP3GainMT
             }
         }
 
-        internal void UndoGain(string executable, BackgroundWorker worker)
+        private void RaiseFoundFile(MP3GainFile file)
         {
-            this.worker = worker;
-            this.ExecuteUndoGain(executable);
+            if (FoundFile != null)
+            {
+                this.FoundFile.Invoke(this, file);
+            }
         }
 
-        private void ExecuteUndoGain(string executable)
+        private void RunAnalysis(string executable)
         {
-            this.UndoGainExecution = new ExecuteMP3Gain(executable,
-                                                        "/u",
-                                                        this.Files,
-                                                        this.FolderPath,
-                                                        "UNDO GAIN",
-                                                        this.worker,
-                                                        "Undoing mp3gain changes",
-                                                        "                                                   ");
+            var parameters = $"\"{Path.Combine(FolderPath, "*.mp3")}\"";
+            var analysisStart = new ProcessStartInfo(executable, parameters);
+            analysisStart.UseShellExecute = false;
+            analysisStart.RedirectStandardOutput = true;
+            analysisStart.RedirectStandardError = true;
+            analysisStart.CreateNoWindow = true;
 
-            this.UndoGainExecution.Execute();
-        }
+            var analysisProcess = new Process();
 
-        private void ExecuteApplyGain(string executable)
-        {
-            this.ApplyGainExecution = new ExecuteMP3Gain(executable,
-                                                        $"/o /g {this.SuggestedGain}",
-                                                        this.Files,
-                                                        this.FolderPath,
-                                                        "APPLY GAIN",
-                                                        this.worker,
-                                                        "Applying gain",
-                                                        "done");
+            analysisProcess.StartInfo = analysisStart;
 
-            this.ApplyGainExecution.Execute();
+            this.sortOutput = new StringBuilder();
+            this.sortError = new StringBuilder();
+
+            analysisProcess.OutputDataReceived += AnalysisProcess_OutputDataReceived;
+            analysisProcess.ErrorDataReceived += AnalysisProcess_ErrorDataReceived;
+
+            this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
+            sortedFiles.Sort();
+
+            this.activeFile = this.Files[sortedFiles.First()];
+
+            analysisProcess.Start();
+
+            analysisProcess.BeginOutputReadLine();
+            analysisProcess.BeginErrorReadLine();
+
+            Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
+
+            analysisProcess.WaitForExit();
+
+            analysisProcess.OutputDataReceived -= AnalysisProcess_OutputDataReceived;
+            analysisProcess.ErrorDataReceived -= AnalysisProcess_ErrorDataReceived;
+
+            Debug.WriteLine($"FNISHED ANALYSIS FOR {this.FolderName}");
         }
     }
 }

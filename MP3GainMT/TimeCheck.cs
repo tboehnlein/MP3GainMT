@@ -4,33 +4,24 @@ namespace MP3GainMT
 {
     public class TimeCheck
     {
-        public double MinimumTime = .25;
-        public DateTime LastTime = DateTime.Now;
         public bool Force = false;
-
+        public DateTime LastTime = DateTime.Now;
+        public double MinimumTime = .25;
         public TimeCheck(int fps)
         {
             MinimumTime = 1.0 / fps;
         }
 
-        public TimeCheck(double minimum)
+        public static bool Check(bool force, ref DateTime lastTime, double minTime = .25)
         {
-            MinimumTime = minimum;
-        }
+            var current = DateTime.Now;
+            var result = (current - lastTime).TotalSeconds > minTime || force;
 
-        public TimeCheck()
-        { }
-
-        public bool CheckTime(bool force = false)
-        {
-            var result = TimeCheck.Check(force, ref LastTime, MinimumTime);
-
-            return result;
-        }
-
-        public bool EnoughTime(bool force = false)
-        {
-            var result = TimeCheck.Enough(force, ref LastTime, MinimumTime);
+            // for reference next time
+            if (result)
+            {
+                lastTime = current;
+            }
 
             return result;
         }
@@ -46,16 +37,16 @@ namespace MP3GainMT
             return result;
         }
 
-        public static bool Check(bool force, ref DateTime lastTime, double minTime = .25)
+        public bool CheckTime(bool force = false)
         {
-            var current = DateTime.Now;
-            var result = (current - lastTime).TotalSeconds > minTime || force;
+            var result = TimeCheck.Check(force, ref LastTime, MinimumTime);
 
-            // for reference next time
-            if (result)
-            {
-                lastTime = current;
-            }
+            return result;
+        }
+
+        public bool EnoughTime(bool force = false)
+        {
+            var result = TimeCheck.Enough(force, ref LastTime, MinimumTime);
 
             return result;
         }

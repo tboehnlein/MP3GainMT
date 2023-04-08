@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,74 +9,25 @@ namespace MP3GainMT
 {
     public class MP3GainFile
     {
-        public const string TagMp3GainMinMax = "MP3GAIN_MINMAX";
         public const string TagMp3GainAlbumMinMax = "MP3GAIN_ALBUM_MINMAX";
+        public const string TagMp3GainMinMax = "MP3GAIN_MINMAX";
         public const string TagMp3GainUndo = "MP3GAIN_UNDO";
-        public const string TagReplayTrackGain = "REPLAYGAIN_TRACK_GAIN";
-        public const string TagReplayTrackPeak = "REPLAYGAIN_TRACK_PEAK";
         public const string TagReplayAlbumGain = "REPLAYGAIN_ALBUM_GAIN";
         public const string TagReplayAlbumPeak = "REPLAYGAIN_ALBUM_PEAK";
-
-        public double DBOffset { get; set; } = 0.0;
-        public double SuggestedGain { get; set; } = 0;
-
-        public double GainMin = 0.0;
-        public double GainMax = 0.0;
-        public double GainAlbumMin = 0.0;
+        public const string TagReplayTrackGain = "REPLAYGAIN_TRACK_GAIN";
+        public const string TagReplayTrackPeak = "REPLAYGAIN_TRACK_PEAK";
         public double GainAlbumMax = 0.0;
-        public double GainUndoTrack = 0.0;
+        public double GainAlbumMin = 0.0;
+        public double GainMax = 0.0;
+        public double GainMin = 0.0;
         public double GainUndoAlbum = 0.0;
         public string GainUndoLabel = string.Empty;
-        public double ReplayTrackGain = 0.0;
-        public double ReplayTrackPeak = 0.0;
+        public double GainUndoTrack = 0.0;
         public double ReplayAlbumGain = 0.0;
         public double ReplayAlbumPeak = 0.0;
-
+        public double ReplayTrackGain = 0.0;
+        public double ReplayTrackPeak = 0.0;
         private const double divide = 2.0 / 3.0;
-
-        public double ReplayTrackGainRounded
-        {
-            get
-            {
-                var gain = Math.Round(ReplayTrackGain * divide) / divide;
-
-                return gain;
-            }
-        }
-
-        public double ReplayAlbumGainRounded
-        {
-            get
-            {
-                var gain = Math.Round(ReplayAlbumGain * divide) / divide;
-
-                return gain;
-            }
-        }
-
-        public bool TrackClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
-        public bool AlbumClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
-
-        public string FilePath { get; set; } = string.Empty;
-        public string Artist { get; private set; } = string.Empty;
-        public string Album { get; private set; } = string.Empty;
-        public string FileName { get; set; } = string.Empty;
-
-        public string Title { get; set; } = string.Empty;
-        public uint Track { get; private set; }
-        public string AlbumArtist { get; private set; }
-        public string Folder { get; set; } = string.Empty;
-
-        public string FolderPath { get; set; } = string.Empty;
-        public int Progress { get; internal set; } = 0;
-
-        public bool HasTags { get; internal set; } = false;
-
-        public bool HasErrors => this.ErrorMessages.Count > 0;
-
-        public List<string> ErrorMessages { get; private set; } = new List<string>();
-        public bool Updated { get; internal set; }
-        public int SourceIndex { get; internal set; }
 
         public MP3GainFile(string file)
         {
@@ -103,12 +53,80 @@ namespace MP3GainMT
             }
         }
 
-        private void GenerateErrorMessage(string header, Exception ex)
-        {
-            var message = $"{header}: {ex.Message}";
-            this.ErrorMessages.Add(message);
+        public string Album { get; private set; } = string.Empty;
+        public string AlbumArtist { get; private set; }
+        public bool AlbumClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
+        public string Artist { get; private set; } = string.Empty;
+        public double DBOffset { get; set; } = 0.0;
+        public List<string> ErrorMessages { get; private set; } = new List<string>();
+        public string FileName { get; set; } = string.Empty;
+        public string FilePath { get; set; } = string.Empty;
+        public string Folder { get; set; } = string.Empty;
+        public string FolderPath { get; set; } = string.Empty;
+        public bool HasErrors => this.ErrorMessages.Count > 0;
+        public bool HasTags { get; internal set; } = false;
+        public int Progress { get; internal set; } = 0;
 
-            Debug.WriteLine($"{message} ({this.FilePath})");
+        public double ReplayAlbumGainRounded
+        {
+            get
+            {
+                var gain = Math.Round(ReplayAlbumGain * divide) / divide;
+
+                return gain;
+            }
+        }
+
+        public double ReplayTrackGainRounded
+        {
+            get
+            {
+                var gain = Math.Round(ReplayTrackGain * divide) / divide;
+
+                return gain;
+            }
+        }
+
+        public int SourceIndex { get; internal set; }
+        public double SuggestedGain { get; set; } = 0;
+        public string Title { get; set; } = string.Empty;
+        public uint Track { get; private set; }
+        public bool TrackClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
+        public bool Updated { get; internal set; }
+
+        public bool IsFileLocked()
+        {
+            try
+            {
+                FileInfo file = new FileInfo(this.FilePath);
+
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
+        }
+
+        public void WriteDebug()
+        {
+            Debug.WriteLine($"[{this.AlbumArtist} - {this.Album}] \\ {this.Track} - {this.Artist} - {this.Title}");
+            Debug.WriteLine($"MIN: {this.GainMin} MAX: {this.GainMax}");
+            Debug.WriteLine($"TRACK UNDO: {this.GainUndoTrack} ALBUM UNDO: {this.GainUndoAlbum} LABEL UNDO: {this.GainUndoLabel}");
+            Debug.WriteLine($"ALBUM GAIN: {this.ReplayAlbumGain} ALBUM PEAK: {this.ReplayAlbumPeak}");
+            Debug.WriteLine($"TRACK GAIN: {this.ReplayTrackGain} TRACK PEAK: {this.ReplayTrackPeak}");
+            Debug.WriteLine($"ALBUM GAIN ROUNDED: {this.ReplayAlbumGainRounded}");
+            Debug.WriteLine($"TRACK GAIN ROUNDED: {this.ReplayTrackGainRounded}");
         }
 
         internal void ExtractTags()
@@ -154,16 +172,10 @@ namespace MP3GainMT
             }
         }
 
-        public void WriteDebug()
+        internal void UpdateTags()
         {
-            Debug.WriteLine($"[{this.AlbumArtist} - {this.Album}] \\ {this.Track} - {this.Artist} - {this.Title}");
-            Debug.WriteLine($"MIN: {this.GainMin} MAX: {this.GainMax}");
-            Debug.WriteLine($"TRACK UNDO: {this.GainUndoTrack} ALBUM UNDO: {this.GainUndoAlbum} LABEL UNDO: {this.GainUndoLabel}");
-            Debug.WriteLine($"ALBUM GAIN: {this.ReplayAlbumGain} ALBUM PEAK: {this.ReplayAlbumPeak}");
-            Debug.WriteLine($"TRACK GAIN: {this.ReplayTrackGain} TRACK PEAK: {this.ReplayTrackPeak}");
-            Debug.WriteLine($"ALBUM GAIN ROUNDED: {this.ReplayAlbumGainRounded}");
-            Debug.WriteLine($"TRACK GAIN ROUNDED: {this.ReplayTrackGainRounded}");
-
+            this.HasTags = false;
+            ExtractTags();
         }
 
         private static void GetTagValue(TagLib.Ape.Tag apeTag, string key, out double value)
@@ -194,6 +206,14 @@ namespace MP3GainMT
             }
         }
 
+        private void GenerateErrorMessage(string header, Exception ex)
+        {
+            var message = $"{header}: {ex.Message}";
+            this.ErrorMessages.Add(message);
+
+            Debug.WriteLine($"{message} ({this.FilePath})");
+        }
+
         private void GetTagValueTriple(TagLib.Ape.Tag apeTag, string key, out double value0, out double value1, out string label)
         {
             value0 = -1.0;
@@ -209,36 +229,6 @@ namespace MP3GainMT
                 Double.TryParse(vector[1], out value1);
                 label = vector[2];
             }
-        }
-
-        internal void UpdateTags()
-        {
-            this.HasTags = false;
-            ExtractTags();
-        }
-
-        public bool IsFileLocked()
-        {
-            try
-            {
-                FileInfo file = new FileInfo(this.FilePath);
-
-                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
-                {
-                    stream.Close();
-                }
-            }
-            catch (IOException)
-            {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
-                return true;
-            }
-
-            //file is not locked
-            return false;
         }
     }
 }
