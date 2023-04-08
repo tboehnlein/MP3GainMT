@@ -118,8 +118,6 @@ namespace MP3GainMT
         {
             this.run.ResumeDataSource();
             this.fileGridView.ResumeLayout();
-
-            Debug.WriteLine("FINISHED PROCESSING FILES");
         }
 
         private void Run_SearchTimeElasped(object sender, TimeSpan e)
@@ -407,6 +405,11 @@ namespace MP3GainMT
         {
             this.ColumnTimer.Stop();
             this.ColumnTimer.Start();
+        }
+
+        private void UndoButton_Click(object sender, EventArgs e)
+        {
+            this.run.UndoGain();
         }
     }
 }

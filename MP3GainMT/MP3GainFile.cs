@@ -116,7 +116,7 @@ namespace WinFormMP3Gain
             if (!this.HasTags)
             {
                 try
-                {   
+                {
                     var tagFile = TagLib.File.Create(this.FilePath);
                     if (tagFile.Tag.Performers.Length > 0) { this.Artist = tagFile.Tag.Performers[0]; }
                     var types = tagFile.TagTypes;
@@ -146,6 +146,10 @@ namespace WinFormMP3Gain
                 catch (CorruptFileException ex)
                 {
                     GenerateErrorMessage("Tag Extract Error", ex);
+                }
+                catch (IOException ex)
+                {
+                    GenerateErrorMessage("Still open in mp3gain Error", ex);
                 }
             }
         }

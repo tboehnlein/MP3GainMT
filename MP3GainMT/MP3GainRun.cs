@@ -67,6 +67,7 @@ namespace WinFormMP3Gain
         private BackgroundWorker readTagsWorker;
         private BackgroundWorker searchWorker;
         private int filesDone;
+        private BackgroundWorker undoGainWorker;
 
         public event EventHandler AnalysisFinished;
 
@@ -702,5 +703,87 @@ namespace WinFormMP3Gain
 
             return active;
         }
+
+        internal void UndoGain()
+        {
+            foreach (var folder in Folders.Values)
+            {
+                var index = Folders.Values.ToList().IndexOf(folder);
+                var worker = new BackgroundWorker();
+                worker.WorkerReportsProgress = true;
+
+                worker.DoWork += UndoGain_DoWork;
+                worker.ProgressChanged += UndoGain_ProgressChanged;
+                worker.RunWorkerCompleted += UndoGain_RunWorkerCompleted;
+
+                worker.RunWorkerAsync(folder);
+            }
+
+            /*this.undoGainWorker = new BackgroundWorker();
+
+            undoGainWorker.WorkerReportsProgress = true;
+            undoGainWorker.WorkerSupportsCancellation = true;
+
+            undoGainWorker.DoWork += UndoGainWorker_DoWork;
+            undoGainWorker.ProgressChanged += UndoGainWorker_ProgressChanged;
+            undoGainWorker.RunWorkerCompleted += UndoGainWorker_RunWorkerCompleted;
+
+            undoGainWorker.RunWorkerAsync();*/
+        }
+
+        private void UndoGain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Result is MP3GainFolder folder)
+            {
+                string fileWord = WordWithEnding("file", folder.MP3Files);
+                Debug.WriteLine($"{folder.FolderName} is undone. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
+                this.RaiseFolderFinished(this, folder);
+                this.finished.Add(folder);
+            }
+        }
+
+        private void UndoGain_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.RaiseTaskProgressed(e.ProgressPercentage);
+
+            if (e.UserState is MP3GainFile file)
+            {
+                if (this.readTagEventCheck.CheckTime(e.ProgressPercentage == 100))
+                {
+                    this.DataSource[file.SourceIndex].Object.Progress = e.ProgressPercentage;
+
+                    this.RaiseRowUpdated(file.SourceIndex);
+                    //this.RaiseTagRead(file);
+                }
+            }
+            else if (e.UserState is string message)
+            {
+                this.RaiseAcivityUpdated(message);
+            }
+        }
+
+        private void UndoGain_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is MP3GainFolder folder)
+            {
+                folder.UndoGainFolder(Executable, sender as BackgroundWorker);
+                e.Result = folder;
+            }
+        }
+
+        /*private void UndoGainWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            
+        }
+
+        private void UndoGainWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            
+        }
+
+        private void UndoGainWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            
+        }*/
     }
 }
