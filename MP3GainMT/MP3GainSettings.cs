@@ -5,7 +5,7 @@ using System.IO;
 
 namespace MP3GainMT
 {
-    internal class MP3GainSettings
+    public class MP3GainSettings
     {
         private static readonly string ParentFolderLabel = "Last Used Folder";
         private static readonly string LeftPositionLabel = "Left Position";

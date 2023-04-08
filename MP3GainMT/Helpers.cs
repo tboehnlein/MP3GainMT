@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace MP3GainMT
 {
-    internal static class Helpers
+    public static class Helpers
     {
         public static string AsSingleLine(this List<string> list)
         {

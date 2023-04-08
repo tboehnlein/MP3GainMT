@@ -2,7 +2,7 @@
 
 namespace MP3GainMT
 {
-    internal class TimeCheck
+    public class TimeCheck
     {
         public double MinimumTime = .25;
         public DateTime LastTime = DateTime.Now;

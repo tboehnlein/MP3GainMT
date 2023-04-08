@@ -9,9 +9,9 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace WinFormMP3Gain
+namespace MP3GainMT
 {
-    internal class MP3GainRun
+    public class MP3GainRun
     {
         public event EventHandler<MP3GainFolder> FolderFinished;
 

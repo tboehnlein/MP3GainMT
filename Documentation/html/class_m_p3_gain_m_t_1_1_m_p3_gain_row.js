@@ -1,0 +1,28 @@
+var class_m_p3_gain_m_t_1_1_m_p3_gain_row =
+[
+    [ "MP3GainRow", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a978f0575c6ac63f9964ce4e7a5da6c6b", null ],
+    [ "CompareTo", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a4db19414cc3f09cc01d92ff40056426b", null ],
+    [ "Equals", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a91b6f6ffc96f31d8d8aa5f8cc6eaa7a4", null ],
+    [ "Equals", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a8f7b64f9f8ba7191f7a147bef7cd71b8", null ],
+    [ "GetHashCode", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a27d4fe919396b2e5f7fd30a63e0be8a5", null ],
+    [ "file", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#aa9452b80486b30a117113895f82ff5f9", null ],
+    [ "folder", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#ac6894dde511a0520ff3dfc236daf2b96", null ],
+    [ "TargetDefault", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a02983a1449e4ee93d58ed2b7b484953a", null ],
+    [ "Album", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#abf902cb67b664493460abddd613182e8", null ],
+    [ "AlbumArtist", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a2241b25a69419bce770eb640db84b9d5", null ],
+    [ "AlbumClipping", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a0fd219d86e3123205861d4b4867368ef", null ],
+    [ "AlbumDB", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a0d6c5e3a9f92be36f83ef1aa5055d0fe", null ],
+    [ "AlbumFinal", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a6c162780268939f566a346de1a0945c5", null ],
+    [ "Artist", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a70cf230cfce2d669885864ad2f246050", null ],
+    [ "ErrorMessage", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#ae9c7dfcf71f3fa0ed4ecc69efdad6068", null ],
+    [ "FileName", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a61837141a23128f68206de85e0893985", null ],
+    [ "Folder", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#ae8a4129032eea5a1312fd550b384811c", null ],
+    [ "FullPath", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a33aef820db2a5893c1eeddebd0d68850", null ],
+    [ "Progress", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a06c22407edd91df8b649b0e6903d897a", null ],
+    [ "TargetDB", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a8a7ca11672b672f88630ea115283c34c", null ],
+    [ "TargetDifference", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#ae3909f4f01155b019df91abad643f8b6", null ],
+    [ "TrackClipping", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#aff8811fa64443e4b87f9cf9935cb4770", null ],
+    [ "TrackDB", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a007fc8c88c4bb454c5f799e010eb756d", null ],
+    [ "TrackFinal", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a3c23b9c7311cb7501619737da464e0b0", null ],
+    [ "Updated", "class_m_p3_gain_m_t_1_1_m_p3_gain_row.html#a090ef31046164069a47491c1aeaa725e", null ]
+];
