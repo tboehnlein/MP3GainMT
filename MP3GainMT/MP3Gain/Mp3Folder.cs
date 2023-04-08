@@ -6,30 +6,30 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace MP3GainMT
+namespace MP3GainMT.MP3Gain
 {
-    public class MP3GainFolder
+    public class Mp3Folder
     {
         private static DateTime lastWrite = DateTime.Now;
-        private MP3GainFile activeFile;
+        private Mp3File activeFile;
         private List<string> sortedFiles;
         private StringBuilder sortError;
         private StringBuilder sortOutput;
         private BackgroundWorker worker;
 
-        public MP3GainFolder(string path)
+        public Mp3Folder(string path)
         {
             this.FolderPath = path;
             this.FolderName = Path.GetFileName(path);
         }
 
-        public event EventHandler<MP3GainFile> ChangedFile;
+        public event EventHandler<Mp3File> ChangedFile;
 
-        public event EventHandler<MP3GainFile> FoundFile;
+        public event EventHandler<Mp3File> FoundFile;
 
-        public ExecuteMP3Gain ApplyGainExecution { get; private set; }
+        public ExecuteMp3Gain ApplyGainExecution { get; private set; }
         public double DBOffset { get; set; } = 0.0;
-        public Dictionary<string, MP3GainFile> Files { get; set; } = new Dictionary<string, MP3GainFile>();
+        public Dictionary<string, Mp3File> Files { get; set; } = new Dictionary<string, Mp3File>();
         public string FolderName { get; set; } = string.Empty;
         public string FolderPath { get; set; } = string.Empty;
         public List<string> MP3Files
@@ -41,7 +41,7 @@ namespace MP3GainMT
         }
 
         public int SuggestedGain { get; set; } = 0;
-        public ExecuteMP3Gain UndoGainExecution { get; private set; }
+        public ExecuteMp3Gain UndoGainExecution { get; private set; }
         public void SearchFolder()
         {
             this.FindFiles(this.FolderPath);
@@ -112,7 +112,7 @@ namespace MP3GainMT
 
         private void ExecuteApplyGain(string executable)
         {
-            this.ApplyGainExecution = new ExecuteMP3Gain(executable,
+            this.ApplyGainExecution = new ExecuteMp3Gain(executable,
                                                         $"/o /g {this.SuggestedGain}",
                                                         this.Files,
                                                         this.FolderPath,
@@ -126,7 +126,7 @@ namespace MP3GainMT
 
         private void ExecuteUndoGain(string executable)
         {
-            this.UndoGainExecution = new ExecuteMP3Gain(executable,
+            this.UndoGainExecution = new ExecuteMp3Gain(executable,
                                                         "/u",
                                                         this.Files,
                                                         this.FolderPath,
@@ -146,7 +146,7 @@ namespace MP3GainMT
             {
                 if (File.Exists(file))
                 {
-                    var mp3File = new MP3GainFile(file);
+                    var mp3File = new Mp3File(file);
 
                     this.Files.Add(mp3File.FilePath, mp3File);
 
@@ -187,7 +187,7 @@ namespace MP3GainMT
             return found;
         }
 
-        private void ProcessAnalysisOutputLine(string line, ref MP3GainFile gainFile)
+        private void ProcessAnalysisOutputLine(string line, ref Mp3File gainFile)
         {
             //start mp3 file
             if (ProcessFilePath(ref gainFile, line))
@@ -206,7 +206,7 @@ namespace MP3GainMT
             }
         }
 
-        private bool ProcessFileGain(MP3GainFile gainFile, string line)
+        private bool ProcessFileGain(Mp3File gainFile, string line)
         {
             bool found = false;
             bool done = false;
@@ -249,7 +249,7 @@ namespace MP3GainMT
             return found;
         }
 
-        private bool ProcessFilePath(ref MP3GainFile gainFile, string line)
+        private bool ProcessFilePath(ref Mp3File gainFile, string line)
         {
             bool found = false;
 
@@ -262,7 +262,7 @@ namespace MP3GainMT
             return found;
         }
 
-        private void RaiseChangedFile(MP3GainFile file)
+        private void RaiseChangedFile(Mp3File file)
         {
             if (ChangedFile != null)
             {
@@ -271,7 +271,7 @@ namespace MP3GainMT
             }
         }
 
-        private void RaiseFoundFile(MP3GainFile file)
+        private void RaiseFoundFile(Mp3File file)
         {
             if (FoundFile != null)
             {

@@ -7,9 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MP3GainMT
+namespace MP3GainMT.MP3Gain
 {
-    public class MP3GainRun
+    public class Mp3GainManager
     {
         private const string CancelMessage = "Cancellation successful.";
 
@@ -17,9 +17,9 @@ namespace MP3GainMT
 
         private TimeCheck findFileEventCheck = new TimeCheck(8);
 
-        private List<MP3GainFolder> finished = new List<MP3GainFolder>();
+        private List<Mp3Folder> finished = new List<Mp3Folder>();
 
-        private Dictionary<string, MP3GainFile> foundFiles = new Dictionary<string, MP3GainFile>();
+        private Dictionary<string, Mp3File> foundFiles = new Dictionary<string, Mp3File>();
 
         private Stack<FolderWorker> processQueue;
 
@@ -33,7 +33,7 @@ namespace MP3GainMT
 
         private DateTime startSearchTime;
 
-        public MP3GainRun(string exePath, string parentFolder = "")
+        public Mp3GainManager(string exePath, string parentFolder = "")
         {
             if (Executable == string.Empty)
             {
@@ -59,21 +59,21 @@ namespace MP3GainMT
 
         public event EventHandler<string> AskSearchQuestion;
 
-        public event EventHandler<MP3GainFile> ChangedFile;
+        public event EventHandler<Mp3File> ChangedFile;
 
-        public event EventHandler<MP3GainFolder> FolderFinished;
+        public event EventHandler<Mp3Folder> FolderFinished;
 
-        public event EventHandler<MP3GainFolder> FolderLoaded;
+        public event EventHandler<Mp3Folder> FolderLoaded;
 
-        public event EventHandler<MP3GainFile> FoundFile;
+        public event EventHandler<Mp3File> FoundFile;
         public event EventHandler RefreshTable;
 
         public event EventHandler<int> RowUpdated;
 
-        public event EventHandler<MP3GainFolder> SearchFinishedFolder;
+        public event EventHandler<Mp3Folder> SearchFinishedFolder;
         public event EventHandler<TimeSpan> SearchTimeElasped;
 
-        public event EventHandler<MP3GainFile> TagRead;
+        public event EventHandler<Mp3File> TagRead;
 
         public event EventHandler<int> TaskProgressed;
         public static string Executable { get; set; } = string.Empty;
@@ -91,7 +91,7 @@ namespace MP3GainMT
             get { return this.foundFiles.Count; }
         }
 
-        public Dictionary<string, MP3GainFolder> Folders { get; set; } = new Dictionary<string, MP3GainFolder>();
+        public Dictionary<string, Mp3Folder> Folders { get; set; } = new Dictionary<string, Mp3Folder>();
 
         public int FoldersLeft { get; private set; }
 
@@ -103,7 +103,7 @@ namespace MP3GainMT
 
         public Dictionary<string, MP3GainRow> SourceDictionary { get; private set; } = new Dictionary<string, MP3GainRow>();
 
-        private List<MP3GainFile> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
+        private List<Mp3File> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
 
         public static string WordWithEnding<T>(string word, List<T> list)
         {
@@ -122,13 +122,13 @@ namespace MP3GainMT
 
                 worker.DoWork += ApplyGain_DoWork;
                 worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
-                worker.RunWorkerCompleted += MP3GainExecute_RunWorkerCompleted;
+                worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
 
                 worker.RunWorkerAsync(folder);
             }
         }
 
-        public List<MP3GainFile> FolderFiles(MP3GainFolder folder)
+        public List<Mp3File> FolderFiles(Mp3Folder folder)
         {
             return folder.Files.Select(x => x.Value).ToList();
         }
@@ -168,7 +168,7 @@ namespace MP3GainMT
             searchWorker.RunWorkerAsync(parentFolder);
         }
 
-        public void UpdateFile(MP3GainFile file)
+        public void UpdateFile(Mp3File file)
         {
             if (this.Folders.ContainsKey(file.FolderPath))
             {
@@ -181,7 +181,7 @@ namespace MP3GainMT
             }
         }
 
-        internal void AddFile(MP3GainFile file)
+        internal void AddFile(Mp3File file)
         {
             if (!this.foundFiles.ContainsKey(file.FilePath))
             {
@@ -231,7 +231,7 @@ namespace MP3GainMT
             this.RefreshDataSource(AllFiles);
         }
 
-        internal void RefreshDataSource(List<MP3GainFile> folderFiles)
+        internal void RefreshDataSource(List<Mp3File> folderFiles)
         {
             this.Source.RaiseListChangedEvents = false;
 
@@ -268,13 +268,13 @@ namespace MP3GainMT
 
                 worker.DoWork += UndoGain_DoWork;
                 worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
-                worker.RunWorkerCompleted += MP3GainExecute_RunWorkerCompleted;
+                worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
 
                 worker.RunWorkerAsync(folder);
             }
         }
 
-        internal void UpdateFolder(MP3GainFolder e)
+        internal void UpdateFolder(Mp3Folder e)
         {
             var folderFiles = FolderFiles(e);
 
@@ -311,7 +311,7 @@ namespace MP3GainMT
 
         private void ApplyGain_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (e.Argument is MP3GainFolder folder)
+            if (e.Argument is Mp3Folder folder)
             {
                 folder.ApplyGainFolder(Executable, sender as BackgroundWorker);
                 e.Result = folder;
@@ -375,10 +375,10 @@ namespace MP3GainMT
 
             foreach (var folder in folders)
             {
-                var mp3Folder = new MP3GainFolder(folder);
+                var mp3Folder = new Mp3Folder(folder);
 
-                mp3Folder.FoundFile += MP3Folder_FoundFile;
-                mp3Folder.ChangedFile += MP3Folder_ChangedFile;
+                mp3Folder.FoundFile += Mp3Folder_FoundFile;
+                mp3Folder.ChangedFile += Mp3Folder_ChangedFile;
                 mp3Folder.SearchFolder();
 
                 if (mp3Folder.MP3Files.Count > 0)
@@ -418,19 +418,19 @@ namespace MP3GainMT
             return Convert.ToInt32(progressSoFar);
         }
 
-        private void MP3Folder_ChangedFile(object sender, MP3GainFile e)
+        private void Mp3Folder_ChangedFile(object sender, Mp3File e)
         {
             this.RaiseChangedFile(sender, e);
         }
 
-        private void MP3Folder_FoundFile(object sender, MP3GainFile e)
+        private void Mp3Folder_FoundFile(object sender, Mp3File e)
         {
             this.RaiseFoundFile(sender, e);
         }
 
-        private void MP3GainExecute_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ExecuteMP3Gain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Result is MP3GainFolder folder)
+            if (e.Result is Mp3Folder folder)
             {
                 string fileWord = WordWithEnding("file", folder.MP3Files);
 
@@ -448,7 +448,7 @@ namespace MP3GainMT
 
         private void ProcessFiles_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (e.Argument is MP3GainFolder folder)
+            if (e.Argument is Mp3Folder folder)
             {
                 folder.ProcessFiles(Executable, sender as BackgroundWorker);
                 e.Result = folder;
@@ -465,7 +465,7 @@ namespace MP3GainMT
 
         private void ProcessFiles_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Result is MP3GainFolder folder)
+            if (e.Result is Mp3Folder folder)
             {
                 RunNextFolder();
 
@@ -497,7 +497,7 @@ namespace MP3GainMT
             }
         }
 
-        private void RaiseChangedFile(object sender, MP3GainFile e)
+        private void RaiseChangedFile(object sender, Mp3File e)
         {
             if (this.ChangedFile != null)
             {
@@ -505,7 +505,7 @@ namespace MP3GainMT
             }
         }
 
-        private void RaiseFolderFinished(object sender, MP3GainFolder folder)
+        private void RaiseFolderFinished(object sender, Mp3Folder folder)
         {
             this.FoldersLeft--;
 
@@ -515,7 +515,7 @@ namespace MP3GainMT
             }
         }
 
-        private void RaiseFolderLoaded(MP3GainFolder folder)
+        private void RaiseFolderLoaded(Mp3Folder folder)
         {
             if (this.FolderLoaded != null)
             {
@@ -523,7 +523,7 @@ namespace MP3GainMT
             }
         }
 
-        private void RaiseFoundFile(object sender, MP3GainFile file)
+        private void RaiseFoundFile(object sender, Mp3File file)
         {
             if (this.FoundFile != null)
             {
@@ -559,7 +559,7 @@ namespace MP3GainMT
                 SearchTimeElasped.Invoke(this, this.ElaspedSearchTime);
             }
         }
-        private void RaiseTagRead(MP3GainFile mP3GainFile)
+        private void RaiseTagRead(Mp3File mP3GainFile)
         {
             if (this.TagRead != null)
             {
@@ -608,7 +608,7 @@ namespace MP3GainMT
         {
             this.RaiseTaskProgressed(e.ProgressPercentage);
 
-            if (e.UserState is MP3GainFile file)
+            if (e.UserState is Mp3File file)
             {
                 this.RaiseRowUpdated(file.SourceIndex);
 
@@ -682,7 +682,7 @@ namespace MP3GainMT
             {
                 this.RaiseTaskProgressed(e.ProgressPercentage);
 
-                if (e.UserState is MP3GainFolder folder)
+                if (e.UserState is Mp3Folder folder)
                 {
                     if (findFileEventCheck.CheckTime(e.ProgressPercentage == 100))
                     {
@@ -715,7 +715,7 @@ namespace MP3GainMT
         }
         private void UndoGain_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (e.Argument is MP3GainFolder folder)
+            if (e.Argument is Mp3Folder folder)
             {
                 folder.UndoGain(Executable, sender as BackgroundWorker);
                 e.Result = folder;

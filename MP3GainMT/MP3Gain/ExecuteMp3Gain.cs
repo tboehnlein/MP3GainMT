@@ -5,16 +5,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace MP3GainMT
+namespace MP3GainMT.MP3Gain
 {
-    public class ExecuteMP3Gain
+    public class ExecuteMp3Gain
     {
-        private MP3GainFile activeFile = null;
+        private Mp3File activeFile = null;
         private int filesFinished = 0;
         private TimeCheck progressTimeCheck = new TimeCheck(5);
         private List<string> sortedFiles = new List<string>();
 
-        public ExecuteMP3Gain(string executable, string arguments, Dictionary<string, MP3GainFile> files, string folder, string actionName, BackgroundWorker worker, string fileOutputPrefix, string endingOutputText)
+        public ExecuteMp3Gain(string executable, string arguments, Dictionary<string, Mp3File> files, string folder, string actionName, BackgroundWorker worker, string fileOutputPrefix, string endingOutputText)
         {
             this.Executable = executable;
             this.Arguments = arguments;
@@ -30,7 +30,7 @@ namespace MP3GainMT
         public string Arguments { get; set; }
         public string EndingText { get; private set; }
         public string Executable { get; set; }
-        public Dictionary<string, MP3GainFile> Files { get; set; } = new Dictionary<string, MP3GainFile>();
+        public Dictionary<string, Mp3File> Files { get; set; } = new Dictionary<string, Mp3File>();
         public string FolderName => Path.GetDirectoryName(FolderPath);
         public string FolderPath { get; set; } = string.Empty;
         public Process Process { get; set; }

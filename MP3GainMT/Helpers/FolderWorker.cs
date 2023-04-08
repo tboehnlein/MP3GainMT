@@ -1,12 +1,13 @@
-﻿using System.ComponentModel;
+﻿using MP3GainMT.MP3Gain;
+using System.ComponentModel;
 
 namespace MP3GainMT
 {
     public class FolderWorker
     {
-        public MP3GainFolder Folder;
+        public Mp3Folder Folder;
         public BackgroundWorker Worker;
-        public FolderWorker(BackgroundWorker worker, MP3GainFolder folder)
+        public FolderWorker(BackgroundWorker worker, Mp3Folder folder)
         {
             Worker = worker;
             Folder = folder;

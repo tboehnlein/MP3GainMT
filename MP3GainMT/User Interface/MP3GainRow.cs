@@ -1,35 +1,52 @@
-﻿using System;
+﻿using MP3GainMT.MP3Gain;
+using System;
 
 namespace MP3GainMT
 {
+    /// <summary>
+    /// DO NOT REORGANIZE THIS FILE WITH CODEMAID. Public property order affects the column order of the table.
+    /// </summary>
+
     public class MP3GainRow : IComparable<MP3GainRow>, IEquatable<MP3GainRow>
     {
         public const double TargetDefault = 89.0;
-        private MP3GainFile file = null;
+        private Mp3File file = null;
 
-        private MP3GainFolder folder;
+        private Mp3Folder folder;
 
-        public MP3GainRow(MP3GainFile file, MP3GainFolder folder)
+        public MP3GainRow(Mp3File file, Mp3Folder folder)
         {
             this.file = file;
             this.folder = folder;
         }
 
+        public string FullPath => this.file.FilePath;
+
         public static double TargetDB { get; set; } = 89.0;
-        public string Album => this.file.Album;
+
         public string AlbumArtist => this.file.AlbumArtist;
-        public bool AlbumClipping => this.file.AlbumClipping;
+
+        public string Artist => this.file.Artist;
+
+        public string Album => this.file.Album;
+
+        public string Folder => this.file.Folder;
+
+        public string FileName => this.file.FileName;
+
+        public int Progress { get; set; } = 0;
+
         public double AlbumDB => Math.Round(MP3GainRow.TargetDefault - this.file.ReplayAlbumGain, 1);
         public double AlbumFinal => Math.Round(this.file.ReplayAlbumGainRounded - TargetDifference, 1);
-        public string Artist => this.file.Artist;
-        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
-        public string FileName => this.file.FileName;
-        public string Folder => this.file.Folder;
-        public string FullPath => this.file.FilePath;
-        public int Progress { get; set; } = 0;
-        public bool TrackClipping => this.file.TrackClipping;
+
+        public bool AlbumClipping => this.file.AlbumClipping;
+
         public double TrackDB => Math.Round(MP3GainRow.TargetDefault - this.file.ReplayTrackGain, 1);
         public double TrackFinal => Math.Round(this.file.ReplayTrackGainRounded - TargetDifference, 1);
+
+        public bool TrackClipping => this.file.TrackClipping;
+
+        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
 
         public bool Updated
         {
@@ -44,6 +61,7 @@ namespace MP3GainMT
         }
 
         private static double TargetDifference => MP3GainRow.TargetDefault - MP3GainRow.TargetDB;
+
         public int CompareTo(MP3GainRow row)
         {
             if (row == null) return 1;

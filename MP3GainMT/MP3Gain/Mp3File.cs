@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using TagLib;
 
-namespace MP3GainMT
+namespace MP3GainMT.MP3Gain
 {
-    public class MP3GainFile
+    public class Mp3File
     {
         public const string TagMp3GainAlbumMinMax = "MP3GAIN_ALBUM_MINMAX";
         public const string TagMp3GainMinMax = "MP3GAIN_MINMAX";
@@ -29,7 +29,7 @@ namespace MP3GainMT
         public double ReplayTrackPeak = 0.0;
         private const double divide = 2.0 / 3.0;
 
-        public MP3GainFile(string file)
+        public Mp3File(string file)
         {
             this.FilePath = file;
             this.Progress = 0;

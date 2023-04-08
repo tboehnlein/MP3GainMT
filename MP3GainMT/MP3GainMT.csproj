@@ -61,26 +61,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExecuteMP3Gain.cs" />
-    <Compile Include="FileProgress.cs" />
-    <Compile Include="FolderWorker.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="MP3Gain\ExecuteMp3Gain.cs" />
+    <Compile Include="Helpers\FileProgress.cs" />
+    <Compile Include="Helpers\FolderWorker.cs" />
+    <Compile Include="User Interface\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="User Interface\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers.cs" />
-    <Compile Include="MP3GainFile.cs" />
-    <Compile Include="MP3GainFolder.cs" />
-    <Compile Include="MP3GainRow.cs" />
-    <Compile Include="MP3GainRun.cs" />
-    <Compile Include="MP3GainSettings.cs" />
+    <Compile Include="Helpers\Helpers.cs" />
+    <Compile Include="MP3Gain\Mp3File.cs" />
+    <Compile Include="MP3Gain\Mp3Folder.cs" />
+    <Compile Include="User Interface\MP3GainRow.cs" />
+    <Compile Include="MP3Gain\Mp3GainManager.cs" />
+    <Compile Include="User Interface\MP3GainSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskUpdate.cs" />
-    <Compile Include="TimeCheck.cs" />
-    <EmbeddedResource Include="MainForm.resx">
+    <Compile Include="Helpers\TaskUpdate.cs" />
+    <Compile Include="Helpers\TimeCheck.cs" />
+    <EmbeddedResource Include="User Interface\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MP3GainMT.MP3Gain;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -13,7 +14,7 @@ namespace MP3GainMT
         private System.Windows.Forms.Timer ColumnTimer = new System.Windows.Forms.Timer();
         private DateTime lastLabelRefresh = DateTime.Now;
         private DateTime lastSort = DateTime.Now;
-        private MP3GainRun run;
+        private Mp3GainManager run;
         private MP3GainSettings settings;
         private BindingSource source;
 
@@ -23,7 +24,7 @@ namespace MP3GainMT
 
             this.settings = new MP3GainSettings();
             this.source = new BindingSource();
-            this.run = new MP3GainRun(@"C:\MP3Gain\mp3gain.exe");
+            this.run = new Mp3GainManager(@"C:\MP3Gain\mp3gain.exe");
 
             this.ReadSettings(run);
 
@@ -165,7 +166,7 @@ namespace MP3GainMT
             return $"Loaded Files [{GetFolderFileCountText()}]";
         }
 
-        private void ReadSettings(MP3GainRun run)
+        private void ReadSettings(Mp3GainManager run)
         {
             this.Left = this.settings.LeftPosition;
             this.Top = this.settings.TopPosition;
@@ -231,16 +232,16 @@ namespace MP3GainMT
             }
         }
 
-        private void Run_ChangedFile(object sender, MP3GainFile e)
+        private void Run_ChangedFile(object sender, Mp3File e)
         {
             //this.run.UpdateFile(e);
         }
 
-        private void Run_FolderFinished(object sender, MP3GainFolder e)
+        private void Run_FolderFinished(object sender, Mp3Folder e)
         {
             Debug.WriteLine($"FOLDER {e.FolderName} FINISHED!");
 
-            if (sender is MP3GainRun runner)
+            if (sender is Mp3GainManager runner)
             {
                 this.run.UpdateFolder(e);
 
@@ -254,12 +255,12 @@ namespace MP3GainMT
             }
         }
 
-        private void Run_FolderLoaded(object sender, MP3GainFolder e)
+        private void Run_FolderLoaded(object sender, Mp3Folder e)
         {
             UpdateFileListLabel();
         }
 
-        private void Run_FoundFile(object sender, MP3GainFile e)
+        private void Run_FoundFile(object sender, Mp3File e)
         {
             this.run.AddFile(e);
         }
@@ -278,7 +279,7 @@ namespace MP3GainMT
             }
         }
 
-        private void Run_SearchFinishedFolder(object sender, MP3GainFolder e)
+        private void Run_SearchFinishedFolder(object sender, Mp3Folder e)
         {
             run.RefreshDataSource(run.FolderFiles(e));
             SortTable();
@@ -289,7 +290,7 @@ namespace MP3GainMT
             this.TickActivityLabel();
         }
 
-        private void Run_TagRead(object sender, MP3GainFile e)
+        private void Run_TagRead(object sender, Mp3File e)
         {
             this.activityLabel.Text = $"Reading tag for {e.Folder}\\{e.FileName}";
             this.activityLabel.Refresh();
