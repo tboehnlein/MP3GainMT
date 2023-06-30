@@ -40,10 +40,22 @@ namespace MP3GainMT.MP3Gain
             {
                 var folders = this.FolderPath.Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                var first = folders[2];
-                var secondLast = $"{folders[folders.Count - 2]}\\";
-                var last = folders.Last();
-                var displayFolder = $"{Path.GetPathRoot(this.FilePath)}{first}\\ ... \\{secondLast}{last}";
+                if (folders.Count <= 4)
+                {
+                    this.Folder = this.FolderPath;
+
+                    return;
+                }
+
+                var first = folders[1];
+                
+                var fourthLast = GetRightSubFolder(folders, 4);
+                var thirdLast = GetRightSubFolder(folders, 3);
+                var secondLast = GetRightSubFolder(folders, 2);
+                var last = GetRightSubFolder(folders, 1);
+                var split = $"\\ ... \\";
+
+                var displayFolder = $"{Path.GetPathRoot(this.FilePath)}{first}{split}{fourthLast}{thirdLast}{secondLast}{last}";
 
                 this.Folder = displayFolder;
             }
@@ -53,9 +65,20 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        private static string GetRightSubFolder(List<string> folders, int index)
+        {
+            var folder = string.Empty;
+
+            if (folders.Count > (index + 1))
+            {
+                folder = $"{folders[folders.Count - index]}\\";
+            }
+
+            return folder;
+        }
+
         public string Album { get; private set; } = string.Empty;
         public string AlbumArtist { get; private set; }
-        public bool AlbumClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
         public string Artist { get; private set; } = string.Empty;
         public double DBOffset { get; set; } = 0.0;
         public List<string> ErrorMessages { get; private set; } = new List<string>();
@@ -91,8 +114,8 @@ namespace MP3GainMT.MP3Gain
         public double SuggestedGain { get; set; } = 0;
         public string Title { get; set; } = string.Empty;
         public uint Track { get; private set; }
-        public bool TrackClipping => ReplayTrackPeak.CompareTo(1.0) == 1;
         public bool Updated { get; internal set; }
+        public long Length { get; private set; }
 
         public bool IsFileLocked()
         {
@@ -120,6 +143,7 @@ namespace MP3GainMT.MP3Gain
 
         public void WriteDebug()
         {
+            Debug.WriteLine(this.FileName);
             Debug.WriteLine($"[{this.AlbumArtist} - {this.Album}] \\ {this.Track} - {this.Artist} - {this.Title}");
             Debug.WriteLine($"MIN: {this.GainMin} MAX: {this.GainMax}");
             Debug.WriteLine($"TRACK UNDO: {this.GainUndoTrack} ALBUM UNDO: {this.GainUndoAlbum} LABEL UNDO: {this.GainUndoLabel}");
@@ -127,12 +151,26 @@ namespace MP3GainMT.MP3Gain
             Debug.WriteLine($"TRACK GAIN: {this.ReplayTrackGain} TRACK PEAK: {this.ReplayTrackPeak}");
             Debug.WriteLine($"ALBUM GAIN ROUNDED: {this.ReplayAlbumGainRounded}");
             Debug.WriteLine($"TRACK GAIN ROUNDED: {this.ReplayTrackGainRounded}");
+            Debug.WriteLine($"FILE LENGTH: {this.Length}");
         }
 
         internal void ExtractTags()
         {
             if (!this.HasTags)
             {
+                try
+                {
+                    var info = new FileInfo(this.FilePath);
+
+                    this.Length = info.Length;
+                }
+                catch (Exception ex)
+                {
+                    this.Length = 0L;
+
+                    GenerateErrorMessage("File Info Error", ex);
+                }
+
                 try
                 {
                     var tagFile = TagLib.File.Create(this.FilePath);
@@ -146,7 +184,7 @@ namespace MP3GainMT.MP3Gain
 
                         GetTagValuePair(apeTag, TagMp3GainMinMax, out GainMin, out GainMax);
                         GetTagValueTriple(apeTag, TagMp3GainUndo, out GainUndoTrack, out GainUndoAlbum, out GainUndoLabel);
-                        GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);
+                        GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);                        
                         GetTagValue(apeTag, TagReplayAlbumPeak, out this.ReplayAlbumPeak);
                         GetTagValue(apeTag, TagReplayTrackGain, out this.ReplayTrackGain);
                         GetTagValue(apeTag, TagReplayTrackPeak, out this.ReplayTrackPeak);
@@ -159,7 +197,7 @@ namespace MP3GainMT.MP3Gain
                     this.Updated = true;
                     this.HasTags = true;
 
-                    //this.WriteDebug();
+                    //WriteDebug();
                 }
                 catch (CorruptFileException ex)
                 {

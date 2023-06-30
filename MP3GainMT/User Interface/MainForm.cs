@@ -1,5 +1,6 @@
 ﻿using MP3GainMT.MP3Gain;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -69,7 +70,7 @@ namespace MP3GainMT
 
             if (Directory.Exists(parentFolder))
             {
-                this.run.ProcessFiles();
+                this.run.AnalyzeFiles();
             }
         }
 
@@ -114,19 +115,29 @@ namespace MP3GainMT
         private void ClearButton_Click(object sender, EventArgs e)
         {
             this.run.Clear();
+            this.ClearColumnWidths();
             this.source.DataSource = this.run.DataSource;
+        }
+
+        private void ClearColumnWidths()
+        {
+            ResetColumnWidth(this.Folder.Name);
+            ResetColumnWidth(this.AlbumArtist.Name);
+            ResetColumnWidth(this.Album.Name);
+            ResetColumnWidth(this.Artist.Name);
+        }
+
+        private void ResetColumnWidth(string name)
+        {
+            var gridViewColumn = this.fileGridView.Columns[name];
+            this.fileGridView.AutoResizeColumn(gridViewColumn.Index, DataGridViewAutoSizeColumnMode.DisplayedCells);
+            var artistMinWidth = gridViewColumn.GetPreferredWidth(DataGridViewAutoSizeColumnMode.DisplayedCells, true);
+            gridViewColumn.MinimumWidth = artistMinWidth;
         }
 
         private void ClipOnlyCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.clipOnlyCheckBox.Checked)
-            {
-                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return row.TrackClipping || row.AlbumClipping; });
-            }
-            else
-            {
-                this.run.DataSource.RemoveFilter();
-            }
+            DefineFilters();
         }
 
         private void ColumnTimer_Tick(object sender, EventArgs e)
@@ -239,7 +250,7 @@ namespace MP3GainMT
 
         private void Run_FolderFinished(object sender, Mp3Folder e)
         {
-            Debug.WriteLine($"FOLDER {e.FolderName} FINISHED!");
+            //Debug.WriteLine($"FOLDER {e.FolderName} FINISHED!");
 
             if (sender is Mp3GainManager runner)
             {
@@ -249,7 +260,7 @@ namespace MP3GainMT
                 {
                     var finishTime = DateTime.Now;
                     var timeElapsed = finishTime - StartTime;
-                    Debug.WriteLine($"COMPLETELY FINISHED!!!!!! TIME: {timeElapsed.Minutes}:{timeElapsed.Seconds}");
+                    //Debug.WriteLine($"COMPLETELY FINISHED!!!!!! TIME: {timeElapsed.Minutes}:{timeElapsed.Seconds}");
                     this.SortTable();
                 }
             }
@@ -395,7 +406,7 @@ namespace MP3GainMT
                 this.activityProgressBar.Enabled = true;
             }
 
-            Debug.WriteLine($"TASK PROGRESS: {progress}");
+            //Debug.WriteLine($"TASK PROGRESS: {progress}");
         }
 
         private void WriteSettings()
@@ -408,6 +419,65 @@ namespace MP3GainMT
             this.settings.ParentFolder = run.ParentFolder;
 
             this.settings.WriteSettingsFile();
+        }
+
+        private void FileGridView_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
+        {
+            var folderIndex = this.fileGridView.Columns["Folder"].Index;
+            var pathIndex = this.fileGridView.Columns["FullPath"].Index;
+            int fileIndex = this.fileGridView.Columns["FileName"].Index;
+
+            if ((e.ColumnIndex == folderIndex || e.ColumnIndex == fileIndex) && e.RowIndex >= 0)
+            {
+                var cell = this.fileGridView.Rows[e.RowIndex].Cells[pathIndex];
+                e.ToolTipText = cell.Value.ToString();
+            }
+        }
+
+        public bool CheckAlbumClipOnly(MP3GainRow row, bool apply)
+        {
+            if (!apply) { return true; }    
+
+            return row.AlbumClipping; ;
+        }
+
+        public bool CheckTrackClipOnly(MP3GainRow row, bool apply)
+        {
+            if (!apply) { return true; }
+
+            return row.TrackClipping; ;
+        }
+
+        public bool CheckThreshOnly(MP3GainRow row, bool apply, double threshold)
+        {
+            if (!apply) { return true; }
+
+            return row.TrackDB > threshold;
+        }
+
+        private void DefineFilters()
+        {
+            this.run.DataSource.RemoveFilter();
+
+            var threshold = Convert.ToDouble(this.threshNumeric.Value);
+            var useThresh = this.threshCheckBox.Checked;
+            var useTrackClipping = this.clipOnlyTrackCheckBox.Checked;
+            var useAlbumClipping = this.clipOnlyAlbumCheckBox.Checked;
+
+            if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked)
+            {
+                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold); });
+            }
+        }
+
+        private void ThreshCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
+        }
+
+        private void ThreshDbNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
         }
     }
 }

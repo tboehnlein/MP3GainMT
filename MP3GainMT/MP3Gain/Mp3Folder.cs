@@ -40,6 +40,9 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        public long Length => this.Files.Sum(x => x.Value.Length);
+
+        public int UndoSuggestedGain { get; private set; }
         public int SuggestedGain { get; set; } = 0;
         public ExecuteMp3Gain UndoGainExecution { get; private set; }
         public void SearchFolder()
@@ -122,10 +125,27 @@ namespace MP3GainMT.MP3Gain
                                                         "done");
 
             this.ApplyGainExecution.Execute();
+
+            ResetSuggestedGain();
+
+            //Debug.WriteLine($"APPLY SUGG: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
+        }
+
+        private void ResetSuggestedGain()
+        {
+            if (this.SuggestedGain != 0)
+            {
+                this.UndoSuggestedGain = this.SuggestedGain;
+                //Debug.WriteLine($"APPLY STORED PREV {this.UndoSuggestedGain} for {this.FolderName}");
+            }
+
+            this.SuggestedGain = 0;
         }
 
         private void ExecuteUndoGain(string executable)
         {
+            RecordUndoSuggestedTag();
+
             this.UndoGainExecution = new ExecuteMp3Gain(executable,
                                                         "/u",
                                                         this.Files,
@@ -136,6 +156,26 @@ namespace MP3GainMT.MP3Gain
                                                         "                                                   ");
 
             this.UndoGainExecution.Execute();
+            
+            RestoreUndoSuggestedGain();
+        }
+
+        private void RestoreUndoSuggestedGain()
+        {
+            this.SuggestedGain = this.UndoSuggestedGain;
+
+            //Debug.WriteLine($"UNDO SUGG: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
+        }
+
+        private void RecordUndoSuggestedTag()
+        {
+            var undoAlbumGain = -Convert.ToInt32(this.Files.Values.First().GainUndoAlbum);
+
+            if (undoAlbumGain != 0)
+            {
+                this.UndoSuggestedGain = undoAlbumGain;
+                //Debug.WriteLine($"UNDO RECOVERED PREV: {this.UndoSuggestedGain} for {this.FolderName}");
+            }
         }
 
         private void FindFiles(string folderPath)
@@ -167,6 +207,10 @@ namespace MP3GainMT.MP3Gain
                 if (Int32.TryParse(change, out var gain))
                 {
                     this.SuggestedGain = gain;
+                    this.UndoSuggestedGain = this.SuggestedGain;
+
+                    //Debug.WriteLine($"PROC SUGG: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
+
                     found = true;
                 }
             }
@@ -308,14 +352,14 @@ namespace MP3GainMT.MP3Gain
             analysisProcess.BeginOutputReadLine();
             analysisProcess.BeginErrorReadLine();
 
-            Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
+            //Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
 
             analysisProcess.WaitForExit();
 
             analysisProcess.OutputDataReceived -= AnalysisProcess_OutputDataReceived;
             analysisProcess.ErrorDataReceived -= AnalysisProcess_ErrorDataReceived;
 
-            Debug.WriteLine($"FNISHED ANALYSIS FOR {this.FolderName}");
+            //Debug.WriteLine($"FINSHED ANALYSIS FOR {this.FolderName}");
         }
     }
 }

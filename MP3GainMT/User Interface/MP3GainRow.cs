@@ -36,16 +36,22 @@ namespace MP3GainMT
 
         public int Progress { get; set; } = 0;
 
-        public double AlbumDB => Math.Round(MP3GainRow.TargetDefault - this.file.ReplayAlbumGain, 1);
-        public double AlbumFinal => Math.Round(this.file.ReplayAlbumGainRounded - TargetDifference, 1);
+        public double TrackDB => Math.Round(TargetDB - this.file.ReplayTrackGain, 1);
 
-        public bool AlbumClipping => this.file.AlbumClipping;
+        public bool Clipping => TrackDB > TargetDB;
 
-        public double TrackDB => Math.Round(MP3GainRow.TargetDefault - this.file.ReplayTrackGain, 1);
         public double TrackFinal => Math.Round(this.file.ReplayTrackGainRounded - TargetDifference, 1);
 
-        public bool TrackClipping => this.file.TrackClipping;
+        //TODO: Add code to calculate AlbumClipping using mp3gain track max gain value vs suggested track gain value (See programmer notes)
+        public bool TrackClipping => false; //this.file.ReplayTrackGainRounded + TrackDB > (TargetDB + .5);
 
+        public double AlbumDB => Math.Round(TargetDB - this.file.ReplayAlbumGain, 1);
+        public double AlbumFinal => Math.Round(this.file.ReplayAlbumGainRounded - TargetDifference, 1);
+
+        //TODO: Add code to calculate AlbumClipping using mp3gain album max gain value vs suggested album gain value (See programmer notes)
+        public bool AlbumClipping => false; //this.file.ReplayAlbumGainRounded + TrackDB > (TargetDB + 1.505);
+
+        
         public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
 
         public bool Updated

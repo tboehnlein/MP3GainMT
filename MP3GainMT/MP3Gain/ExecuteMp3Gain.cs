@@ -14,7 +14,14 @@ namespace MP3GainMT.MP3Gain
         private TimeCheck progressTimeCheck = new TimeCheck(5);
         private List<string> sortedFiles = new List<string>();
 
-        public ExecuteMp3Gain(string executable, string arguments, Dictionary<string, Mp3File> files, string folder, string actionName, BackgroundWorker worker, string fileOutputPrefix, string endingOutputText)
+        public ExecuteMp3Gain(string executable,
+                              string arguments,
+                              Dictionary<string, Mp3File> files,
+                              string folder,
+                              string actionName,
+                              BackgroundWorker worker,
+                              string fileOutputPrefix,
+                              string endingOutputText)
         {
             this.Executable = executable;
             this.Arguments = arguments;
@@ -64,14 +71,14 @@ namespace MP3GainMT.MP3Gain
             this.Process.BeginOutputReadLine();
             this.Process.BeginErrorReadLine();
 
-            Debug.WriteLine($"STARTED {this.ActionName} FOR {this.FolderName}");
+            //Debug.WriteLine($"STARTED {this.ActionName} FOR {this.FolderName}");
 
             this.Process.WaitForExit();
 
             this.Process.OutputDataReceived -= Process_OutputDataReceived;
             this.Process.ErrorDataReceived -= Process_ErrorDataReceived;
 
-            Debug.WriteLine($"FINISHED {this.ActionName} FOR {this.FolderName}");
+            //Debug.WriteLine($"FINISHED {this.ActionName} FOR {this.FolderName}");
         }
 
         public virtual void ExtractActiveFile(DataReceivedEventArgs e)
@@ -121,7 +128,7 @@ namespace MP3GainMT.MP3Gain
 
                 if (progressTimeCheck.CheckTime(true))
                 {
-                    Debug.WriteLine($"FINISHED {this.ActionName}: {activeFile.FilePath}");
+                    //Debug.WriteLine($"FINISHED {this.ActionName}: {activeFile.FilePath}");
                     this.activeFile.Progress = 100;
                     this.activeFile.UpdateTags();
                     int overallProgress = GetOverallProgress(100);
@@ -136,11 +143,9 @@ namespace MP3GainMT.MP3Gain
             if (e.Data.Contains("%"))
             {
                 var items = e.Data.Split('%');
-                var percent = Convert.ToInt32(items[0].Trim());
-
-                if (progressTimeCheck.CheckTime())
+                if (int.TryParse(items[0].Trim(), out int percent) && progressTimeCheck.CheckTime())
                 {
-                    Debug.WriteLine($"PROGRESS {this.ActionName}: {percent}% {activeFile.FilePath}");
+                    //Debug.WriteLine($"PROGRESS {this.ActionName}: {percent}% {activeFile.FilePath}");
                     UpdateFileProgress(percent);
                 }
             }

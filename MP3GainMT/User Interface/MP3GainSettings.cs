@@ -8,12 +8,12 @@ namespace MP3GainMT
     public class MP3GainSettings
     {
         public readonly string SettingsFileLocation = @".\settings.json";
-        private static readonly string HeightSizeLabel = "Heigth Size";
+        private static readonly string HeightSizeLabel = "Heigth Length";
         private static readonly string LeftPositionLabel = "Left Position";
         private static readonly string ParentFolderLabel = "Last Used Folder";
         private static readonly string TargetDbLabel = "Target dB";
         private static readonly string TopPositionLabel = "Top Position";
-        private static readonly string WidthSizeLabel = "Width Size";
+        private static readonly string WidthSizeLabel = "Width Length";
         private JObject _json = null;
 
         public MP3GainSettings()
