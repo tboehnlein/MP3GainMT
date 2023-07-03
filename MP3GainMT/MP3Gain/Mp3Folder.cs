@@ -361,5 +361,13 @@ namespace MP3GainMT.MP3Gain
 
             //Debug.WriteLine($"FINSHED ANALYSIS FOR {this.FolderName}");
         }
+
+        internal void SetAltColorFlag(bool useAlternativeColor)
+        {
+            foreach (var file in this.Files.Values)
+            {
+                file.UseAlternativeColor = useAlternativeColor;
+            }
+        }
     }
 }

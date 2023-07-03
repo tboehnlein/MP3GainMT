@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using WK.Libraries.BetterFolderBrowserNS;
+using System.Linq;
 
 namespace MP3GainMT
 {
@@ -486,6 +487,28 @@ namespace MP3GainMT
         private void ThreshDbNumeric_ValueChanged(object sender, EventArgs e)
         {
             DefineFilters();
+        }
+
+
+        private void FileGridView_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+ 
+            if (e.RowIndex >= 0)
+            {
+                var isAltColor = Convert.ToBoolean(fileGridView.Rows[e.RowIndex].Cells[14].Value);
+                var color = Color.White;
+                
+                if (e.RowIndex % 2 == 0)
+                {
+                    color = isAltColor ? Color.FromArgb(225, 225, 255) : Color.FromArgb(245, 245, 245);
+                }
+                else
+                {
+                    color = isAltColor ? Color.FromArgb(240, 240, 255) : Color.White;
+                }
+
+                fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;   
+            }
         }
     }
 }

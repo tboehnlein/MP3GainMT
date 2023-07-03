@@ -31,6 +31,7 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.runButton = new System.Windows.Forms.Button();
@@ -51,14 +52,15 @@ namespace MP3GainMT
             this.label5 = new System.Windows.Forms.Label();
             this.clipOnlyTrackCheckBox = new System.Windows.Forms.CheckBox();
             this.filterGroupBox = new System.Windows.Forms.GroupBox();
+            this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.threshNumeric = new System.Windows.Forms.NumericUpDown();
             this.threshCheckBox = new System.Windows.Forms.CheckBox();
             this.clipOnlyAlbumCheckBox = new System.Windows.Forms.CheckBox();
             this.threshLabel = new System.Windows.Forms.Label();
             this.undoButton = new System.Windows.Forms.Button();
-            this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.fileGridView = new MP3GainMT.User_Interface.DataGridViewBuffered();
-            this.FullPath = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AlbumColorColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.AlbumArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Updated = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Folder = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -327,6 +329,17 @@ namespace MP3GainMT
             this.filterGroupBox.TabStop = false;
             this.filterGroupBox.Text = "Filter Options";
             // 
+            // clipOnlyCheckBox
+            // 
+            this.clipOnlyCheckBox.AutoSize = true;
+            this.clipOnlyCheckBox.Location = new System.Drawing.Point(13, 19);
+            this.clipOnlyCheckBox.Name = "clipOnlyCheckBox";
+            this.clipOnlyCheckBox.Size = new System.Drawing.Size(43, 17);
+            this.clipOnlyCheckBox.TabIndex = 15;
+            this.clipOnlyCheckBox.Text = "Clip";
+            this.clipOnlyCheckBox.UseVisualStyleBackColor = true;
+            this.clipOnlyCheckBox.CheckedChanged += new System.EventHandler(this.ClipOnlyCheckBox_CheckedChanged);
+            // 
             // threshNumeric
             // 
             this.threshNumeric.DecimalPlaces = 1;
@@ -395,27 +408,21 @@ namespace MP3GainMT
             this.undoButton.UseVisualStyleBackColor = true;
             this.undoButton.Click += new System.EventHandler(this.UndoButton_Click);
             // 
-            // clipOnlyCheckBox
-            // 
-            this.clipOnlyCheckBox.AutoSize = true;
-            this.clipOnlyCheckBox.Location = new System.Drawing.Point(13, 19);
-            this.clipOnlyCheckBox.Name = "clipOnlyCheckBox";
-            this.clipOnlyCheckBox.Size = new System.Drawing.Size(43, 17);
-            this.clipOnlyCheckBox.TabIndex = 15;
-            this.clipOnlyCheckBox.Text = "Clip";
-            this.clipOnlyCheckBox.UseVisualStyleBackColor = true;
-            this.clipOnlyCheckBox.CheckedChanged += new System.EventHandler(this.ClipOnlyCheckBox_CheckedChanged);
-            // 
             // fileGridView
             // 
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.fileGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.fileGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FullPath,
+            this.AlbumColorColumn,
             this.AlbumArtist,
             this.Updated,
             this.Folder,
@@ -439,18 +446,30 @@ namespace MP3GainMT
             this.fileGridView.Size = new System.Drawing.Size(1061, 446);
             this.fileGridView.TabIndex = 9;
             this.fileGridView.CellToolTipTextNeeded += new System.Windows.Forms.DataGridViewCellToolTipTextNeededEventHandler(this.FileGridView_CellToolTipTextNeeded);
+            this.fileGridView.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.FileGridView_RowPrePaint);
             this.fileGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.FileGridView_Scroll);
             // 
             // FullPath
             // 
-            this.FullPath.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.FullPath.DataPropertyName = "FullPath";
             this.FullPath.HeaderText = "Full Path";
+            this.FullPath.MinimumWidth = 200;
             this.FullPath.Name = "FullPath";
             this.FullPath.ReadOnly = true;
             this.FullPath.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.FullPath.Visible = false;
+            this.FullPath.Width = 585;
+            // 
+            // AlbumColorColumn
+            // 
+            this.AlbumColorColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.AlbumColorColumn.DataPropertyName = "AlbumColorAlternative";
+            this.AlbumColorColumn.HeaderText = "Color";
+            this.AlbumColorColumn.Name = "AlbumColorColumn";
+            this.AlbumColorColumn.ReadOnly = true;
+            this.AlbumColorColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.AlbumColorColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.AlbumColorColumn.Visible = false;
             // 
             // AlbumArtist
             // 
@@ -476,6 +495,7 @@ namespace MP3GainMT
             this.Folder.HeaderText = "Folder";
             this.Folder.Name = "Folder";
             this.Folder.ReadOnly = true;
+            this.Folder.Visible = false;
             // 
             // FileName
             // 
@@ -484,6 +504,7 @@ namespace MP3GainMT
             this.FileName.HeaderText = "File Name";
             this.FileName.Name = "FileName";
             this.FileName.ReadOnly = true;
+            this.FileName.Visible = false;
             // 
             // Album
             // 
@@ -580,12 +601,11 @@ namespace MP3GainMT
             // 
             // ErrorMessage
             // 
-            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ErrorMessage.DataPropertyName = "ErrorMessage";
-            this.ErrorMessage.HeaderText = "Error";
+            this.ErrorMessage.HeaderText = "Debug";
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
-            this.ErrorMessage.Width = 54;
             // 
             // MainForm
             // 
@@ -655,7 +675,9 @@ namespace MP3GainMT
         private CheckBox threshCheckBox;
         private Label threshLabel;
         private CheckBox clipOnlyAlbumCheckBox;
-        private DataGridViewCheckBoxColumn FullPath;
+        private CheckBox clipOnlyCheckBox;
+        private DataGridViewTextBoxColumn FullPath;
+        private DataGridViewCheckBoxColumn AlbumColorColumn;
         private DataGridViewTextBoxColumn AlbumArtist;
         private DataGridViewCheckBoxColumn Updated;
         private DataGridViewTextBoxColumn Folder;
@@ -671,7 +693,6 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewCheckBoxColumn AlbumClip;
         private DataGridViewTextBoxColumn ErrorMessage;
-        private CheckBox clipOnlyCheckBox;
     }
 }
 

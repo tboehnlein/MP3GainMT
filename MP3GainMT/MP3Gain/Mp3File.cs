@@ -128,6 +128,7 @@ namespace MP3GainMT.MP3Gain
         public long Length { get; private set; }
         public double MaxNoClipGainAlbumRaw { get; internal set; } = 0.0;
         public double MaxNoClipGainTrackRaw { get; internal set; } = 0.0;
+        public bool UseAlternativeColor { get; internal set; }
 
         public bool IsFileLocked()
         {

@@ -399,6 +399,7 @@ namespace MP3GainMT.MP3Gain
             }
 
             var addedFilesCount = 0;
+            var altColor = false;
 
             foreach (var folder in folders)
             {
@@ -410,6 +411,8 @@ namespace MP3GainMT.MP3Gain
 
                 if (mp3Folder.MP3Files.Count > 0)
                 {
+                    mp3Folder.SetAltColorFlag(altColor);
+
                     if (!this.Folders.ContainsKey(folder))
                     {
                         this.Folders.Add(folder, mp3Folder);
@@ -423,8 +426,16 @@ namespace MP3GainMT.MP3Gain
                             searchWorker.ReportProgress(100, CancelMessage);
                             break;
                         }
+
+                        altColor = !altColor;
+
+                        
                     }
+
+
                 }
+
+
             }
         }
 
