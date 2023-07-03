@@ -107,6 +107,21 @@ namespace MP3GainMT.MP3Gain
 
         private List<Mp3File> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
 
+        public List<Mp3Folder> AllFolders
+        {
+            get
+            {
+                var list = new List<Mp3Folder>();
+
+                foreach (var folder in this.Folders.Values)
+                {
+                    list.Add(folder);
+                }
+
+                return list;
+            }
+        }
+
         public static string WordWithEnding<T>(string word, List<T> list)
         {
             return word + (list.Count == 0 ? "" : "s");
@@ -593,24 +608,39 @@ namespace MP3GainMT.MP3Gain
         {
             if (sender is BackgroundWorker worker)
             {
-                var files = this.AllFiles;
+                
+
+                var folders = this.AllFolders;
                 this.filesDone = 0;
-                var totalFiles = files.Count;
+                var totalFiles = this.AllFiles.Count;
 
                 worker.ReportProgress(0);
 
-                foreach (var file in files)
+                foreach (var folder in folders)
                 {
-                    file.ExtractTags();
-                    file.SourceIndex = this.filesDone;
-                    var progress = Helpers.GetProgress(this.filesDone, totalFiles);
-                    worker.ReportProgress(progress, file);
-                    this.filesDone++;
+                    var execute = new ExecuteMp3GainSync(Executable,
+                                                     $"/o /s c",
+                                                     folder.Files,
+                                                     folder.FolderPath,
+                                                     "GET MAX GAIN",
+                                                     "Calculating Max Gain",
+                                                     "done");
 
-                    if (worker.CancellationPending)
+                    execute.Execute();
+
+                    foreach (var file in folder.Files.Values)
                     {
-                        worker.ReportProgress(100, CancelMessage);
-                        break;
+                        file.ExtractTags();
+                        file.SourceIndex = this.filesDone;
+                        var progress = Helpers.GetProgress(this.filesDone, totalFiles);
+                        worker.ReportProgress(progress, file);
+                        this.filesDone++;
+
+                        if (worker.CancellationPending)
+                        {
+                            worker.ReportProgress(100, CancelMessage);
+                            break;
+                        }
                     }
                 }
 

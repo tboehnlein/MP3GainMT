@@ -445,7 +445,7 @@ namespace MP3GainMT
         {
             if (!apply) { return true; }
 
-            return row.TrackClipping; ;
+            return row.TrackClipping;
         }
 
         public bool CheckThreshOnly(MP3GainRow row, bool apply, double threshold)
@@ -463,11 +463,19 @@ namespace MP3GainMT
             var useThresh = this.threshCheckBox.Checked;
             var useTrackClipping = this.clipOnlyTrackCheckBox.Checked;
             var useAlbumClipping = this.clipOnlyAlbumCheckBox.Checked;
+            var useClipping = this.clipOnlyCheckBox.Checked;
 
-            if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked)
+            if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked || this.clipOnlyCheckBox.Checked)
             {
-                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold); });
+                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckClipOnly(row, useClipping) && CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold); });
             }
+        }
+
+        private bool CheckClipOnly(MP3GainRow row, bool apply)
+        {
+            if (!apply) { return true; }
+
+            return row.Clipping;
         }
 
         private void ThreshCheckBox_CheckedChanged(object sender, EventArgs e)

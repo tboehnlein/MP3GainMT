@@ -7,14 +7,14 @@ using System.Linq;
 
 namespace MP3GainMT.MP3Gain
 {
-    public class ExecuteMp3Gain
+    public class ExecuteMp3GainAsync
     {
-        private Mp3File activeFile = null;
-        private int filesFinished = 0;
-        private TimeCheck progressTimeCheck = new TimeCheck(5);
-        private List<string> sortedFiles = new List<string>();
+        protected Mp3File activeFile = null;
+        protected int filesFinished = 0;
+        protected TimeCheck progressTimeCheck = new TimeCheck(5);
+        protected List<string> sortedFiles = new List<string>();
 
-        public ExecuteMp3Gain(string executable,
+        public ExecuteMp3GainAsync(string executable,
                               string arguments,
                               Dictionary<string, Mp3File> files,
                               string folder,
@@ -42,7 +42,7 @@ namespace MP3GainMT.MP3Gain
         public string FolderPath { get; set; } = string.Empty;
         public Process Process { get; set; }
         public BackgroundWorker Worker { get; private set; }
-        private string FilePrefix { get; set; } = string.Empty;
+        protected string FilePrefix { get; set; } = string.Empty;
 
         public virtual void Execute()
         {
@@ -151,7 +151,7 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        private int GetOverallProgress(int filePercent)
+        protected int GetOverallProgress(int filePercent)
         {
             var oneFilePercent = 1.0 / this.sortedFiles.Count;
             var fileProgress = oneFilePercent * (filePercent / 100.0);
@@ -160,7 +160,7 @@ namespace MP3GainMT.MP3Gain
             return Convert.ToInt32((finishedProgress + fileProgress) * 100.0);
         }
 
-        private void UpdateFileProgress(int percent)
+        protected void UpdateFileProgress(int percent)
         {
             this.activeFile.Progress = percent;
             int overallProgress = GetOverallProgress(this.activeFile.Progress);

@@ -17,9 +17,9 @@ namespace MP3GainMT.MP3Gain
         public const string TagReplayTrackGain = "REPLAYGAIN_TRACK_GAIN";
         public const string TagReplayTrackPeak = "REPLAYGAIN_TRACK_PEAK";
         public double GainAlbumMax = 0.0;
-        public double GainAlbumMin = 0.0;
+        public double MaxNoClipGainAlbum = 0.0;
         public double GainMax = 0.0;
-        public double GainMin = 0.0;
+        public double MaxNoClipGainTrack = 0.0;
         public double GainUndoAlbum = 0.0;
         public string GainUndoLabel = string.Empty;
         public double GainUndoTrack = 0.0;
@@ -27,7 +27,7 @@ namespace MP3GainMT.MP3Gain
         public double ReplayAlbumPeak = 0.0;
         public double ReplayTrackGain = 0.0;
         public double ReplayTrackPeak = 0.0;
-        private const double divide = 2.0 / 3.0;
+        private const double FiveLog10Two = 1.50514997831991;
 
         public Mp3File(string file)
         {
@@ -94,17 +94,27 @@ namespace MP3GainMT.MP3Gain
         {
             get
             {
-                var gain = Math.Round(ReplayAlbumGain * divide) / divide;
+                var gain = DbRounding(ReplayAlbumGain);
 
                 return gain;
             }
+        }
+
+        public static double DbFlooring(double x)
+        {
+            return Math.Floor(x / FiveLog10Two) * FiveLog10Two;
+        }
+
+        public static double DbRounding(double x)
+        {
+            return Math.Round(x / FiveLog10Two) * FiveLog10Two;
         }
 
         public double ReplayTrackGainRounded
         {
             get
             {
-                var gain = Math.Round(ReplayTrackGain * divide) / divide;
+                var gain = DbRounding(ReplayTrackGain);
 
                 return gain;
             }
@@ -116,6 +126,8 @@ namespace MP3GainMT.MP3Gain
         public uint Track { get; private set; }
         public bool Updated { get; internal set; }
         public long Length { get; private set; }
+        public double MaxNoClipGainAlbumRaw { get; internal set; } = 0.0;
+        public double MaxNoClipGainTrackRaw { get; internal set; } = 0.0;
 
         public bool IsFileLocked()
         {
@@ -145,7 +157,7 @@ namespace MP3GainMT.MP3Gain
         {
             Debug.WriteLine(this.FileName);
             Debug.WriteLine($"[{this.AlbumArtist} - {this.Album}] \\ {this.Track} - {this.Artist} - {this.Title}");
-            Debug.WriteLine($"MIN: {this.GainMin} MAX: {this.GainMax}");
+            Debug.WriteLine($"MIN: {this.MaxNoClipGainTrack} MAX: {this.GainMax}");
             Debug.WriteLine($"TRACK UNDO: {this.GainUndoTrack} ALBUM UNDO: {this.GainUndoAlbum} LABEL UNDO: {this.GainUndoLabel}");
             Debug.WriteLine($"ALBUM GAIN: {this.ReplayAlbumGain} ALBUM PEAK: {this.ReplayAlbumPeak}");
             Debug.WriteLine($"TRACK GAIN: {this.ReplayTrackGain} TRACK PEAK: {this.ReplayTrackPeak}");
@@ -180,9 +192,9 @@ namespace MP3GainMT.MP3Gain
 
                     if (tags is TagLib.Ape.Tag apeTag)
                     {
-                        GetTagValuePair(apeTag, TagMp3GainAlbumMinMax, out GainAlbumMin, out GainAlbumMax);
+                        GetTagValuePair(apeTag, TagMp3GainAlbumMinMax, out MaxNoClipGainAlbum, out GainAlbumMax);
 
-                        GetTagValuePair(apeTag, TagMp3GainMinMax, out GainMin, out GainMax);
+                        //GetTagValuePair(apeTag, TagMp3GainMinMax, out GainMin, out GainMax);
                         GetTagValueTriple(apeTag, TagMp3GainUndo, out GainUndoTrack, out GainUndoAlbum, out GainUndoLabel);
                         GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);                        
                         GetTagValue(apeTag, TagReplayAlbumPeak, out this.ReplayAlbumPeak);

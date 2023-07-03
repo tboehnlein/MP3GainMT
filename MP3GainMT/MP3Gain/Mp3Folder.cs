@@ -27,7 +27,7 @@ namespace MP3GainMT.MP3Gain
 
         public event EventHandler<Mp3File> FoundFile;
 
-        public ExecuteMp3Gain ApplyGainExecution { get; private set; }
+        public ExecuteMp3GainAsync ApplyGainExecution { get; private set; }
         public double DBOffset { get; set; } = 0.0;
         public Dictionary<string, Mp3File> Files { get; set; } = new Dictionary<string, Mp3File>();
         public string FolderName { get; set; } = string.Empty;
@@ -44,7 +44,7 @@ namespace MP3GainMT.MP3Gain
 
         public int UndoSuggestedGain { get; private set; }
         public int SuggestedGain { get; set; } = 0;
-        public ExecuteMp3Gain UndoGainExecution { get; private set; }
+        public ExecuteMp3GainAsync UndoGainExecution { get; private set; }
         public void SearchFolder()
         {
             this.FindFiles(this.FolderPath);
@@ -115,7 +115,7 @@ namespace MP3GainMT.MP3Gain
 
         private void ExecuteApplyGain(string executable)
         {
-            this.ApplyGainExecution = new ExecuteMp3Gain(executable,
+            this.ApplyGainExecution = new ExecuteMp3GainAsync(executable,
                                                         $"/o /g {this.SuggestedGain}",
                                                         this.Files,
                                                         this.FolderPath,
@@ -146,7 +146,7 @@ namespace MP3GainMT.MP3Gain
         {
             RecordUndoSuggestedTag();
 
-            this.UndoGainExecution = new ExecuteMp3Gain(executable,
+            this.UndoGainExecution = new ExecuteMp3GainAsync(executable,
                                                         "/u",
                                                         this.Files,
                                                         this.FolderPath,

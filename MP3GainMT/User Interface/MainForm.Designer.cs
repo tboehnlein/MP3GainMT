@@ -51,11 +51,12 @@ namespace MP3GainMT
             this.label5 = new System.Windows.Forms.Label();
             this.clipOnlyTrackCheckBox = new System.Windows.Forms.CheckBox();
             this.filterGroupBox = new System.Windows.Forms.GroupBox();
-            this.undoButton = new System.Windows.Forms.Button();
-            this.threshLabel = new System.Windows.Forms.Label();
             this.threshNumeric = new System.Windows.Forms.NumericUpDown();
             this.threshCheckBox = new System.Windows.Forms.CheckBox();
             this.clipOnlyAlbumCheckBox = new System.Windows.Forms.CheckBox();
+            this.threshLabel = new System.Windows.Forms.Label();
+            this.undoButton = new System.Windows.Forms.Button();
+            this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.fileGridView = new MP3GainMT.User_Interface.DataGridViewBuffered();
             this.FullPath = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.AlbumArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -302,7 +303,7 @@ namespace MP3GainMT
             // clipOnlyTrackCheckBox
             // 
             this.clipOnlyTrackCheckBox.AutoSize = true;
-            this.clipOnlyTrackCheckBox.Location = new System.Drawing.Point(18, 19);
+            this.clipOnlyTrackCheckBox.Location = new System.Drawing.Point(73, 19);
             this.clipOnlyTrackCheckBox.Name = "clipOnlyTrackCheckBox";
             this.clipOnlyTrackCheckBox.Size = new System.Drawing.Size(74, 17);
             this.clipOnlyTrackCheckBox.TabIndex = 14;
@@ -313,6 +314,7 @@ namespace MP3GainMT
             // filterGroupBox
             // 
             this.filterGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.filterGroupBox.Controls.Add(this.clipOnlyCheckBox);
             this.filterGroupBox.Controls.Add(this.threshNumeric);
             this.filterGroupBox.Controls.Add(this.threshCheckBox);
             this.filterGroupBox.Controls.Add(this.clipOnlyAlbumCheckBox);
@@ -325,32 +327,10 @@ namespace MP3GainMT
             this.filterGroupBox.TabStop = false;
             this.filterGroupBox.Text = "Filter Options";
             // 
-            // undoButton
-            // 
-            this.undoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.undoButton.Location = new System.Drawing.Point(996, 55);
-            this.undoButton.Name = "undoButton";
-            this.undoButton.Size = new System.Drawing.Size(56, 28);
-            this.undoButton.TabIndex = 7;
-            this.undoButton.Text = "&Undo";
-            this.undoButton.UseVisualStyleBackColor = true;
-            this.undoButton.Click += new System.EventHandler(this.UndoButton_Click);
-            // 
-            // threshLabel
-            // 
-            this.threshLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.threshLabel.AutoSize = true;
-            this.threshLabel.Location = new System.Drawing.Point(304, 19);
-            this.threshLabel.Name = "threshLabel";
-            this.threshLabel.Size = new System.Drawing.Size(20, 13);
-            this.threshLabel.TabIndex = 0;
-            this.threshLabel.Text = "dB";
-            // 
             // threshNumeric
             // 
-            this.threshNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.threshNumeric.DecimalPlaces = 1;
-            this.threshNumeric.Location = new System.Drawing.Point(251, 16);
+            this.threshNumeric.Location = new System.Drawing.Point(306, 16);
             this.threshNumeric.Maximum = new decimal(new int[] {
             1059,
             0,
@@ -375,7 +355,7 @@ namespace MP3GainMT
             // 
             this.threshCheckBox.AutoSize = true;
             this.threshCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.threshCheckBox.Location = new System.Drawing.Point(221, 19);
+            this.threshCheckBox.Location = new System.Drawing.Point(276, 19);
             this.threshCheckBox.Name = "threshCheckBox";
             this.threshCheckBox.Size = new System.Drawing.Size(32, 17);
             this.threshCheckBox.TabIndex = 14;
@@ -386,13 +366,45 @@ namespace MP3GainMT
             // clipOnlyAlbumCheckBox
             // 
             this.clipOnlyAlbumCheckBox.AutoSize = true;
-            this.clipOnlyAlbumCheckBox.Location = new System.Drawing.Point(118, 19);
+            this.clipOnlyAlbumCheckBox.Location = new System.Drawing.Point(173, 19);
             this.clipOnlyAlbumCheckBox.Name = "clipOnlyAlbumCheckBox";
             this.clipOnlyAlbumCheckBox.Size = new System.Drawing.Size(75, 17);
             this.clipOnlyAlbumCheckBox.TabIndex = 14;
             this.clipOnlyAlbumCheckBox.Text = "Album Clip";
             this.clipOnlyAlbumCheckBox.UseVisualStyleBackColor = true;
             this.clipOnlyAlbumCheckBox.CheckedChanged += new System.EventHandler(this.ClipOnlyCheckBox_CheckedChanged);
+            // 
+            // threshLabel
+            // 
+            this.threshLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.threshLabel.AutoSize = true;
+            this.threshLabel.Location = new System.Drawing.Point(304, 19);
+            this.threshLabel.Name = "threshLabel";
+            this.threshLabel.Size = new System.Drawing.Size(20, 13);
+            this.threshLabel.TabIndex = 0;
+            this.threshLabel.Text = "dB";
+            // 
+            // undoButton
+            // 
+            this.undoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.undoButton.Location = new System.Drawing.Point(996, 55);
+            this.undoButton.Name = "undoButton";
+            this.undoButton.Size = new System.Drawing.Size(56, 28);
+            this.undoButton.TabIndex = 7;
+            this.undoButton.Text = "&Undo";
+            this.undoButton.UseVisualStyleBackColor = true;
+            this.undoButton.Click += new System.EventHandler(this.UndoButton_Click);
+            // 
+            // clipOnlyCheckBox
+            // 
+            this.clipOnlyCheckBox.AutoSize = true;
+            this.clipOnlyCheckBox.Location = new System.Drawing.Point(13, 19);
+            this.clipOnlyCheckBox.Name = "clipOnlyCheckBox";
+            this.clipOnlyCheckBox.Size = new System.Drawing.Size(43, 17);
+            this.clipOnlyCheckBox.TabIndex = 15;
+            this.clipOnlyCheckBox.Text = "Clip";
+            this.clipOnlyCheckBox.UseVisualStyleBackColor = true;
+            this.clipOnlyCheckBox.CheckedChanged += new System.EventHandler(this.ClipOnlyCheckBox_CheckedChanged);
             // 
             // fileGridView
             // 
@@ -439,7 +451,6 @@ namespace MP3GainMT
             this.FullPath.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.FullPath.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.FullPath.Visible = false;
-            this.FullPath.Width = 73;
             // 
             // AlbumArtist
             // 
@@ -449,7 +460,6 @@ namespace MP3GainMT
             this.AlbumArtist.Name = "AlbumArtist";
             this.AlbumArtist.ReadOnly = true;
             this.AlbumArtist.Visible = false;
-            this.AlbumArtist.Width = 87;
             // 
             // Updated
             // 
@@ -483,7 +493,6 @@ namespace MP3GainMT
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
             this.Album.Visible = false;
-            this.Album.Width = 61;
             // 
             // Artist
             // 
@@ -493,7 +502,6 @@ namespace MP3GainMT
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
             this.Artist.Visible = false;
-            this.Artist.Width = 55;
             // 
             // Progress
             // 
@@ -663,6 +671,7 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewCheckBoxColumn AlbumClip;
         private DataGridViewTextBoxColumn ErrorMessage;
+        private CheckBox clipOnlyCheckBox;
     }
 }
 

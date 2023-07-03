@@ -38,21 +38,26 @@ namespace MP3GainMT
 
         public double TrackDB => Math.Round(TargetDB - this.file.ReplayTrackGain, 1);
 
-        public bool Clipping => TrackDB > TargetDB;
+        public bool Clipping => this.file.MaxNoClipGainTrack < 0.0;
 
-        public double TrackFinal => Math.Round(this.file.ReplayTrackGainRounded - TargetDifference, 1);
+        public double TrackFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayTrackGain), 1);
 
         //TODO: Add code to calculate AlbumClipping using mp3gain track max gain value vs suggested track gain value (See programmer notes)
-        public bool TrackClipping => false; //this.file.ReplayTrackGainRounded + TrackDB > (TargetDB + .5);
+        public bool TrackClipping => this.file.MaxNoClipGainTrack < TrackFinal;
 
         public double AlbumDB => Math.Round(TargetDB - this.file.ReplayAlbumGain, 1);
-        public double AlbumFinal => Math.Round(this.file.ReplayAlbumGainRounded - TargetDifference, 1);
+        public double AlbumFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayAlbumGain), 1);
 
         //TODO: Add code to calculate AlbumClipping using mp3gain album max gain value vs suggested album gain value (See programmer notes)
-        public bool AlbumClipping => false; //this.file.ReplayAlbumGainRounded + TrackDB > (TargetDB + 1.505);
 
-        
-        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();
+        // mp3Inf.CurrMaxAmp * 2# ^ (CDbl(mp3Inf.AlbumMp3Gain) / 4#) > 32767
+
+        public bool AlbumClipping => this.file.MaxNoClipGainAlbum < 0.0;
+
+
+
+
+        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine(); //this.file.MaxNoClipGainTrack.ToString("0.000");
 
         public bool Updated
         {

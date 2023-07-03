@@ -84,9 +84,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MP3Gain\ExecuteMp3Gain.cs" />
+    <Compile Include="MP3Gain\ExecuteMp3GainAsync.cs" />
     <Compile Include="Helpers\FileProgress.cs" />
     <Compile Include="Helpers\FolderWorker.cs" />
+    <Compile Include="MP3Gain\ExecuteMp3GainSync.cs" />
     <Compile Include="User Interface\DataGridViewBuffered.cs">
       <SubType>Component</SubType>
     </Compile>
