@@ -191,6 +191,8 @@ namespace MP3GainMT
             {
                 this.targetDbNumeric.Value = (decimal)this.settings.TargetDb;
             }
+
+            this.fileGridView.Columns["FullPath"].Width = this.settings.PathWidth;
         }
 
         private void ReadTagsButton_Click(object sender, EventArgs e)
@@ -416,6 +418,7 @@ namespace MP3GainMT
             this.settings.WidthSize = this.Width;
             this.settings.LeftPosition = this.Left;
             this.settings.TopPosition = this.Top;
+            this.settings.PathWidth = this.fileGridView.Columns["FullPath"].Width;
 
             this.settings.ParentFolder = run.ParentFolder;
 

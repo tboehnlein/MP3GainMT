@@ -14,6 +14,7 @@ namespace MP3GainMT
         private static readonly string TargetDbLabel = "Target dB";
         private static readonly string TopPositionLabel = "Top Position";
         private static readonly string WidthSizeLabel = "Width Length";
+        private static readonly string PathWidthLabel = "Path Column Width";
         private JObject _json = null;
 
         public MP3GainSettings()
@@ -93,6 +94,20 @@ namespace MP3GainMT
             }
         }
 
+
+        public int PathWidth
+        {
+            get
+            {
+                return NoZero(ReadKey<int>(PathWidthLabel));
+            }
+            set
+            {
+                WriteKey<int>(value, PathWidthLabel);
+            }
+        }
+        
+
         public void WriteSettingsFile()
         {
             using (JsonTextWriter writer = new JsonTextWriter(File.CreateText(SettingsFileLocation)))
@@ -166,6 +181,7 @@ namespace MP3GainMT
             PrepareKey<int>(WidthSizeLabel);
             PrepareKey<int>(HeightSizeLabel);
             PrepareKey<double>(TargetDbLabel);
+            PrepareKey<int>(PathWidthLabel);
 
             if (reader != null)
             {
