@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MP3GainMT.MP3Gain
 {
@@ -26,7 +23,6 @@ namespace MP3GainMT.MP3Gain
                                                                   fileOutputPrefix,
                                                                   endingOutputText)
         {
-            
         }
 
         public override void Execute()
@@ -92,7 +88,7 @@ namespace MP3GainMT.MP3Gain
         private double GetMinGain(double minValue)
         {
             // convert to dB
-            var final =  Math.Log10(32767.0 / minValue) / Math.Log10(2.0) * 6.0206;
+            var final = Math.Log10(32767.0 / minValue) / Math.Log10(2.0) * 6.0206;
 
             // round to nearest dB
             return final;// Mp3File.DbFlooring(final);
@@ -100,7 +96,6 @@ namespace MP3GainMT.MP3Gain
 
         public override void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            
         }
 
         public override void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)

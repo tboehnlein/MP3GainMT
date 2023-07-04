@@ -7,6 +7,7 @@ namespace MP3GainMT
     {
         public Mp3Folder Folder;
         public BackgroundWorker Worker;
+
         public FolderWorker(BackgroundWorker worker, Mp3Folder folder)
         {
             Worker = worker;

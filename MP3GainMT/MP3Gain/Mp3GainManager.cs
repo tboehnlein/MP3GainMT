@@ -68,16 +68,19 @@ namespace MP3GainMT.MP3Gain
         public event EventHandler<Mp3Folder> FolderLoaded;
 
         public event EventHandler<Mp3File> FoundFile;
+
         public event EventHandler RefreshTable;
 
         public event EventHandler<int> RowUpdated;
 
         public event EventHandler<Mp3Folder> SearchFinishedFolder;
+
         public event EventHandler<TimeSpan> SearchTimeElasped;
 
         public event EventHandler<Mp3File> TagRead;
 
         public event EventHandler<int> TaskProgressed;
+
         public static string Executable { get; set; } = string.Empty;
 
         public bool ActiveActivities => this.AnyWorkersActive();
@@ -139,7 +142,7 @@ namespace MP3GainMT.MP3Gain
 
                 worker.DoWork += ApplyGain_DoWork;
                 worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
-                worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;                
+                worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
 
                 this.processQueue.Push(new FolderWorker(worker, folder));
 
@@ -292,7 +295,7 @@ namespace MP3GainMT.MP3Gain
                 worker.DoWork += UndoGain_DoWork;
                 worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
                 worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
-                               
+
                 this.processQueue.Push(new FolderWorker(worker, folder));
 
                 Debug.WriteLine($"PUSHED[{this.processQueue.Count}]: {folder.FolderName}");
@@ -428,14 +431,8 @@ namespace MP3GainMT.MP3Gain
                         }
 
                         altColor = !altColor;
-
-                        
                     }
-
-
                 }
-
-
             }
         }
 
@@ -599,6 +596,7 @@ namespace MP3GainMT.MP3Gain
                 SearchTimeElasped.Invoke(this, this.ElaspedSearchTime);
             }
         }
+
         private void RaiseTagRead(Mp3File mP3GainFile)
         {
             if (this.TagRead != null)
@@ -619,8 +617,6 @@ namespace MP3GainMT.MP3Gain
         {
             if (sender is BackgroundWorker worker)
             {
-                
-
                 var folders = this.AllFolders;
                 this.filesDone = 0;
                 var totalFiles = this.AllFiles.Count;
@@ -770,6 +766,7 @@ namespace MP3GainMT.MP3Gain
         {
             this.RaiseRefreshTable();
         }
+
         private void StartSearchTimer()
         {
             this.startSearchTime = DateTime.Now;
@@ -782,6 +779,7 @@ namespace MP3GainMT.MP3Gain
             this.searchTimeElaspedTimer.Stop();
             this.searchTimeElaspedTimer.Enabled = false;
         }
+
         private void UndoGain_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument is Mp3Folder folder)

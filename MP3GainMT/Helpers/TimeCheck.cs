@@ -7,6 +7,7 @@ namespace MP3GainMT
         public bool Force = false;
         public DateTime LastTime = DateTime.Now;
         public double MinimumTime = .25;
+
         public TimeCheck(int fps)
         {
             MinimumTime = 1.0 / fps;

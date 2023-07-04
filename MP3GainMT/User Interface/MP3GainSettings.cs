@@ -95,7 +95,6 @@ namespace MP3GainMT
             }
         }
 
-
         public int PathWidth
         {
             get
@@ -119,7 +118,6 @@ namespace MP3GainMT
                 WriteKey<bool>(value, UseAndLabel);
             }
         }
-        
 
         public void WriteSettingsFile()
         {

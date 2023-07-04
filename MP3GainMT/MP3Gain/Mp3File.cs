@@ -48,7 +48,7 @@ namespace MP3GainMT.MP3Gain
                 }
 
                 var first = folders[1];
-                
+
                 var fourthLast = GetRightSubFolder(folders, 4);
                 var thirdLast = GetRightSubFolder(folders, 3);
                 var secondLast = GetRightSubFolder(folders, 2);
@@ -197,7 +197,7 @@ namespace MP3GainMT.MP3Gain
 
                         //GetTagValuePair(apeTag, TagMp3GainMinMax, out GainMin, out GainMax);
                         GetTagValueTriple(apeTag, TagMp3GainUndo, out GainUndoTrack, out GainUndoAlbum, out GainUndoLabel);
-                        GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);                        
+                        GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);
                         GetTagValue(apeTag, TagReplayAlbumPeak, out this.ReplayAlbumPeak);
                         GetTagValue(apeTag, TagReplayTrackGain, out this.ReplayTrackGain);
                         GetTagValue(apeTag, TagReplayTrackPeak, out this.ReplayTrackPeak);

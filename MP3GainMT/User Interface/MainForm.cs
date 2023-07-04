@@ -1,13 +1,10 @@
 ﻿using MP3GainMT.MP3Gain;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using WK.Libraries.BetterFolderBrowserNS;
-using System.Linq;
 
 namespace MP3GainMT
 {
@@ -443,7 +440,7 @@ namespace MP3GainMT
 
         public bool CheckAlbumClipOnly(MP3GainRow row, bool apply)
         {
-            if (!apply) { return true; }    
+            if (!apply) { return true; }
 
             return row.AlbumClipping; ;
         }
@@ -483,7 +480,7 @@ namespace MP3GainMT
 
         private bool SearchFilePath(MP3GainRow row, string searchText, bool useAnd)
         {
-            if (searchText.Length == 0) { return true; }    
+            if (searchText.Length == 0) { return true; }
 
             var words = searchText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -534,15 +531,13 @@ namespace MP3GainMT
             DefineFilters();
         }
 
-
         private void FileGridView_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
- 
             if (e.RowIndex >= 0)
             {
                 var isAltColor = Convert.ToBoolean(fileGridView.Rows[e.RowIndex].Cells[14].Value);
                 var color = Color.White;
-                
+
                 if (e.RowIndex % 2 == 0)
                 {
                     color = isAltColor ? Color.FromArgb(225, 225, 255) : Color.FromArgb(245, 245, 245);
@@ -552,7 +547,7 @@ namespace MP3GainMT
                     color = isAltColor ? Color.FromArgb(240, 240, 255) : Color.White;
                 }
 
-                fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;   
+                fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;
             }
         }
 

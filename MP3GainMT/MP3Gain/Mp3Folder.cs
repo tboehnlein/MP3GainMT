@@ -32,6 +32,7 @@ namespace MP3GainMT.MP3Gain
         public Dictionary<string, Mp3File> Files { get; set; } = new Dictionary<string, Mp3File>();
         public string FolderName { get; set; } = string.Empty;
         public string FolderPath { get; set; } = string.Empty;
+
         public List<string> MP3Files
         {
             get
@@ -45,6 +46,7 @@ namespace MP3GainMT.MP3Gain
         public int UndoSuggestedGain { get; private set; }
         public int SuggestedGain { get; set; } = 0;
         public ExecuteMp3GainAsync UndoGainExecution { get; private set; }
+
         public void SearchFolder()
         {
             this.FindFiles(this.FolderPath);
@@ -156,7 +158,7 @@ namespace MP3GainMT.MP3Gain
                                                         "                                                   ");
 
             this.UndoGainExecution.Execute();
-            
+
             RestoreUndoSuggestedGain();
         }
 
@@ -194,6 +196,7 @@ namespace MP3GainMT.MP3Gain
                 }
             }
         }
+
         private bool ProcessAlbumGain(string line)
         {
             bool found = false;
