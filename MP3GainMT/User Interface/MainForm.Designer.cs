@@ -31,7 +31,7 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.runButton = new System.Windows.Forms.Button();
@@ -351,7 +351,7 @@ namespace MP3GainMT
             this.orRadioButton.Size = new System.Drawing.Size(43, 17);
             this.orRadioButton.TabIndex = 17;
             this.orRadioButton.TabStop = true;
-            this.orRadioButton.Text = "Any";
+            this.orRadioButton.Text = "A&ny";
             this.orRadioButton.UseVisualStyleBackColor = true;
             this.orRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
             // 
@@ -365,7 +365,7 @@ namespace MP3GainMT
             this.andRadioButton.Size = new System.Drawing.Size(36, 17);
             this.andRadioButton.TabIndex = 17;
             this.andRadioButton.TabStop = true;
-            this.andRadioButton.Text = "All";
+            this.andRadioButton.Text = "A&ll";
             this.andRadioButton.UseVisualStyleBackColor = true;
             this.andRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
             // 
@@ -482,9 +482,9 @@ namespace MP3GainMT
             // 
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
