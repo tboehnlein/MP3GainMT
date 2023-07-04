@@ -468,11 +468,50 @@ namespace MP3GainMT
             var useTrackClipping = this.clipOnlyTrackCheckBox.Checked;
             var useAlbumClipping = this.clipOnlyAlbumCheckBox.Checked;
             var useClipping = this.clipOnlyCheckBox.Checked;
+            var searchText = this.searchTextBox.Text;
+            var useText = searchText.Length > 0;
+            var useAnd = this.andRadio.Checked;
 
-            if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked || this.clipOnlyCheckBox.Checked)
+            if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked || this.clipOnlyCheckBox.Checked || useText)
             {
-                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckClipOnly(row, useClipping) && CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold); });
+                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckClipOnly(row, useClipping) && CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold) && SearchFilePath(row, searchText, useAnd); });
             }
+        }
+
+        private bool SearchFilePath(MP3GainRow row, string searchText, bool useAnd)
+        {
+            if (searchText.Length == 0) { return true; }    
+
+            var words = searchText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var found = useAnd;
+
+            foreach (var word in words)
+            {
+                var search = word.Trim();
+
+                if (search.Length > 0)
+                {
+                    found = row.FullPath.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+                    if (useAnd)
+                    {
+                        if (!found)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (found)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return found;
         }
 
         private bool CheckClipOnly(MP3GainRow row, bool apply)
@@ -512,6 +551,21 @@ namespace MP3GainMT
 
                 fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;   
             }
+        }
+
+        private void SearchTextBox_TextChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
+        }
+
+        private void RemoveButton_Click(object sender, EventArgs e)
+        {
+            searchTextBox.Text = string.Empty;
+        }
+
+        private void SearchRadio_CheckChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
         }
     }
 }
