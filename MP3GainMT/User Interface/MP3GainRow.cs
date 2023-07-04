@@ -52,7 +52,7 @@ namespace MP3GainMT
 
         // mp3Inf.CurrMaxAmp * 2# ^ (CDbl(mp3Inf.AlbumMp3Gain) / 4#) > 32767
 
-        public bool AlbumClipping => this.file.MaxNoClipGainAlbum < 0.0;
+        public bool AlbumClipping => this.file.MaxNoClipGainTrack < 0.0;
 
         public bool AlbumColorAlternative
         {
@@ -67,7 +67,7 @@ namespace MP3GainMT
             }
         }
 
-        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine(); //this.file.MaxNoClipGainTrack.ToString("0.000");
+        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine() + this.file.MaxNoClipGainTrack.ToString("0.000");
 
         public bool Updated
         {

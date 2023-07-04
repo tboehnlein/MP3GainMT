@@ -193,8 +193,7 @@ namespace MP3GainMT.MP3Gain
 
                     if (tags is TagLib.Ape.Tag apeTag)
                     {
-                        GetTagValuePair(apeTag, TagMp3GainAlbumMinMax, out MaxNoClipGainAlbum, out GainAlbumMax);
-
+                        //GetTagValuePair(apeTag, TagMp3GainAlbumMinMax, out MaxNoClipGainAlbum, out GainAlbumMax);
                         //GetTagValuePair(apeTag, TagMp3GainMinMax, out GainMin, out GainMax);
                         GetTagValueTriple(apeTag, TagMp3GainUndo, out GainUndoTrack, out GainUndoAlbum, out GainUndoLabel);
                         GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);
