@@ -565,11 +565,11 @@ namespace MP3GainMT
 
                 if (e.RowIndex % 2 == 0)
                 {
-                    color = isAltColor ? Color.FromArgb(225, 225, 255) : Color.FromArgb(245, 245, 245);
+                    color = isAltColor ? Color.FromArgb(215, 215, 255) : Color.FromArgb(245, 245, 245);
                 }
                 else
                 {
-                    color = isAltColor ? Color.FromArgb(240, 240, 255) : Color.White;
+                    color = isAltColor ? Color.FromArgb(230, 230, 255) : Color.White;
                 }
 
                 fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;
