@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using WK.Libraries.BetterFolderBrowserNS;
@@ -387,6 +388,7 @@ namespace MP3GainMT
             }
 
             ResizeAllColumns();
+            ColorTable();
         }
 
         private void UpdateFileListLabel()
@@ -475,6 +477,29 @@ namespace MP3GainMT
             if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked || this.clipOnlyCheckBox.Checked || useText)
             {
                 this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckClipOnly(row, useClipping) && CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold) && SearchFilePath(row, searchText, useAnd); });
+            }
+
+            ColorTable();
+        }
+
+        private void ColorTable()
+        {
+            if (this.run.DataSource.Count == 0) { return; } 
+
+            var pastFolder = this.run.DataSource.First().Folder;
+            var useAlt = false;
+
+            foreach (var row in this.run.DataSource)
+            {
+                if (row.Folder != pastFolder)
+                {
+                    useAlt = !useAlt;
+                    pastFolder = row.Folder;
+                }
+
+                row.AlbumColorAlternative = useAlt;
+
+                
             }
         }
 

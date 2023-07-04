@@ -54,7 +54,18 @@ namespace MP3GainMT
 
         public bool AlbumClipping => this.file.MaxNoClipGainAlbum < 0.0;
 
-        public bool AlbumColorAlternative => this.file.UseAlternativeColor;
+        public bool AlbumColorAlternative
+        {
+            get
+            {
+                return this.file.UseAlternativeColor;
+            }
+
+            set
+            {
+                this.file.UseAlternativeColor = value;
+            }
+        }
 
         public string ErrorMessage => this.file.ErrorMessages.AsSingleLine(); //this.file.MaxNoClipGainTrack.ToString("0.000");
 
