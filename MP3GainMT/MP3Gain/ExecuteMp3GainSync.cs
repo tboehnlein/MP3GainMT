@@ -74,8 +74,15 @@ namespace MP3GainMT.MP3Gain
                 {
                     this.activeFile = this.Files[fileString];
 
-                    var minValue = Convert.ToDouble(values[3].Trim());
-                    var minAlbumValue = Convert.ToDouble(values[8].Trim());
+                    if(!Double.TryParse(values[3].Trim(), out double minValue))
+                    {
+                        minValue = 0;
+                    }
+
+                    if (!Double.TryParse(values[8].Trim(), out double minAlbumValue))
+                    {
+                        minAlbumValue = 0;
+                    }
 
                     this.activeFile.MaxNoClipGainTrackRaw = minValue;
                     this.activeFile.MaxNoClipGainAlbumRaw = minAlbumValue;

@@ -31,7 +31,7 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.runButton = new System.Windows.Forms.Button();
@@ -54,6 +54,7 @@ namespace MP3GainMT
             this.filterGroupBox = new System.Windows.Forms.GroupBox();
             this.orRadioButton = new System.Windows.Forms.RadioButton();
             this.andRadioButton = new System.Windows.Forms.RadioButton();
+            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
@@ -81,7 +82,6 @@ namespace MP3GainMT
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label7 = new System.Windows.Forms.Label();
             this.activityPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
             this.filterGroupBox.SuspendLayout();
@@ -267,6 +267,11 @@ namespace MP3GainMT
             // 
             this.targetDbNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.targetDbNumeric.DecimalPlaces = 1;
+            this.targetDbNumeric.Increment = new decimal(new int[] {
+            15,
+            0,
+            0,
+            65536});
             this.targetDbNumeric.Location = new System.Drawing.Point(1620, 61);
             this.targetDbNumeric.Maximum = new decimal(new int[] {
             1059,
@@ -368,6 +373,15 @@ namespace MP3GainMT
             this.andRadioButton.Text = "A&ll";
             this.andRadioButton.UseVisualStyleBackColor = true;
             this.andRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(862, 12);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(38, 13);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "Words";
             // 
             // label6
             // 
@@ -482,9 +496,9 @@ namespace MP3GainMT
             // 
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -676,15 +690,6 @@ namespace MP3GainMT
             this.ErrorMessage.HeaderText = "Debug";
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(862, 12);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(38, 13);
-            this.label7.TabIndex = 16;
-            this.label7.Text = "Words";
             // 
             // MainForm
             // 

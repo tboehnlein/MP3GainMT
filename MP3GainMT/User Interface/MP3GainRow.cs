@@ -24,6 +24,8 @@ namespace MP3GainMT
 
         public static double TargetDB { get; set; } = 89.0;
 
+        public static double TargetDiffDB => TargetDefault - TargetDB;
+
         public string AlbumArtist => this.file.AlbumArtist;
 
         public string Artist => this.file.Artist;
@@ -40,19 +42,19 @@ namespace MP3GainMT
 
         public bool Clipping => this.file.MaxNoClipGainTrack < 0.0;
 
-        public double TrackFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayTrackGain), 1);
+        public double TrackFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayTrackGain - TargetDiffDB), 1);
 
         //TODO: Add code to calculate AlbumClipping using mp3gain track max gain value vs suggested track gain value (See programmer notes)
         public bool TrackClipping => this.file.MaxNoClipGainTrack < TrackFinal;
 
         public double AlbumDB => Math.Round(TargetDB - this.file.ReplayAlbumGain, 1);
-        public double AlbumFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayAlbumGain), 1);
+        public double AlbumFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayAlbumGain - TargetDiffDB), 1);
 
         //TODO: Add code to calculate AlbumClipping using mp3gain album max gain value vs suggested album gain value (See programmer notes)
 
         // mp3Inf.CurrMaxAmp * 2# ^ (CDbl(mp3Inf.AlbumMp3Gain) / 4#) > 32767
 
-        public bool AlbumClipping => this.file.MaxNoClipGainTrack < 0.0;
+        public bool AlbumClipping => this.file.MaxNoClipGainTrack < AlbumFinal;
 
         public bool AlbumColorAlternative
         {
@@ -67,7 +69,7 @@ namespace MP3GainMT
             }
         }
 
-        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine();// + this.file.MaxNoClipGainTrack.ToString("0.000");
+        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine() + this.file.MaxNoClipGainTrack.ToString("0.000");
 
         public bool Updated
         {
