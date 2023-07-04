@@ -79,8 +79,8 @@ namespace MP3GainMT
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.removeButton = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
-            this.andRadio = new System.Windows.Forms.RadioButton();
-            this.orRadio = new System.Windows.Forms.RadioButton();
+            this.andRadioButton = new System.Windows.Forms.RadioButton();
+            this.orRadioButton = new System.Windows.Forms.RadioButton();
             this.activityPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
             this.filterGroupBox.SuspendLayout();
@@ -321,8 +321,8 @@ namespace MP3GainMT
             // filterGroupBox
             // 
             this.filterGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.filterGroupBox.Controls.Add(this.orRadio);
-            this.filterGroupBox.Controls.Add(this.andRadio);
+            this.filterGroupBox.Controls.Add(this.orRadioButton);
+            this.filterGroupBox.Controls.Add(this.andRadioButton);
             this.filterGroupBox.Controls.Add(this.label6);
             this.filterGroupBox.Controls.Add(this.searchTextBox);
             this.filterGroupBox.Controls.Add(this.clipOnlyCheckBox);
@@ -650,30 +650,30 @@ namespace MP3GainMT
             // 
             // andRadio
             // 
-            this.andRadio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.andRadio.AutoSize = true;
-            this.andRadio.Checked = true;
-            this.andRadio.Location = new System.Drawing.Point(862, 16);
-            this.andRadio.Name = "andRadio";
-            this.andRadio.Size = new System.Drawing.Size(48, 17);
-            this.andRadio.TabIndex = 17;
-            this.andRadio.TabStop = true;
-            this.andRadio.Text = "A&ND";
-            this.andRadio.UseVisualStyleBackColor = true;
-            this.andRadio.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
+            this.andRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.andRadioButton.AutoSize = true;
+            this.andRadioButton.Checked = true;
+            this.andRadioButton.Location = new System.Drawing.Point(862, 16);
+            this.andRadioButton.Name = "andRadio";
+            this.andRadioButton.Size = new System.Drawing.Size(48, 17);
+            this.andRadioButton.TabIndex = 17;
+            this.andRadioButton.TabStop = true;
+            this.andRadioButton.Text = "A&ND";
+            this.andRadioButton.UseVisualStyleBackColor = true;
+            this.andRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
             // 
             // orRadio
             // 
-            this.orRadio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.orRadio.AutoSize = true;
-            this.orRadio.Location = new System.Drawing.Point(909, 16);
-            this.orRadio.Name = "orRadio";
-            this.orRadio.Size = new System.Drawing.Size(41, 17);
-            this.orRadio.TabIndex = 17;
-            this.orRadio.TabStop = true;
-            this.orRadio.Text = "&OR";
-            this.orRadio.UseVisualStyleBackColor = true;
-            this.orRadio.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
+            this.orRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.orRadioButton.AutoSize = true;
+            this.orRadioButton.Location = new System.Drawing.Point(909, 16);
+            this.orRadioButton.Name = "orRadio";
+            this.orRadioButton.Size = new System.Drawing.Size(41, 17);
+            this.orRadioButton.TabIndex = 17;
+            this.orRadioButton.TabStop = true;
+            this.orRadioButton.Text = "&OR";
+            this.orRadioButton.UseVisualStyleBackColor = true;
+            this.orRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
             // 
             // MainForm
             // 
@@ -764,8 +764,8 @@ namespace MP3GainMT
         private TextBox searchTextBox;
         private Label label6;
         private Button removeButton;
-        private RadioButton orRadio;
-        private RadioButton andRadio;
+        private RadioButton orRadioButton;
+        private RadioButton andRadioButton;
     }
 }
 

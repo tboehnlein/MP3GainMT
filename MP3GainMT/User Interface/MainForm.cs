@@ -184,6 +184,8 @@ namespace MP3GainMT
             this.Top = this.settings.TopPosition;
             this.Height = this.settings.HeightSize;
             this.Width = this.settings.WidthSize;
+            this.andRadioButton.Checked = this.settings.UseAnd;
+            this.orRadioButton.Checked = !this.settings.UseAnd;
 
             run.ParentFolder = this.settings.ParentFolder;
 
@@ -419,6 +421,7 @@ namespace MP3GainMT
             this.settings.LeftPosition = this.Left;
             this.settings.TopPosition = this.Top;
             this.settings.PathWidth = this.fileGridView.Columns["FullPath"].Width;
+            this.settings.UseAnd = this.andRadioButton.Checked;
 
             this.settings.ParentFolder = run.ParentFolder;
 
@@ -470,7 +473,7 @@ namespace MP3GainMT
             var useClipping = this.clipOnlyCheckBox.Checked;
             var searchText = this.searchTextBox.Text;
             var useText = searchText.Length > 0;
-            var useAnd = this.andRadio.Checked;
+            var useAnd = this.andRadioButton.Checked;
 
             if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked || this.clipOnlyCheckBox.Checked || useText)
             {
