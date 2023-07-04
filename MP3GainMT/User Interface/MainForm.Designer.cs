@@ -31,7 +31,7 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.runButton = new System.Windows.Forms.Button();
@@ -52,13 +52,17 @@ namespace MP3GainMT
             this.label5 = new System.Windows.Forms.Label();
             this.clipOnlyTrackCheckBox = new System.Windows.Forms.CheckBox();
             this.filterGroupBox = new System.Windows.Forms.GroupBox();
+            this.orRadioButton = new System.Windows.Forms.RadioButton();
+            this.andRadioButton = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.searchTextBox = new System.Windows.Forms.TextBox();
             this.clipOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.threshNumeric = new System.Windows.Forms.NumericUpDown();
             this.threshCheckBox = new System.Windows.Forms.CheckBox();
             this.clipOnlyAlbumCheckBox = new System.Windows.Forms.CheckBox();
+            this.removeButton = new System.Windows.Forms.Button();
             this.threshLabel = new System.Windows.Forms.Label();
             this.undoButton = new System.Windows.Forms.Button();
-            this.searchTextBox = new System.Windows.Forms.TextBox();
             this.fileGridView = new MP3GainMT.User_Interface.DataGridViewBuffered();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumColorColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -77,10 +81,7 @@ namespace MP3GainMT
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.removeButton = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.andRadioButton = new System.Windows.Forms.RadioButton();
-            this.orRadioButton = new System.Windows.Forms.RadioButton();
+            this.label7 = new System.Windows.Forms.Label();
             this.activityPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
             this.filterGroupBox.SuspendLayout();
@@ -310,7 +311,7 @@ namespace MP3GainMT
             // clipOnlyTrackCheckBox
             // 
             this.clipOnlyTrackCheckBox.AutoSize = true;
-            this.clipOnlyTrackCheckBox.Location = new System.Drawing.Point(63, 17);
+            this.clipOnlyTrackCheckBox.Location = new System.Drawing.Point(63, 31);
             this.clipOnlyTrackCheckBox.Name = "clipOnlyTrackCheckBox";
             this.clipOnlyTrackCheckBox.Size = new System.Drawing.Size(74, 17);
             this.clipOnlyTrackCheckBox.TabIndex = 14;
@@ -323,6 +324,7 @@ namespace MP3GainMT
             this.filterGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.filterGroupBox.Controls.Add(this.orRadioButton);
             this.filterGroupBox.Controls.Add(this.andRadioButton);
+            this.filterGroupBox.Controls.Add(this.label7);
             this.filterGroupBox.Controls.Add(this.label6);
             this.filterGroupBox.Controls.Add(this.searchTextBox);
             this.filterGroupBox.Controls.Add(this.clipOnlyCheckBox);
@@ -335,15 +337,62 @@ namespace MP3GainMT
             this.filterGroupBox.Location = new System.Drawing.Point(1114, 89);
             this.filterGroupBox.MinimumSize = new System.Drawing.Size(675, 0);
             this.filterGroupBox.Name = "filterGroupBox";
-            this.filterGroupBox.Size = new System.Drawing.Size(953, 42);
+            this.filterGroupBox.Size = new System.Drawing.Size(953, 57);
             this.filterGroupBox.TabIndex = 15;
             this.filterGroupBox.TabStop = false;
             this.filterGroupBox.Text = "Filter Options";
             // 
+            // orRadioButton
+            // 
+            this.orRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.orRadioButton.AutoSize = true;
+            this.orRadioButton.Location = new System.Drawing.Point(901, 30);
+            this.orRadioButton.Name = "orRadioButton";
+            this.orRadioButton.Size = new System.Drawing.Size(43, 17);
+            this.orRadioButton.TabIndex = 17;
+            this.orRadioButton.TabStop = true;
+            this.orRadioButton.Text = "Any";
+            this.orRadioButton.UseVisualStyleBackColor = true;
+            this.orRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
+            // 
+            // andRadioButton
+            // 
+            this.andRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.andRadioButton.AutoSize = true;
+            this.andRadioButton.Checked = true;
+            this.andRadioButton.Location = new System.Drawing.Point(864, 30);
+            this.andRadioButton.Name = "andRadioButton";
+            this.andRadioButton.Size = new System.Drawing.Size(36, 17);
+            this.andRadioButton.TabIndex = 17;
+            this.andRadioButton.TabStop = true;
+            this.andRadioButton.Text = "All";
+            this.andRadioButton.UseVisualStyleBackColor = true;
+            this.andRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(336, 13);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(41, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Search";
+            // 
+            // searchTextBox
+            // 
+            this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.searchTextBox.Location = new System.Drawing.Point(332, 29);
+            this.searchTextBox.Name = "searchTextBox";
+            this.searchTextBox.Size = new System.Drawing.Size(452, 20);
+            this.searchTextBox.TabIndex = 16;
+            this.searchTextBox.TextChanged += new System.EventHandler(this.SearchTextBox_TextChanged);
+            // 
             // clipOnlyCheckBox
             // 
             this.clipOnlyCheckBox.AutoSize = true;
-            this.clipOnlyCheckBox.Location = new System.Drawing.Point(13, 17);
+            this.clipOnlyCheckBox.Location = new System.Drawing.Point(13, 31);
             this.clipOnlyCheckBox.Name = "clipOnlyCheckBox";
             this.clipOnlyCheckBox.Size = new System.Drawing.Size(43, 17);
             this.clipOnlyCheckBox.TabIndex = 15;
@@ -354,7 +403,7 @@ namespace MP3GainMT
             // threshNumeric
             // 
             this.threshNumeric.DecimalPlaces = 1;
-            this.threshNumeric.Location = new System.Drawing.Point(256, 15);
+            this.threshNumeric.Location = new System.Drawing.Point(256, 29);
             this.threshNumeric.Maximum = new decimal(new int[] {
             1059,
             0,
@@ -379,7 +428,7 @@ namespace MP3GainMT
             // 
             this.threshCheckBox.AutoSize = true;
             this.threshCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.threshCheckBox.Location = new System.Drawing.Point(226, 17);
+            this.threshCheckBox.Location = new System.Drawing.Point(226, 31);
             this.threshCheckBox.Name = "threshCheckBox";
             this.threshCheckBox.Size = new System.Drawing.Size(32, 17);
             this.threshCheckBox.TabIndex = 14;
@@ -390,7 +439,7 @@ namespace MP3GainMT
             // clipOnlyAlbumCheckBox
             // 
             this.clipOnlyAlbumCheckBox.AutoSize = true;
-            this.clipOnlyAlbumCheckBox.Location = new System.Drawing.Point(144, 17);
+            this.clipOnlyAlbumCheckBox.Location = new System.Drawing.Point(144, 31);
             this.clipOnlyAlbumCheckBox.Name = "clipOnlyAlbumCheckBox";
             this.clipOnlyAlbumCheckBox.Size = new System.Drawing.Size(75, 17);
             this.clipOnlyAlbumCheckBox.TabIndex = 14;
@@ -398,10 +447,21 @@ namespace MP3GainMT
             this.clipOnlyAlbumCheckBox.UseVisualStyleBackColor = true;
             this.clipOnlyAlbumCheckBox.CheckedChanged += new System.EventHandler(this.ClipOnlyCheckBox_CheckedChanged);
             // 
+            // removeButton
+            // 
+            this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.removeButton.Location = new System.Drawing.Point(790, 23);
+            this.removeButton.Name = "removeButton";
+            this.removeButton.Size = new System.Drawing.Size(68, 28);
+            this.removeButton.TabIndex = 7;
+            this.removeButton.Text = "Re&move";
+            this.removeButton.UseVisualStyleBackColor = true;
+            this.removeButton.Click += new System.EventHandler(this.RemoveButton_Click);
+            // 
             // threshLabel
             // 
             this.threshLabel.AutoSize = true;
-            this.threshLabel.Location = new System.Drawing.Point(306, 19);
+            this.threshLabel.Location = new System.Drawing.Point(306, 33);
             this.threshLabel.Name = "threshLabel";
             this.threshLabel.Size = new System.Drawing.Size(20, 13);
             this.threshLabel.TabIndex = 0;
@@ -418,24 +478,13 @@ namespace MP3GainMT
             this.undoButton.UseVisualStyleBackColor = true;
             this.undoButton.Click += new System.EventHandler(this.UndoButton_Click);
             // 
-            // searchTextBox
-            // 
-            this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.searchTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.searchTextBox.Location = new System.Drawing.Point(369, 15);
-            this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(415, 20);
-            this.searchTextBox.TabIndex = 16;
-            this.searchTextBox.TextChanged += new System.EventHandler(this.SearchTextBox_TextChanged);
-            // 
             // fileGridView
             // 
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -628,52 +677,14 @@ namespace MP3GainMT
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
             // 
-            // removeButton
+            // label7
             // 
-            this.removeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.removeButton.Location = new System.Drawing.Point(790, 11);
-            this.removeButton.Name = "removeButton";
-            this.removeButton.Size = new System.Drawing.Size(68, 28);
-            this.removeButton.TabIndex = 7;
-            this.removeButton.Text = "Re&move";
-            this.removeButton.UseVisualStyleBackColor = true;
-            this.removeButton.Click += new System.EventHandler(this.RemoveButton_Click);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(327, 18);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 13);
-            this.label6.TabIndex = 16;
-            this.label6.Text = "Search";
-            // 
-            // andRadio
-            // 
-            this.andRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.andRadioButton.AutoSize = true;
-            this.andRadioButton.Checked = true;
-            this.andRadioButton.Location = new System.Drawing.Point(862, 16);
-            this.andRadioButton.Name = "andRadio";
-            this.andRadioButton.Size = new System.Drawing.Size(48, 17);
-            this.andRadioButton.TabIndex = 17;
-            this.andRadioButton.TabStop = true;
-            this.andRadioButton.Text = "A&ND";
-            this.andRadioButton.UseVisualStyleBackColor = true;
-            this.andRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
-            // 
-            // orRadio
-            // 
-            this.orRadioButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.orRadioButton.AutoSize = true;
-            this.orRadioButton.Location = new System.Drawing.Point(909, 16);
-            this.orRadioButton.Name = "orRadio";
-            this.orRadioButton.Size = new System.Drawing.Size(41, 17);
-            this.orRadioButton.TabIndex = 17;
-            this.orRadioButton.TabStop = true;
-            this.orRadioButton.Text = "&OR";
-            this.orRadioButton.UseVisualStyleBackColor = true;
-            this.orRadioButton.CheckedChanged += new System.EventHandler(this.SearchRadio_CheckChanged);
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(862, 12);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(38, 13);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "Words";
             // 
             // MainForm
             // 
@@ -766,6 +777,7 @@ namespace MP3GainMT
         private Button removeButton;
         private RadioButton orRadioButton;
         private RadioButton andRadioButton;
+        private Label label7;
     }
 }
 
