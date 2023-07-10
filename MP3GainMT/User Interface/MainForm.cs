@@ -1,8 +1,10 @@
 ﻿using MP3GainMT.MP3Gain;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using WK.Libraries.BetterFolderBrowserNS;
@@ -49,6 +51,22 @@ namespace MP3GainMT
             this.ColumnTimer.Interval = 250;
             this.ColumnTimer.Tick += ColumnTimer_Tick;
 
+            this.coresComboBox.Items.Clear();
+
+            this.coresComboBox.Items.Add(1);
+            this.coresComboBox.Items.Add(Convert.ToInt32(.25 * System.Environment.ProcessorCount));
+            this.coresComboBox.Items.Add(Convert.ToInt32(.5 * System.Environment.ProcessorCount));
+            this.coresComboBox.Items.Add(Convert.ToInt32(.75 * System.Environment.ProcessorCount));
+            this.coresComboBox.Items.Add(System.Environment.ProcessorCount - 1);
+
+            var distinct = this.coresComboBox.Items.Cast<int>().Distinct().ToList();
+
+            this.coresComboBox.Items.Clear();
+
+            this.coresComboBox.Items.AddRange(distinct.Cast<object>().ToArray());
+
+            this.coresComboBox.SelectedIndex = distinct.Count() / 2;
+
             this.UpdateFileListLabel();
             this.CheckFolderPath();
         }
@@ -61,17 +79,26 @@ namespace MP3GainMT
 
         private void AnalyzeButton_Click(object sender, EventArgs e)
         {
-            this.fileGridView.SuspendLayout();
-            this.run.SuspendDataSource();
-
-            this.StartTime = DateTime.Now;
-            var parentFolder = this.folderPathTextBox.Text;
-
-            if (Directory.Exists(parentFolder))
+            if (!this.run.Active)
             {
-                this.run.AnalyzeFiles();
+                this.fileGridView.SuspendLayout();
+                this.run.SuspendDataSource();
+
+                this.StartTime = DateTime.Now;
+                var parentFolder = this.folderPathTextBox.Text;
+
+                if (Directory.Exists(parentFolder))
+                {
+                    this.run.AnalyzeFiles(SelectedCores);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please wait for the current activity to finish.");
             }
         }
+
+        public int SelectedCores => Convert.ToInt32(this.coresComboBox.SelectedItem);
 
         private void BrowseButton_Click(object sender, EventArgs e)
         {
@@ -237,6 +264,8 @@ namespace MP3GainMT
         {
             this.run.ResumeDataSource();
             this.fileGridView.ResumeLayout();
+            
+            Debug.WriteLine($"ANALYSIS FINISHED! {DateTime.Now}");
         }
 
         private void Run_AskSearchQuestion(object sender, string question)
@@ -318,11 +347,21 @@ namespace MP3GainMT
         private void RunButton_Click(object sender, EventArgs e)
         {
             this.StartTime = DateTime.Now;
-            var parentFolder = this.folderPathTextBox.Text;
+            
+            this.ResetFileProgress();
 
-            if (Directory.Exists(parentFolder))
+            this.run.ApplyGain(this.SelectedCores);
+        }
+
+        private void ResetFileProgress()
+        {
+            var index = 0;
+
+            foreach (MP3GainRow row in this.run.DataSource)
             {
-                this.run.ApplyGain();
+                row.Progress = 0;
+                this.source.ResetItem(index);
+                index++;
             }
         }
 
@@ -371,7 +410,9 @@ namespace MP3GainMT
 
         private void UndoButton_Click(object sender, EventArgs e)
         {
-            this.run.UndoGain();
+            this.ResetFileProgress();
+
+            this.run.UndoGain(this.SelectedCores);
         }
 
         private void UpdataDataGridView()

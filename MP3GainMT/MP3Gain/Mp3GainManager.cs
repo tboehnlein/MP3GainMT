@@ -32,6 +32,7 @@ namespace MP3GainMT.MP3Gain
         private BackgroundWorker searchWorker;
 
         private DateTime startSearchTime;
+        private int foldersFinished;
 
         public long Length { get; private set; } = 0;
 
@@ -125,12 +126,14 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        public bool Active { get; private set; }
+
         public static string WordWithEnding<T>(string word, List<T> list)
         {
             return word + (list.Count == 0 ? "" : "s");
         }
 
-        public void ApplyGain()
+        public void ApplyGain(int cores = 2)
         {
             this.ResetAnalysis();
 
@@ -149,7 +152,7 @@ namespace MP3GainMT.MP3Gain
                 Debug.WriteLine($"PUSHED[{this.processQueue.Count}]: {folder.FolderName}");
             }
 
-            this.RunFolderGroup();
+            this.RunFolderGroup(cores);
         }
 
         public List<Mp3File> FolderFiles(Mp3Folder folder)
@@ -157,9 +160,11 @@ namespace MP3GainMT.MP3Gain
             return folder.Files.Select(x => x.Value).ToList();
         }
 
-        public void AnalyzeFiles()
+        public void AnalyzeFiles(int cores = 2)
         {
             this.ResetAnalysis();
+
+            this.Active = true;
 
             foreach (var folder in Folders.Values)
             {
@@ -177,7 +182,7 @@ namespace MP3GainMT.MP3Gain
                 Debug.WriteLine($"PUSHED[{this.processQueue.Count}]: {folder.FolderName}");
             }
 
-            RunFolderGroup();
+            RunFolderGroup(cores);
         }
 
         public void SearchFolders(string parentFolder = "")
@@ -282,7 +287,7 @@ namespace MP3GainMT.MP3Gain
             this.Source.RaiseListChangedEvents = false;
         }
 
-        internal void UndoGain()
+        internal void UndoGain(int cores = 2)
         {
             this.ResetAnalysis();
 
@@ -301,7 +306,7 @@ namespace MP3GainMT.MP3Gain
                 Debug.WriteLine($"PUSHED[{this.processQueue.Count}]: {folder.FolderName}");
             }
 
-            this.RunFolderGroup();
+            this.RunFolderGroup(cores);
         }
 
         internal void UpdateFolder(Mp3Folder e)
@@ -467,7 +472,6 @@ namespace MP3GainMT.MP3Gain
                 //Debug.WriteLine($"{folder.FolderName} is done. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
 
                 this.finished.Add(folder);
-                this.FoldersLeft--;
 
                 this.RaiseFolderFinished(this, folder);
 
@@ -475,6 +479,13 @@ namespace MP3GainMT.MP3Gain
                 this.RaiseTaskProgressed(GetRunProgress(0));
 
                 RunNextFolder();
+            }
+
+            if (this.FoldersLeft == 0)
+            {
+                this.Active = false;
+                Debug.WriteLine("All folders are done.");
+                this.RaiseAnalysisFinished();
             }
         }
 
@@ -507,8 +518,10 @@ namespace MP3GainMT.MP3Gain
                 RunNextFolder();
             }
 
-            if (this.processQueue.Count == 0)
+            if (this.FoldersLeft == 0)
             {
+                this.Active = false;
+                Debug.WriteLine("All folders are done.");
                 this.RaiseAnalysisFinished();
             }
         }
@@ -694,9 +707,9 @@ namespace MP3GainMT.MP3Gain
             this.FoldersLeft = Folders.Values.Count;
         }
 
-        private void RunFolderGroup()
+        private void RunFolderGroup(int cores = 2)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < cores; i++)
             {
                 RunNextFolder();
             }
