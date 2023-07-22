@@ -212,7 +212,14 @@ namespace MP3GainMT
             this.andRadioButton.Checked = this.settings.UseAnd;
             this.orRadioButton.Checked = !this.settings.UseAnd;
 
-            run.ParentFolder = this.settings.ParentFolder;
+            var folder = this.settings.ParentFolder;
+
+            while (!Directory.Exists(folder))
+            {
+                folder = Path.GetDirectoryName(folder);
+            }
+
+            run.ParentFolder = folder;
 
             if (this.settings.TargetDb.CompareTo((double)this.targetDbNumeric.Value) > -1)
             {
