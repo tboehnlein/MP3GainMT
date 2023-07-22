@@ -214,7 +214,7 @@ namespace MP3GainMT
 
             var folder = this.settings.ParentFolder;
 
-            while (!Directory.Exists(folder))
+            while (!Directory.Exists(folder) && folder != string.Empty)
             {
                 folder = Path.GetDirectoryName(folder);
             }
