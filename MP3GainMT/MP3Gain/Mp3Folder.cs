@@ -16,6 +16,7 @@ namespace MP3GainMT.MP3Gain
         private StringBuilder sortError;
         private StringBuilder sortOutput;
         private BackgroundWorker worker;
+        private int suggestedGain;
 
         public Mp3Folder(string path)
         {
@@ -44,7 +45,26 @@ namespace MP3GainMT.MP3Gain
         public long Length => this.Files.Sum(x => x.Value.Length);
 
         public int UndoSuggestedGain { get; private set; }
-        public int SuggestedGain { get; set; } = 0;
+        public int SuggestedGain
+        {
+            get
+            {
+                if (this.Files.Count == 0)
+                {
+                    return this.suggestedGain;
+                }
+
+                var first = this.Files.First().Value;
+
+                if (first.HasTags)
+                {
+                    this.suggestedGain = first.SuggestedAlbumGain;
+                }
+                
+                return this.suggestedGain;
+            }
+        }
+
         public ExecuteMp3GainAsync UndoGainExecution { get; private set; }
 
         public void SearchFolder()
@@ -137,11 +157,11 @@ namespace MP3GainMT.MP3Gain
         {
             if (this.SuggestedGain != 0)
             {
-                this.UndoSuggestedGain = this.SuggestedGain;
+                this.UndoSuggestedGain = this.suggestedGain;
                 //Debug.WriteLine($"APPLY STORED PREV {this.UndoSuggestedGain} for {this.FolderName}");
             }
 
-            this.SuggestedGain = 0;
+            this.suggestedGain = 0;
         }
 
         private void ExecuteUndoGain(string executable)
@@ -164,7 +184,7 @@ namespace MP3GainMT.MP3Gain
 
         private void RestoreUndoSuggestedGain()
         {
-            this.SuggestedGain = this.UndoSuggestedGain;
+            this.suggestedGain = this.UndoSuggestedGain;
 
             //Debug.WriteLine($"UNDO SUGG: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
         }
@@ -209,10 +229,10 @@ namespace MP3GainMT.MP3Gain
 
                 if (Int32.TryParse(change, out var gain))
                 {
-                    this.SuggestedGain = gain;
-                    this.UndoSuggestedGain = this.SuggestedGain;
+                    this.suggestedGain = gain;
+                    this.UndoSuggestedGain = gain;
 
-                    //Debug.WriteLine($"PROC SUGG: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
+                    Debug.WriteLine($"SUGGESTED ALBUM GAIN: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
 
                     found = true;
                 }
@@ -229,6 +249,8 @@ namespace MP3GainMT.MP3Gain
                     this.DBOffset = offset;
                     found = true;
                 }
+
+                Debug.WriteLine($"SUGGESTED ALBUM DB OFFSET: {this.DBOffset} for {this.FolderName}");
             }
 
             return found;

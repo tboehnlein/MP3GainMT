@@ -100,10 +100,7 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        public static double DbFlooring(double x)
-        {
-            return Math.Floor(x / FiveLog10Two) * FiveLog10Two;
-        }
+        public int SuggestedAlbumGain => Convert.ToInt32(Math.Round(ReplayAlbumGain / FiveLog10Two));
 
         public static double DbRounding(double x)
         {
