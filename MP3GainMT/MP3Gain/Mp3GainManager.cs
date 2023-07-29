@@ -137,7 +137,7 @@ namespace MP3GainMT.MP3Gain
         {
             this.ResetAnalysis();
 
-            foreach (var folder in Folders.Values)
+            foreach (var folder in Folders.Values.Reverse())
             {
                 var index = Folders.Values.ToList().IndexOf(folder);
                 var worker = new BackgroundWorker();
@@ -291,7 +291,7 @@ namespace MP3GainMT.MP3Gain
         {
             this.ResetAnalysis();
 
-            foreach (var folder in Folders.Values)
+            foreach (var folder in Folders.Values.Reverse())
             {
                 var index = Folders.Values.ToList().IndexOf(folder);
                 var worker = new BackgroundWorker();
@@ -472,6 +472,16 @@ namespace MP3GainMT.MP3Gain
                 //Debug.WriteLine($"{folder.FolderName} is done. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
 
                 this.finished.Add(folder);
+
+                var execute = new ExecuteMp3GainSync(Executable,
+                                                 $"/o /s c",
+                                                 folder.Files,
+                                                 folder.FolderPath,
+                                                 "GET MAX GAIN",
+                                                 "Calculating Max Gain",
+                                                 "done");
+
+                execute.Execute();
 
                 this.RaiseFolderFinished(this, folder);
 

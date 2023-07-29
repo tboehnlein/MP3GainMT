@@ -69,7 +69,7 @@ namespace MP3GainMT
             }
         }
 
-        public string ErrorMessage => this.file.ErrorMessages.AsSingleLine() + this.file.MaxNoClipGainTrack.ToString("0.000");
+        public string ErrorMessage => $"{this.file.ErrorMessages.AsSingleLine()} {Math.Round(Mp3File.GainRounding(this.file.MaxNoClipGainTrack), 1)}";
 
         public bool Updated
         {

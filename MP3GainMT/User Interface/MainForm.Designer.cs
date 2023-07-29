@@ -581,6 +581,7 @@ namespace MP3GainMT
             this.AlbumColorColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.AlbumColorColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.AlbumColorColumn.Visible = false;
+            this.AlbumColorColumn.Width = 56;
             // 
             // AlbumArtist
             // 
@@ -590,6 +591,7 @@ namespace MP3GainMT
             this.AlbumArtist.Name = "AlbumArtist";
             this.AlbumArtist.ReadOnly = true;
             this.AlbumArtist.Visible = false;
+            this.AlbumArtist.Width = 87;
             // 
             // Updated
             // 
@@ -625,6 +627,7 @@ namespace MP3GainMT
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
             this.Album.Visible = false;
+            this.Album.Width = 61;
             // 
             // Artist
             // 
@@ -634,6 +637,7 @@ namespace MP3GainMT
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
             this.Artist.Visible = false;
+            this.Artist.Width = 55;
             // 
             // Progress
             // 
@@ -714,9 +718,10 @@ namespace MP3GainMT
             // 
             this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ErrorMessage.DataPropertyName = "ErrorMessage";
-            this.ErrorMessage.HeaderText = "Debug";
+            this.ErrorMessage.HeaderText = "Max NoClip Gain";
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
+            this.ErrorMessage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // MainForm
             // 
@@ -789,6 +794,14 @@ namespace MP3GainMT
         private Label threshLabel;
         private CheckBox clipOnlyAlbumCheckBox;
         private CheckBox clipOnlyCheckBox;
+        private TextBox searchTextBox;
+        private Label label6;
+        private Button removeButton;
+        private RadioButton orRadioButton;
+        private RadioButton andRadioButton;
+        private Label label7;
+        private ComboBox coresComboBox;
+        private Label label8;
         private DataGridViewTextBoxColumn FullPath;
         private DataGridViewCheckBoxColumn AlbumColorColumn;
         private DataGridViewTextBoxColumn AlbumArtist;
@@ -806,14 +819,6 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewCheckBoxColumn AlbumClip;
         private DataGridViewTextBoxColumn ErrorMessage;
-        private TextBox searchTextBox;
-        private Label label6;
-        private Button removeButton;
-        private RadioButton orRadioButton;
-        private RadioButton andRadioButton;
-        private Label label7;
-        private ComboBox coresComboBox;
-        private Label label8;
     }
 }
 

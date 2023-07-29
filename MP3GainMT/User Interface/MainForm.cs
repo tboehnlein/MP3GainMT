@@ -273,6 +273,8 @@ namespace MP3GainMT
             this.fileGridView.ResumeLayout();
             
             Debug.WriteLine($"ANALYSIS FINISHED! {DateTime.Now}");
+
+            //this.readTagsButton.PerformClick();
         }
 
         private void Run_AskSearchQuestion(object sender, string question)
