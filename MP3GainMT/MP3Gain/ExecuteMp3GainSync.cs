@@ -123,7 +123,7 @@ namespace MP3GainMT.MP3Gain
                 {
                     //Debug.WriteLine($"FINISHED {this.ActionName}: {activeFile.FilePath}");
                     this.activeFile.Progress = 100;
-                    this.activeFile.UpdateTags();
+                    this.activeFile.FlagUpdateTags();
                     int overallProgress = GetOverallProgress(100);
                     this.Worker.ReportProgress(overallProgress, new FileProgress(this.activeFile, this.activeFile.Progress));
                     filesFinished++;

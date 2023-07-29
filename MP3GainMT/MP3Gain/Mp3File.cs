@@ -27,7 +27,7 @@ namespace MP3GainMT.MP3Gain
         public double ReplayAlbumPeak = 0.0;
         public double ReplayTrackGain = 0.0;
         public double ReplayTrackPeak = 0.0;
-        private const double FiveLog10Two = 1.50514997831991;
+        public const double FiveLog10Two = 1.50514997831991;
 
         public Mp3File(string file)
         {
@@ -100,14 +100,16 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        public static double DbFlooring(double x)
-        {
-            return Math.Floor(x / FiveLog10Two) * FiveLog10Two;
-        }
+        public int SuggestedAlbumGain => Convert.ToInt32(Math.Round(ReplayAlbumGain / FiveLog10Two));
 
         public static double DbRounding(double x)
         {
             return Math.Round(x / FiveLog10Two) * FiveLog10Two;
+        }
+
+        public static double GainRounding(double x)
+        {
+            return Math.Floor(x / FiveLog10Two) * FiveLog10Two;
         }
 
         public double ReplayTrackGainRounded
@@ -141,7 +143,7 @@ namespace MP3GainMT.MP3Gain
                     stream.Close();
                 }
             }
-            catch (IOException)
+            catch (IOException exp)
             {
                 //the file is unavailable because it is:
                 //still being written to
@@ -222,10 +224,9 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        internal void UpdateTags()
+        internal void FlagUpdateTags()
         {
             this.HasTags = false;
-            ExtractTags();
         }
 
         private static void GetTagValue(TagLib.Ape.Tag apeTag, string key, out double value)
