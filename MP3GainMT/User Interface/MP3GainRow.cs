@@ -3,10 +3,13 @@ using System;
 
 namespace MP3GainMT
 {
-    /// <summary>
-    /// DO NOT REORGANIZE THIS FILE WITH CODEMAID. Public property order affects the column order of the table.
-    /// </summary>
+    // WARNING: DO NOT REORGANIZE THIS FILE WITH CODEMAID. Public property order affects the column order of the table.
 
+    /// <summary>
+    /// A class that represents a row in the MP3Gain table. This determines the columns and their order. It does 
+    /// all of the final rounding and calculations for the table.  This ensure that the table matches the output
+    /// of the original MP3Gain software.
+    /// </summary>
     public class MP3GainRow : IComparable<MP3GainRow>, IEquatable<MP3GainRow>
     {
         public const double TargetDefault = 89.0;
@@ -14,47 +17,98 @@ namespace MP3GainMT
 
         private Mp3Folder folder;
 
+        /// <summary>
+        /// Creates a new MP3GainRow object that contains a MP3 and belongs to a folder.
+        /// </summary>
+        /// <param name="file">The MP3 file associated with the row.</param>
+        /// <param name="folder">The folder that holds the MP3 file.</param>
         public MP3GainRow(Mp3File file, Mp3Folder folder)
         {
             this.file = file;
             this.folder = folder;
         }
 
+        public bool HasGainTags => this.file.HasGainTags;
+
+        /// <summary>
+        /// The full file path of the MP3 file.
+        /// </summary>
         public string FullPath => this.file.FilePath;
 
+        /// <summary>
+        /// The target volume in decibels.
+        /// </summary>
         public static double TargetDB { get; set; } = 89.0;
 
+        /// <summary>
+        /// The difference between the target volume and the default volume.
+        /// </summary>
         public static double TargetDiffDB => TargetDefault - TargetDB;
 
+        /// <summary>
+        /// The tagged album artist of the MP3 file.
+        /// </summary>
         public string AlbumArtist => this.file.AlbumArtist;
 
+        /// <summary>
+        /// The tagged artist of the MP3 file.
+        /// </summary>
         public string Artist => this.file.Artist;
 
+        /// <summary>
+        /// The tagged album of the MP3 file.
+        /// </summary>
         public string Album => this.file.Album;
 
+        /// <summary>
+        /// The path of the MP3 file's folder.
+        /// </summary>
         public string Folder => this.file.Folder;
 
+        /// <summary>
+        /// The MP3 file's file name
+        /// </summary>
         public string FileName => this.file.FileName;
 
+        /// <summary>
+        /// The progress of the MP3 file's analysis.
+        /// </summary>
         public int Progress { get; set; } = 0;
 
+        /// <summary>
+        /// The MP3 files's track volumn in decibels relative to the target decibels.
+        /// </summary>
         public double TrackDB => Math.Round(TargetDB - this.file.ReplayTrackGain, 1);
 
+        /// <summary>
+        /// Is that track clipping in it's current volume state?
+        /// </summary>
         public bool Clipping => this.file.MaxNoClipGainTrack < 0.0;
 
-        public double TrackFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayTrackGain - TargetDiffDB), 1);
+        /// <summary>
+        /// Difference between the track's gain and the target's volume in decibels.
+        /// </summary>
+        public double TrackGain => Math.Round(Mp3File.DbRounding(this.file.ReplayTrackGain - TargetDiffDB), 1);
 
-        //TODO: Add code to calculate AlbumClipping using mp3gain track max gain value vs suggested track gain value (See programmer notes)
-        public bool TrackClipping => this.file.MaxNoClipGainTrack < TrackFinal;
+        /// <summary>
+        /// Would the track clip if it were to have track gain applied?
+        /// </summary>
+        public bool TrackClipping => this.file.MaxNoClipGainTrack < TrackGain;
 
+        /// <summary>
+        /// The MP3 files's album volumn in decibels relative to the target decibels.
+        /// </summary>
         public double AlbumDB => Math.Round(TargetDB - this.file.ReplayAlbumGain, 1);
-        public double AlbumFinal => Math.Round(Mp3File.DbRounding(this.file.ReplayAlbumGain - TargetDiffDB), 1);
 
-        //TODO: Add code to calculate AlbumClipping using mp3gain album max gain value vs suggested album gain value (See programmer notes)
+        /// <summary>
+        /// Difference between the album's gain and the target's volume in decibels.
+        /// </summary>
+        public double AlbumGain => Math.Round(Mp3File.DbRounding(this.file.ReplayAlbumGain - TargetDiffDB), 1);
 
-        // mp3Inf.CurrMaxAmp * 2# ^ (CDbl(mp3Inf.AlbumMp3Gain) / 4#) > 32767
-
-        public bool AlbumClipping => this.file.MaxNoClipGainTrack < AlbumFinal;
+        /// <summary>
+        /// Would the track clip if it were to have album gain applied?
+        /// </summary>
+        public bool AlbumClipping => this.file.MaxNoClipGainTrack < AlbumGain;
 
         public bool AlbumColorAlternative
         {
@@ -69,8 +123,19 @@ namespace MP3GainMT
             }
         }
 
-        public string ErrorMessage => $"{this.file.ErrorMessages.AsSingleLine()} {Math.Round(Mp3File.GainRounding(this.file.MaxNoClipGainTrack), 1)}";
+        /// <summary>
+        /// The amount of gain that could be applied to the track without clipping.
+        /// </summary>
+        public double MaxNoClip => Math.Round(Mp3File.GainRounding(this.file.MaxNoClipGainTrack), 1);
 
+        /// <summary>
+        /// Error messages associated with the MP3 file.
+        /// </summary>
+        public string ErrorMessage => $"{this.file.ErrorMessages.AsSingleLine()}";
+
+        /// <summary>
+        /// Has the file been updated?
+        /// </summary>
         public bool Updated
         {
             get
@@ -83,8 +148,16 @@ namespace MP3GainMT
             }
         }
 
+        /// <summary>
+        /// Difference between the default volume and the target volume.
+        /// </summary>
         private static double TargetDifference => MP3GainRow.TargetDefault - MP3GainRow.TargetDB;
 
+        /// <summary>
+        /// Checks ot see if two MP3GainRow objects are equal.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
         public int CompareTo(MP3GainRow row)
         {
             if (row == null) return 1;
@@ -94,11 +167,21 @@ namespace MP3GainMT
             return this.FullPath.CompareTo(row.FullPath);
         }
 
+        /// <summary>
+        /// Compares to MP3GainRow to an object to see if they are equal.
+        /// </summary>
+        /// <param name="obj">An MP3GainRow.</param>
+        /// <returns>True is equal else false.</returns>
         public override bool Equals(object obj)
         {
             return this.Equals(obj as MP3GainRow);
         }
 
+        /// <summary>
+        /// Compares to MP3GainRow objects to see if they are equal.
+        /// </summary>
+        /// <param name="obj">An MP3GainRow.</param>
+        /// <returns>True is equal else false.</returns>
         public bool Equals(MP3GainRow obj)
         {
             if (obj == null) return false;
@@ -115,9 +198,13 @@ namespace MP3GainMT
             return false;
         }
 
+        /// <summary>
+        /// Generates a hash code for the MP3GainRow object using path and album gain.
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
-            return FullPath.GetHashCode() + AlbumFinal.GetHashCode();
+            return FullPath.GetHashCode() + AlbumGain.GetHashCode();
         }
     }
 }

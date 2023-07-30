@@ -1,4 +1,5 @@
 ﻿using MP3GainMT.MP3Gain;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -269,6 +270,8 @@ namespace MP3GainMT
 
         private void Run_AnalysisFinished(object sender, EventArgs e)
         {
+            
+
             this.run.ResumeDataSource();
             this.fileGridView.ResumeLayout();
             
@@ -378,9 +381,14 @@ namespace MP3GainMT
         {
             if (CheckFolderPath())
             {
-                this.activityLabel.Text = SearchingActivity;
-                this.run.SearchFolders(this.run.ParentFolder);
+                SearchFolder(this.run.ParentFolder);
             }
+        }
+
+        private void SearchFolder(string folder)
+        {
+            this.activityLabel.Text = SearchingActivity;
+            this.run.SearchFolders(folder);
         }
 
         private void SortTable(bool force = false)
@@ -639,6 +647,68 @@ namespace MP3GainMT
         private void SearchRadio_CheckChanged(object sender, EventArgs e)
         {
             DefineFilters();
+        }
+
+        private void FileGridView_DragDrop(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.None;
+
+            var folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            foreach (var folder in folders)
+            {
+                this.activityLabel.Text = SearchingActivity;
+                this.run.SearchFolders(folder);
+            }
+            
+        }
+
+        private void FileGridView_DragEnter(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.None;
+                return;
+            }
+
+            var folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var allDirectories = true;
+
+            foreach (var folder in folders)
+            {
+                if (!Directory.Exists(folder) || File.Exists(folder))
+                {
+                    allDirectories = false;
+                    break;
+                }
+            }
+
+            if (allDirectories)
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void FileGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DataGridView dgv = (DataGridView)sender;
+            var col = dgv.Columns[e.ColumnIndex].Name;                    
+
+            if (e.RowIndex >= 0 && (col == "TrackDB" || col == "AlbumDB" || col == "TrackGain" || col == "AlbumGain" || col == "NoClipGain"))
+            {
+                var tags = "HasGainTags";
+                var hasTags = dgv.Rows[e.RowIndex].Cells[tags].Value is bool && (bool)dgv.Rows[e.RowIndex].Cells[tags].Value;
+
+                if (!hasTags)
+                {
+                    e.Value = "";
+                    e.FormattingApplied = true;
+                }
+            }
         }
     }
 }

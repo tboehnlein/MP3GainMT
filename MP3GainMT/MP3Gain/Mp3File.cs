@@ -132,6 +132,8 @@ namespace MP3GainMT.MP3Gain
         public double MaxNoClipGainTrackRaw { get; internal set; } = 0.0;
         public bool UseAlternativeColor { get; internal set; }
 
+        public bool HasGainTags { get; private set; } = false;
+
         public bool IsFileLocked()
         {
             try
@@ -198,10 +200,12 @@ namespace MP3GainMT.MP3Gain
                         //GetTagValuePair(apeTag, TagMp3GainAlbumMinMax, out MaxNoClipGainAlbum, out GainAlbumMax);
                         //GetTagValuePair(apeTag, TagMp3GainMinMax, out GainMin, out GainMax);
                         GetTagValueTriple(apeTag, TagMp3GainUndo, out GainUndoTrack, out GainUndoAlbum, out GainUndoLabel);
-                        GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);
+                        var hasAll = GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);
                         GetTagValue(apeTag, TagReplayAlbumPeak, out this.ReplayAlbumPeak);
-                        GetTagValue(apeTag, TagReplayTrackGain, out this.ReplayTrackGain);
+                        hasAll &= GetTagValue(apeTag, TagReplayTrackGain, out this.ReplayTrackGain);
                         GetTagValue(apeTag, TagReplayTrackPeak, out this.ReplayTrackPeak);
+
+                        this.HasGainTags = hasAll;
                     }
 
                     this.Album = tagFile.Tag.Album;
@@ -229,25 +233,31 @@ namespace MP3GainMT.MP3Gain
             this.HasTags = false;
         }
 
-        private static void GetTagValue(TagLib.Ape.Tag apeTag, string key, out double value)
+        private static bool GetTagValue(TagLib.Ape.Tag apeTag, string key, out double value)
         {
+            var hasTag = apeTag.HasItem(key);
+
             value = -1.0;
 
-            if (apeTag.HasItem(key))
+            if (hasTag)
             {
                 var item = apeTag.GetItem(key);
                 var vector = item.ToString().Split(',');
 
                 Double.TryParse(vector[0].Replace(" dB", string.Empty), out value);
             }
+
+            return hasTag;
         }
 
-        private static void GetTagValuePair(TagLib.Ape.Tag apeTag, string key, out double value0, out double value1)
+        private static bool GetTagValuePair(TagLib.Ape.Tag apeTag, string key, out double value0, out double value1)
         {
+            var hasTag = apeTag.HasItem(key);
+
             value0 = -1.0;
             value1 = -1.0;
 
-            if (apeTag.HasItem(key))
+            if (hasTag)
             {
                 var item = apeTag.GetItem(key);
                 var vector = item.ToString().Split(',');
@@ -255,6 +265,8 @@ namespace MP3GainMT.MP3Gain
                 Double.TryParse(vector[0], out value0);
                 Double.TryParse(vector[1], out value1);
             }
+
+            return hasTag;
         }
 
         private void GenerateErrorMessage(string header, Exception ex)
@@ -265,13 +277,14 @@ namespace MP3GainMT.MP3Gain
             Debug.WriteLine($"{message} ({this.FilePath})");
         }
 
-        private void GetTagValueTriple(TagLib.Ape.Tag apeTag, string key, out double value0, out double value1, out string label)
+        private bool GetTagValueTriple(TagLib.Ape.Tag apeTag, string key, out double value0, out double value1, out string label)
         {
+            var hasTag = apeTag.HasItem(key);
             value0 = -1.0;
             value1 = -1.0;
             label = string.Empty;
 
-            if (apeTag.HasItem(key))
+            if (hasTag)
             {
                 var item = apeTag.GetItem(key);
                 var vector = item.ToString().Split(',');
@@ -280,6 +293,8 @@ namespace MP3GainMT.MP3Gain
                 Double.TryParse(vector[1], out value1);
                 label = vector[2];
             }
+
+            return hasTag;
         }
     }
 }
