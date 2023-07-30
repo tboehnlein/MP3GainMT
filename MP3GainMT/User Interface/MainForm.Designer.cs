@@ -67,6 +67,7 @@ namespace MP3GainMT
             this.coresComboBox = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.fileGridView = new MP3GainMT.User_Interface.DataGridViewBuffered();
+            this.HasGainTags = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumColorColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.AlbumArtist = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -78,11 +79,12 @@ namespace MP3GainMT
             this.Progress = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TrackDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Clipping = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.TrackFinal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TrackGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TrackClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.AlbumDB = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AlbumClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.NoClipGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.activityPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
@@ -521,6 +523,7 @@ namespace MP3GainMT
             // 
             // fileGridView
             // 
+            this.fileGridView.AllowDrop = true;
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
@@ -532,6 +535,7 @@ namespace MP3GainMT
             this.fileGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.fileGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.HasGainTags,
             this.FullPath,
             this.AlbumColorColumn,
             this.AlbumArtist,
@@ -543,12 +547,14 @@ namespace MP3GainMT
             this.Progress,
             this.TrackDB,
             this.Clipping,
-            this.TrackFinal,
+            this.TrackGain,
             this.TrackClip,
             this.AlbumDB,
             this.AlbumGain,
             this.AlbumClip,
+            this.NoClipGain,
             this.ErrorMessage});
+            this.fileGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.fileGridView.Location = new System.Drawing.Point(12, 162);
             this.fileGridView.MultiSelect = false;
             this.fileGridView.Name = "fileGridView";
@@ -556,9 +562,21 @@ namespace MP3GainMT
             this.fileGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.fileGridView.Size = new System.Drawing.Size(1108, 690);
             this.fileGridView.TabIndex = 9;
+            this.fileGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.FileGridView_CellFormatting);
             this.fileGridView.CellToolTipTextNeeded += new System.Windows.Forms.DataGridViewCellToolTipTextNeededEventHandler(this.FileGridView_CellToolTipTextNeeded);
             this.fileGridView.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.FileGridView_RowPrePaint);
             this.fileGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.FileGridView_Scroll);
+            this.fileGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.FileGridView_DragDrop);
+            this.fileGridView.DragEnter += new System.Windows.Forms.DragEventHandler(this.FileGridView_DragEnter);
+            // 
+            // HasGainTags
+            // 
+            this.HasGainTags.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.HasGainTags.DataPropertyName = "HasGainTags";
+            this.HasGainTags.HeaderText = "Tags";
+            this.HasGainTags.Name = "HasGainTags";
+            this.HasGainTags.ReadOnly = true;
+            this.HasGainTags.Width = 37;
             // 
             // FullPath
             // 
@@ -669,14 +687,14 @@ namespace MP3GainMT
             this.Clipping.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.Clipping.Width = 49;
             // 
-            // TrackFinal
+            // TrackGain
             // 
-            this.TrackFinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.TrackFinal.DataPropertyName = "TrackFinal";
-            this.TrackFinal.HeaderText = "Track Gain";
-            this.TrackFinal.Name = "TrackFinal";
-            this.TrackFinal.ReadOnly = true;
-            this.TrackFinal.Width = 50;
+            this.TrackGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackGain.DataPropertyName = "TrackGain";
+            this.TrackGain.HeaderText = "Track Gain";
+            this.TrackGain.Name = "TrackGain";
+            this.TrackGain.ReadOnly = true;
+            this.TrackGain.Width = 50;
             // 
             // TrackClip
             // 
@@ -699,7 +717,7 @@ namespace MP3GainMT
             // AlbumGain
             // 
             this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.AlbumGain.DataPropertyName = "AlbumFinal";
+            this.AlbumGain.DataPropertyName = "AlbumGain";
             this.AlbumGain.HeaderText = "Album Gain";
             this.AlbumGain.Name = "AlbumGain";
             this.AlbumGain.ReadOnly = true;
@@ -714,11 +732,21 @@ namespace MP3GainMT
             this.AlbumClip.ReadOnly = true;
             this.AlbumClip.Width = 50;
             // 
+            // NoClipGain
+            // 
+            this.NoClipGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.NoClipGain.DataPropertyName = "MaxNoClip";
+            this.NoClipGain.HeaderText = "No Clip";
+            this.NoClipGain.Name = "NoClipGain";
+            this.NoClipGain.ReadOnly = true;
+            this.NoClipGain.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.NoClipGain.Width = 42;
+            // 
             // ErrorMessage
             // 
             this.ErrorMessage.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ErrorMessage.DataPropertyName = "ErrorMessage";
-            this.ErrorMessage.HeaderText = "Max NoClip Gain";
+            this.ErrorMessage.HeaderText = "Error";
             this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.ReadOnly = true;
             this.ErrorMessage.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -802,6 +830,7 @@ namespace MP3GainMT
         private Label label7;
         private ComboBox coresComboBox;
         private Label label8;
+        private DataGridViewCheckBoxColumn HasGainTags;
         private DataGridViewTextBoxColumn FullPath;
         private DataGridViewCheckBoxColumn AlbumColorColumn;
         private DataGridViewTextBoxColumn AlbumArtist;
@@ -813,11 +842,12 @@ namespace MP3GainMT
         private DataGridViewTextBoxColumn Progress;
         private DataGridViewTextBoxColumn TrackDB;
         private DataGridViewCheckBoxColumn Clipping;
-        private DataGridViewTextBoxColumn TrackFinal;
+        private DataGridViewTextBoxColumn TrackGain;
         private DataGridViewCheckBoxColumn TrackClip;
         private DataGridViewTextBoxColumn AlbumDB;
         private DataGridViewTextBoxColumn AlbumGain;
         private DataGridViewCheckBoxColumn AlbumClip;
+        private DataGridViewTextBoxColumn NoClipGain;
         private DataGridViewTextBoxColumn ErrorMessage;
     }
 }

@@ -483,6 +483,12 @@ namespace MP3GainMT.MP3Gain
 
                 execute.Execute();
 
+                foreach (var file in folder.Files.Values)
+                {
+                    file.HasTags = false;
+                    file.ExtractTags();
+                }
+
                 this.RaiseFolderFinished(this, folder);
 
                 this.RunProgress = Helpers.GetProgress(this.finished.Count, this.Folders.Count);
@@ -520,6 +526,22 @@ namespace MP3GainMT.MP3Gain
         {
             if (e.Result is Mp3Folder folder)
             {
+                var execute = new ExecuteMp3GainSync(Executable,
+                                                     $"/o /s c",
+                                                     folder.Files,
+                                                     folder.FolderPath,
+                                                     "GET MAX GAIN",
+                                                     "Calculating Max Gain",
+                                                     "done");
+
+                execute.Execute();
+
+                foreach (var file in folder.Files.Values)
+                {
+                    file.HasTags = false;
+                    file.ExtractTags();
+                }
+
                 string fileWord = WordWithEnding("file", folder.MP3Files);
                 //Debug.WriteLine($"COMPLETE ANALYSIS FOR {folder.FolderName}. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
                 this.RaiseFolderFinished(this, folder);
