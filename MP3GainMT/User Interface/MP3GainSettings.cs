@@ -8,20 +8,32 @@ namespace MP3GainMT
     public class MP3GainSettings
     {
         public readonly string SettingsFileLocation = @".\settings.json";
+        private static readonly string ExecutableLabel = "Executable";
         private static readonly string HeightSizeLabel = "Heigth Length";
         private static readonly string LeftPositionLabel = "Left Position";
         private static readonly string ParentFolderLabel = "Last Used Folder";
+        private static readonly string PathWidthLabel = "Path Column Width";
         private static readonly string TargetDbLabel = "Target dB";
         private static readonly string TopPositionLabel = "Top Position";
-        private static readonly string WidthSizeLabel = "Width Length";
-        private static readonly string PathWidthLabel = "Path Column Width";
         private static readonly string UseAndLabel = "Use And";
-        private static readonly string ExecutableLabel = "Executable";
+        private static readonly string WidthSizeLabel = "Width Length";
         private JObject _json = null;
 
         public MP3GainSettings()
         {
             this.ReadSettings();
+        }
+
+        public string Executable
+        {
+            get
+            {
+                return ReadKey<string>(ExecutableLabel);
+            }
+            set
+            {
+                WriteKey<string>(value, ExecutableLabel);
+            }
         }
 
         public int HeightSize
@@ -60,6 +72,18 @@ namespace MP3GainMT
             }
         }
 
+        public int PathWidth
+        {
+            get
+            {
+                return NoZero(ReadKey<int>(PathWidthLabel));
+            }
+            set
+            {
+                WriteKey<int>(value, PathWidthLabel);
+            }
+        }
+
         public double TargetDb
         {
             get
@@ -84,30 +108,6 @@ namespace MP3GainMT
             }
         }
 
-        public int WidthSize
-        {
-            get
-            {
-                return NoZero(ReadKey<int>(WidthSizeLabel));
-            }
-            set
-            {
-                WriteKey<int>(value, WidthSizeLabel);
-            }
-        }
-
-        public int PathWidth
-        {
-            get
-            {
-                return NoZero(ReadKey<int>(PathWidthLabel));
-            }
-            set
-            {
-                WriteKey<int>(value, PathWidthLabel);
-            }
-        }
-
         public bool UseAnd
         {
             get
@@ -120,15 +120,15 @@ namespace MP3GainMT
             }
         }
 
-        public string Executable
+        public int WidthSize
         {
             get
             {
-                return ReadKey<string>(ExecutableLabel);
+                return NoZero(ReadKey<int>(WidthSizeLabel));
             }
             set
             {
-                WriteKey<string>(value, ExecutableLabel);
+                WriteKey<int>(value, WidthSizeLabel);
             }
         }
 

@@ -120,12 +120,19 @@ namespace MP3GainMT
                 MessageBox.Show("Please wait for the current activity to finish.");
             }
         }
+
         private void ApplyFolderToSearchBox(string folder)
         {
             this.folderPathTextBox.Text = folder;
             this.settings.ParentFolder = folder;
 
             CheckFolderPath();
+        }
+
+        private void ApplyMP3GainExecutable(string fileName)
+        {
+            Mp3GainManager.Executable = fileName;
+            this.readOnlyCheckBox1.Checked = File.Exists(Mp3GainManager.Executable);
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -142,6 +149,7 @@ namespace MP3GainMT
                 ApplyFolderToSearchBox(folder);
             }
         }
+
         private void CancelButton_Click(object sender, EventArgs e)
         {
             this.run.CancelActivity();
@@ -362,6 +370,23 @@ namespace MP3GainMT
             return $"Loaded Files [{GetFolderFileCountText()}]";
         }
 
+        private void MP3GainButton_Click(object sender, EventArgs e)
+        {
+            var selectFolder = new OpenFileDialog();
+
+            selectFolder.InitialDirectory = Mp3GainManager.Executable;
+            selectFolder.Title = "Select MP3Gain.exe";
+            selectFolder.Filter = "MP3Gain|MP3Gain.exe";
+
+            var result = selectFolder.ShowDialog(this);
+            var fileName = selectFolder.FileName;
+
+            if (result == DialogResult.OK)
+            {
+                ApplyMP3GainExecutable(fileName);
+            }
+        }
+
         private void ReadSettings(Mp3GainManager run)
         {
             this.Left = this.settings.LeftPosition;
@@ -410,6 +435,7 @@ namespace MP3GainMT
             var artistMinWidth = gridViewColumn.GetPreferredWidth(DataGridViewAutoSizeColumnMode.DisplayedCells, true);
             gridViewColumn.MinimumWidth = artistMinWidth;
         }
+
         private void ResetFileProgress()
         {
             var index = 0;
@@ -546,6 +572,7 @@ namespace MP3GainMT
 
             this.run.ApplyGain(this.SelectedCores);
         }
+
         private void SearchButton_Click(object sender, EventArgs e)
         {
             if (CheckFolderPath())
@@ -709,29 +736,6 @@ namespace MP3GainMT
             this.settings.ParentFolder = run.ParentFolder;
 
             this.settings.WriteSettingsFile();
-        }
-
-        private void MP3GainButton_Click(object sender, EventArgs e)
-        {
-            var selectFolder = new OpenFileDialog();
-
-            selectFolder.InitialDirectory = Mp3GainManager.Executable;
-            selectFolder.Title = "Select MP3Gain.exe";
-            selectFolder.Filter = "MP3Gain|MP3Gain.exe";
-
-            var result = selectFolder.ShowDialog(this);
-            var fileName = selectFolder.FileName;
-
-            if (result == DialogResult.OK)
-            {
-                ApplyMP3GainExecutable(fileName);
-            }
-        }
-
-        private void ApplyMP3GainExecutable(string fileName)
-        {
-            Mp3GainManager.Executable = fileName;
-            this.readOnlyCheckBox1.Checked = File.Exists(Mp3GainManager.Executable);
         }
     }
 }

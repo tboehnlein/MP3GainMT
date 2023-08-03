@@ -34,6 +34,7 @@ namespace MP3GainMT.MP3Gain
         private BackgroundWorker searchWorker;
 
         private DateTime startSearchTime;
+
         public Mp3GainManager(string exePath, string parentFolder = "")
         {
             if (Executable == string.Empty)
@@ -83,6 +84,7 @@ namespace MP3GainMT.MP3Gain
         public static string Executable { get; set; } = string.Empty;
         public bool Active { get; private set; }
         public bool ActiveActivities => this.AnyWorkersActive();
+
         public List<Mp3Folder> AllFolders
         {
             get
@@ -101,6 +103,7 @@ namespace MP3GainMT.MP3Gain
         public bool ContinueSearch { get; internal set; }
         public BindingListView<MP3GainRow> DataSource { get; private set; } = null;
         public TimeSpan ElaspedSearchTime => DateTime.Now - this.startSearchTime;
+
         public int FileCount
         {
             get { return this.foundFiles.Count; }
@@ -118,6 +121,7 @@ namespace MP3GainMT.MP3Gain
         public Dictionary<string, MP3GainRow> SourceDictionary { get; private set; } = new Dictionary<string, MP3GainRow>();
 
         private List<Mp3File> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
+
         public static string WordWithEnding<T>(string word, List<T> list)
         {
             return word + (list.Count == 0 ? "" : "s");
@@ -174,6 +178,7 @@ namespace MP3GainMT.MP3Gain
         {
             return folder.Files.Select(x => x.Value).ToList();
         }
+
         public void SearchFolders(IEnumerable<string> parentFolders)
         {
             if (parentFolders.Count() == 0)
@@ -370,6 +375,7 @@ namespace MP3GainMT.MP3Gain
 
             return searchWorker;
         }
+
         private void ExecuteMP3Gain_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             this.RaiseTaskProgressed(GetRunProgress(e.ProgressPercentage));
@@ -521,6 +527,7 @@ namespace MP3GainMT.MP3Gain
         {
             this.RaiseFoundFile(sender, e);
         }
+
         private void ProcessFiles_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument is Mp3Folder folder)
@@ -750,6 +757,7 @@ namespace MP3GainMT.MP3Gain
             this.RaiseRefreshTable();
             this.RaiseAcivityUpdated("Finished.");
         }
+
         private void ResetAnalysis()
         {
             this.finished.Clear();
@@ -830,6 +838,7 @@ namespace MP3GainMT.MP3Gain
             this.RaiseRefreshTable();
             this.RaiseSearchFinishedFolder();
         }
+
         private void StartSearchTimer()
         {
             this.startSearchTime = DateTime.Now;
