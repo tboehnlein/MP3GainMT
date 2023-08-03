@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace MP3GainMT.MP3Gain
@@ -21,7 +22,7 @@ namespace MP3GainMT.MP3Gain
 
         private Dictionary<string, Mp3File> foundFiles = new Dictionary<string, Mp3File>();
 
-        private Stack<FolderWorker> processQueue;
+        private Stack<FolderWorker> processStack;
 
         private TimeCheck readTagEventCheck = new TimeCheck(8);
 
@@ -33,6 +34,7 @@ namespace MP3GainMT.MP3Gain
 
         private DateTime startSearchTime;
         private int foldersFinished;
+        private Queue<string> searchQeueu;
 
         public long Length { get; private set; } = 0;
 
@@ -53,7 +55,7 @@ namespace MP3GainMT.MP3Gain
 
             this.DataSource = new BindingListView<MP3GainRow>(Source);
 
-            this.processQueue = new Stack<FolderWorker>();
+            this.processStack = new Stack<FolderWorker>();
         }
 
         public event EventHandler<string> ActivityUpdated;
@@ -147,9 +149,9 @@ namespace MP3GainMT.MP3Gain
                 worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
                 worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
 
-                this.processQueue.Push(new FolderWorker(worker, folder));
+                this.processStack.Push(new FolderWorker(worker, folder));
 
-                Debug.WriteLine($"PUSHED[{this.processQueue.Count}]: {folder.FolderName}");
+                Debug.WriteLine($"PUSHED[{this.processStack.Count}]: {folder.FolderName}");
             }
 
             this.RunFolderGroup(cores);
@@ -177,15 +179,33 @@ namespace MP3GainMT.MP3Gain
                 worker.ProgressChanged += ProcessFiles_ProgressChanged;
                 worker.RunWorkerCompleted += ProcessFiles_RunWorkerCompleted;
 
-                this.processQueue.Push(new FolderWorker(worker, folder));
+                this.processStack.Push(new FolderWorker(worker, folder));
 
-                Debug.WriteLine($"PUSHED[{this.processQueue.Count}]: {folder.FolderName}");
+                Debug.WriteLine($"PUSHED[{this.processStack.Count}]: {folder.FolderName}");
             }
 
             RunFolderGroup(cores);
         }
 
-        public void SearchFolders(string parentFolder = "")
+        public void SearchFolders(IEnumerable<string> parentFolders)
+        {
+            if (parentFolders.Count() == 0)
+            {
+                return;
+            }
+
+            if (this.searchQeueu == null || this.searchQeueu.Count == 0)
+            {
+                this.searchQeueu = new Queue<string>(parentFolders);
+            }
+
+            this.searchWorker = CreateSearchWorker();
+
+            this.searchWorker.RunWorkerAsync(this.searchQeueu.Dequeue());
+
+        }
+
+        private BackgroundWorker CreateSearchWorker()
         {
             this.searchWorker = new BackgroundWorker();
 
@@ -195,6 +215,13 @@ namespace MP3GainMT.MP3Gain
             searchWorker.DoWork += SearchWorker_DoWork;
             searchWorker.ProgressChanged += SearchWorker_ProgressChanged;
             searchWorker.RunWorkerCompleted += SearchWorker_RunWorkerCompleted;
+
+            return searchWorker;
+        }
+
+        public void SearchFolders(string parentFolder = "")
+        {
+            this.searchWorker = CreateSearchWorker();
 
             searchWorker.RunWorkerAsync(parentFolder);
         }
@@ -301,9 +328,9 @@ namespace MP3GainMT.MP3Gain
                 worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
                 worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
 
-                this.processQueue.Push(new FolderWorker(worker, folder));
+                this.processStack.Push(new FolderWorker(worker, folder));
 
-                Debug.WriteLine($"PUSHED[{this.processQueue.Count}]: {folder.FolderName}");
+                Debug.WriteLine($"PUSHED[{this.processStack.Count}]: {folder.FolderName}");
             }
 
             this.RunFolderGroup(cores);
@@ -749,10 +776,10 @@ namespace MP3GainMT.MP3Gain
 
         private void RunNextFolder()
         {
-            if (processQueue.Count > 0)
+            if (processStack.Count > 0)
             {
-                var item = processQueue.Pop();
-                Debug.WriteLine($"POPPED[{processQueue.Count}]: {((FolderWorker)item).Folder.FolderName}");
+                var item = processStack.Pop();
+                Debug.WriteLine($"POPPED[{processStack.Count}]: {((FolderWorker)item).Folder.FolderName}");
                 item.Worker.RunWorkerAsync(item.Folder);
             }
         }
@@ -804,7 +831,21 @@ namespace MP3GainMT.MP3Gain
 
         private void SearchWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (this.searchQeueu.Count > 0)
+            {
+                SearchFolders(this.searchQeueu);
+            }            
+
             this.RaiseRefreshTable();
+            this.RaiseSearchFinishedFolder();
+        }
+
+        private void RaiseSearchFinishedFolder()
+        {
+            if (this.SearchFinishedFolder != null)
+            {
+                this.SearchFinishedFolder.Invoke(this, null);
+            }
         }
 
         private void StartSearchTimer()

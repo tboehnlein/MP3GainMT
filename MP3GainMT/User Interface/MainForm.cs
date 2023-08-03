@@ -1,6 +1,7 @@
 ﻿using MP3GainMT.MP3Gain;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -101,6 +102,8 @@ namespace MP3GainMT
 
         public int SelectedCores => Convert.ToInt32(this.coresComboBox.SelectedItem);
 
+        public List<string> FoldersLeft { get; private set; } = new List<string>();
+
         private void BrowseButton_Click(object sender, EventArgs e)
         {
             var selectFolder = new BetterFolderBrowser();
@@ -108,14 +111,20 @@ namespace MP3GainMT
             selectFolder.RootFolder = this.run.ParentFolder;
 
             var result = selectFolder.ShowDialog(this);
+            var folder = selectFolder.SelectedFolder;
 
             if (result == DialogResult.OK)
             {
-                this.folderPathTextBox.Text = selectFolder.SelectedFolder;
-                this.settings.ParentFolder = selectFolder.SelectedFolder;
-
-                CheckFolderPath();
+                ApplyFolderToSearchBox(folder);
             }
+        }
+
+        private void ApplyFolderToSearchBox(string folder)
+        {
+            this.folderPathTextBox.Text = folder;
+            this.settings.ParentFolder = folder;
+
+            CheckFolderPath();
         }
 
         private void CancelButton_Click(object sender, EventArgs e)
@@ -336,8 +345,8 @@ namespace MP3GainMT
 
         private void Run_SearchFinishedFolder(object sender, Mp3Folder e)
         {
-            run.RefreshDataSource(run.FolderFiles(e));
-            SortTable();
+            //run.RefreshDataSource(run.FolderFiles(e));
+            //SortTable();
         }
 
         private void Run_SearchTimeElasped(object sender, TimeSpan e)
@@ -653,14 +662,14 @@ namespace MP3GainMT
         {
             e.Effect = DragDropEffects.None;
 
-            var folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var foldersArray = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var folderList = foldersArray.ToList();
+            folderList.Sort();
 
-            foreach (var folder in folders)
-            {
-                this.activityLabel.Text = SearchingActivity;
-                this.run.SearchFolders(folder);
-            }
-            
+            this.activityLabel.Text = SearchingActivity;
+
+            ApplyFolderToSearchBox(folderList.First());
+            this.run.SearchFolders(folderList);
         }
 
         private void FileGridView_DragEnter(object sender, DragEventArgs e)
@@ -698,7 +707,7 @@ namespace MP3GainMT
             DataGridView dgv = (DataGridView)sender;
             var col = dgv.Columns[e.ColumnIndex].Name;                    
 
-            if (e.RowIndex >= 0 && (col == "TrackDB" || col == "AlbumDB" || col == "TrackGain" || col == "AlbumGain" || col == "NoClipGain"))
+            if (e.RowIndex >= 0 && (col == "TrackDB" || col == "AlbumDB" || col == "TrackGain" || col == "AlbumGain" || col == "NoClipGain") || col == "Progress")
             {
                 var tags = "HasGainTags";
                 var hasTags = dgv.Rows[e.RowIndex].Cells[tags].Value is bool && (bool)dgv.Rows[e.RowIndex].Cells[tags].Value;
