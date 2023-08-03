@@ -324,7 +324,7 @@ namespace MP3GainMT
         {
             if (e.RowIndex >= 0)
             {
-                var isAltColor = Convert.ToBoolean(fileGridView.Rows[e.RowIndex].Cells[14].Value);
+                var isAltColor = Convert.ToBoolean(fileGridView.Rows[e.RowIndex].Cells[15].Value);
                 var color = Color.White;
 
                 if (e.RowIndex % 2 == 0)
