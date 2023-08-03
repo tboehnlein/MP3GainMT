@@ -28,7 +28,7 @@ namespace MP3GainMT.MP3Gain
 
         private BackgroundWorker readTagsWorker;
 
-        private Queue<string> searchQeueu;
+        private Queue<string> searchQeueu = new Queue<string>();
         private System.Windows.Forms.Timer searchTimeElaspedTimer = null;
 
         private BackgroundWorker searchWorker;
@@ -181,7 +181,7 @@ namespace MP3GainMT.MP3Gain
                 return;
             }
 
-            if (this.searchQeueu == null || this.searchQeueu.Count == 0)
+            if (this.searchQeueu.Count == 0)
             {
                 this.searchQeueu = new Queue<string>(parentFolders);
             }

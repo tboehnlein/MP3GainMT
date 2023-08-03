@@ -371,6 +371,8 @@ namespace MP3GainMT
             this.andRadioButton.Checked = this.settings.UseAnd;
             this.orRadioButton.Checked = !this.settings.UseAnd;
 
+            ApplyMP3GainExecutable(this.settings.Executable);
+
             var folder = this.settings.ParentFolder;
 
             while (!Directory.Exists(folder) && folder != string.Empty)
@@ -702,10 +704,34 @@ namespace MP3GainMT
             this.settings.TopPosition = this.Top;
             this.settings.PathWidth = this.fileGridView.Columns["FullPath"].Width;
             this.settings.UseAnd = this.andRadioButton.Checked;
+            this.settings.Executable = Mp3GainManager.Executable;
 
             this.settings.ParentFolder = run.ParentFolder;
 
             this.settings.WriteSettingsFile();
+        }
+
+        private void MP3GainButton_Click(object sender, EventArgs e)
+        {
+            var selectFolder = new OpenFileDialog();
+
+            selectFolder.InitialDirectory = Mp3GainManager.Executable;
+            selectFolder.Title = "Select MP3Gain.exe";
+            selectFolder.Filter = "MP3Gain|MP3Gain.exe";
+
+            var result = selectFolder.ShowDialog(this);
+            var fileName = selectFolder.FileName;
+
+            if (result == DialogResult.OK)
+            {
+                ApplyMP3GainExecutable(fileName);
+            }
+        }
+
+        private void ApplyMP3GainExecutable(string fileName)
+        {
+            Mp3GainManager.Executable = fileName;
+            this.readOnlyCheckBox1.Checked = File.Exists(Mp3GainManager.Executable);
         }
     }
 }
