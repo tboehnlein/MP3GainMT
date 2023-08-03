@@ -1,12 +1,10 @@
 ﻿using MP3GainMT.MP3Gain;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using WK.Libraries.BetterFolderBrowserNS;
@@ -73,11 +71,34 @@ namespace MP3GainMT
             this.CheckFolderPath();
         }
 
+        public List<string> FoldersLeft { get; private set; } = new List<string>();
         public string LoadingFilesActivity { get; private set; } = "[Loading files]";
 
         public string SearchingActivity { get; private set; } = "[Searching folders]";
 
+        public int SelectedCores => Convert.ToInt32(this.coresComboBox.SelectedItem);
         public DateTime StartTime { get; private set; }
+
+        public bool CheckAlbumClipOnly(MP3GainRow row, bool apply)
+        {
+            if (!apply) { return true; }
+
+            return row.AlbumClipping; ;
+        }
+
+        public bool CheckThreshOnly(MP3GainRow row, bool apply, double threshold)
+        {
+            if (!apply) { return true; }
+
+            return row.TrackDB > threshold;
+        }
+
+        public bool CheckTrackClipOnly(MP3GainRow row, bool apply)
+        {
+            if (!apply) { return true; }
+
+            return row.TrackClipping;
+        }
 
         private void AnalyzeButton_Click(object sender, EventArgs e)
         {
@@ -99,10 +120,13 @@ namespace MP3GainMT
                 MessageBox.Show("Please wait for the current activity to finish.");
             }
         }
+        private void ApplyFolderToSearchBox(string folder)
+        {
+            this.folderPathTextBox.Text = folder;
+            this.settings.ParentFolder = folder;
 
-        public int SelectedCores => Convert.ToInt32(this.coresComboBox.SelectedItem);
-
-        public List<string> FoldersLeft { get; private set; } = new List<string>();
+            CheckFolderPath();
+        }
 
         private void BrowseButton_Click(object sender, EventArgs e)
         {
@@ -118,18 +142,16 @@ namespace MP3GainMT
                 ApplyFolderToSearchBox(folder);
             }
         }
-
-        private void ApplyFolderToSearchBox(string folder)
-        {
-            this.folderPathTextBox.Text = folder;
-            this.settings.ParentFolder = folder;
-
-            CheckFolderPath();
-        }
-
         private void CancelButton_Click(object sender, EventArgs e)
         {
             this.run.CancelActivity();
+        }
+
+        private bool CheckClipOnly(MP3GainRow row, bool apply)
+        {
+            if (!apply) { return true; }
+
+            return row.Clipping;
         }
 
         private bool CheckFolderPath()
@@ -163,17 +185,28 @@ namespace MP3GainMT
             ResetColumnWidth(this.Artist.Name);
         }
 
-        private void ResetColumnWidth(string name)
-        {
-            var gridViewColumn = this.fileGridView.Columns[name];
-            this.fileGridView.AutoResizeColumn(gridViewColumn.Index, DataGridViewAutoSizeColumnMode.DisplayedCells);
-            var artistMinWidth = gridViewColumn.GetPreferredWidth(DataGridViewAutoSizeColumnMode.DisplayedCells, true);
-            gridViewColumn.MinimumWidth = artistMinWidth;
-        }
-
         private void ClipOnlyCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             DefineFilters();
+        }
+
+        private void ColorTable()
+        {
+            if (this.run.DataSource.Count == 0) { return; }
+
+            var pastFolder = this.run.DataSource.First().Folder;
+            var useAlt = false;
+
+            foreach (var row in this.run.DataSource)
+            {
+                if (row.Folder != pastFolder)
+                {
+                    useAlt = !useAlt;
+                    pastFolder = row.Folder;
+                }
+
+                row.AlbumColorAlternative = useAlt;
+            }
         }
 
         private void ColumnTimer_Tick(object sender, EventArgs e)
@@ -181,6 +214,122 @@ namespace MP3GainMT
             this.ResizeAllColumns();
 
             this.ColumnTimer.Stop();
+        }
+
+        private void DefineFilters()
+        {
+            this.run.DataSource.RemoveFilter();
+
+            var threshold = Convert.ToDouble(this.threshNumeric.Value);
+            var useThresh = this.threshCheckBox.Checked;
+            var useTrackClipping = this.clipOnlyTrackCheckBox.Checked;
+            var useAlbumClipping = this.clipOnlyAlbumCheckBox.Checked;
+            var useClipping = this.clipOnlyCheckBox.Checked;
+            var searchText = this.searchTextBox.Text;
+            var useText = searchText.Length > 0;
+            var useAnd = this.andRadioButton.Checked;
+
+            if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked || this.clipOnlyCheckBox.Checked || useText)
+            {
+                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckClipOnly(row, useClipping) && CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold) && SearchFilePath(row, searchText, useAnd); });
+            }
+
+            ColorTable();
+        }
+
+        private void FileGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DataGridView dgv = (DataGridView)sender;
+            var col = dgv.Columns[e.ColumnIndex].Name;
+
+            if (e.RowIndex >= 0 && (col == "TrackDB" || col == "AlbumDB" || col == "TrackGain" || col == "AlbumGain" || col == "NoClipGain") || col == "Progress")
+            {
+                var tags = "HasGainTags";
+                var hasTags = dgv.Rows[e.RowIndex].Cells[tags].Value is bool && (bool)dgv.Rows[e.RowIndex].Cells[tags].Value;
+
+                if (!hasTags)
+                {
+                    e.Value = "";
+                    e.FormattingApplied = true;
+                }
+            }
+        }
+
+        private void FileGridView_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
+        {
+            var folderIndex = this.fileGridView.Columns["Folder"].Index;
+            var pathIndex = this.fileGridView.Columns["FullPath"].Index;
+            int fileIndex = this.fileGridView.Columns["FileName"].Index;
+
+            if ((e.ColumnIndex == folderIndex || e.ColumnIndex == fileIndex) && e.RowIndex >= 0)
+            {
+                var cell = this.fileGridView.Rows[e.RowIndex].Cells[pathIndex];
+                e.ToolTipText = cell.Value.ToString();
+            }
+        }
+
+        private void FileGridView_DragDrop(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.None;
+
+            var foldersArray = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var folderList = foldersArray.ToList();
+            folderList.Sort();
+
+            this.activityLabel.Text = SearchingActivity;
+
+            ApplyFolderToSearchBox(folderList.First());
+            this.run.SearchFolders(folderList);
+        }
+
+        private void FileGridView_DragEnter(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.None;
+                return;
+            }
+
+            var folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var allDirectories = true;
+
+            foreach (var folder in folders)
+            {
+                if (!Directory.Exists(folder) || File.Exists(folder))
+                {
+                    allDirectories = false;
+                    break;
+                }
+            }
+
+            if (allDirectories)
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void FileGridView_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                var isAltColor = Convert.ToBoolean(fileGridView.Rows[e.RowIndex].Cells[14].Value);
+                var color = Color.White;
+
+                if (e.RowIndex % 2 == 0)
+                {
+                    color = isAltColor ? Color.FromArgb(215, 215, 255) : Color.FromArgb(245, 245, 245);
+                }
+                else
+                {
+                    color = isAltColor ? Color.FromArgb(230, 230, 255) : Color.White;
+                }
+
+                fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;
+            }
         }
 
         private void FileGridView_Scroll(object sender, ScrollEventArgs e)
@@ -247,6 +396,30 @@ namespace MP3GainMT
             }
         }
 
+        private void RemoveButton_Click(object sender, EventArgs e)
+        {
+            searchTextBox.Text = string.Empty;
+        }
+
+        private void ResetColumnWidth(string name)
+        {
+            var gridViewColumn = this.fileGridView.Columns[name];
+            this.fileGridView.AutoResizeColumn(gridViewColumn.Index, DataGridViewAutoSizeColumnMode.DisplayedCells);
+            var artistMinWidth = gridViewColumn.GetPreferredWidth(DataGridViewAutoSizeColumnMode.DisplayedCells, true);
+            gridViewColumn.MinimumWidth = artistMinWidth;
+        }
+        private void ResetFileProgress()
+        {
+            var index = 0;
+
+            foreach (MP3GainRow row in this.run.DataSource)
+            {
+                row.Progress = 0;
+                this.source.ResetItem(index);
+                index++;
+            }
+        }
+
         private void ResizeAllColumns()
         {
             ResizeColumnWidth(this.Folder.Name);
@@ -279,11 +452,9 @@ namespace MP3GainMT
 
         private void Run_AnalysisFinished(object sender, EventArgs e)
         {
-            
-
             this.run.ResumeDataSource();
             this.fileGridView.ResumeLayout();
-            
+
             Debug.WriteLine($"ANALYSIS FINISHED! {DateTime.Now}");
 
             //this.readTagsButton.PerformClick();
@@ -368,24 +539,11 @@ namespace MP3GainMT
         private void RunButton_Click(object sender, EventArgs e)
         {
             this.StartTime = DateTime.Now;
-            
+
             this.ResetFileProgress();
 
             this.run.ApplyGain(this.SelectedCores);
         }
-
-        private void ResetFileProgress()
-        {
-            var index = 0;
-
-            foreach (MP3GainRow row in this.run.DataSource)
-            {
-                row.Progress = 0;
-                this.source.ResetItem(index);
-                index++;
-            }
-        }
-
         private void SearchButton_Click(object sender, EventArgs e)
         {
             if (CheckFolderPath())
@@ -394,10 +552,56 @@ namespace MP3GainMT
             }
         }
 
+        private bool SearchFilePath(MP3GainRow row, string searchText, bool useAnd)
+        {
+            if (searchText.Length == 0) { return true; }
+
+            var words = searchText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var found = useAnd;
+
+            foreach (var word in words)
+            {
+                var search = word.Trim();
+
+                if (search.Length > 0)
+                {
+                    found = row.FullPath.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
+
+                    if (useAnd)
+                    {
+                        if (!found)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (found)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return found;
+        }
+
         private void SearchFolder(string folder)
         {
             this.activityLabel.Text = SearchingActivity;
             this.run.SearchFolders(folder);
+        }
+
+        private void SearchRadio_CheckChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
+        }
+
+        private void SearchTextBox_TextChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
         }
 
         private void SortTable(bool force = false)
@@ -427,6 +631,16 @@ namespace MP3GainMT
             }
 
             this.fileGridView.Refresh();
+        }
+
+        private void ThreshCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
+        }
+
+        private void ThreshDbNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            DefineFilters();
         }
 
         private void TickActivityLabel()
@@ -492,232 +706,6 @@ namespace MP3GainMT
             this.settings.ParentFolder = run.ParentFolder;
 
             this.settings.WriteSettingsFile();
-        }
-
-        private void FileGridView_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
-        {
-            var folderIndex = this.fileGridView.Columns["Folder"].Index;
-            var pathIndex = this.fileGridView.Columns["FullPath"].Index;
-            int fileIndex = this.fileGridView.Columns["FileName"].Index;
-
-            if ((e.ColumnIndex == folderIndex || e.ColumnIndex == fileIndex) && e.RowIndex >= 0)
-            {
-                var cell = this.fileGridView.Rows[e.RowIndex].Cells[pathIndex];
-                e.ToolTipText = cell.Value.ToString();
-            }
-        }
-
-        public bool CheckAlbumClipOnly(MP3GainRow row, bool apply)
-        {
-            if (!apply) { return true; }
-
-            return row.AlbumClipping; ;
-        }
-
-        public bool CheckTrackClipOnly(MP3GainRow row, bool apply)
-        {
-            if (!apply) { return true; }
-
-            return row.TrackClipping;
-        }
-
-        public bool CheckThreshOnly(MP3GainRow row, bool apply, double threshold)
-        {
-            if (!apply) { return true; }
-
-            return row.TrackDB > threshold;
-        }
-
-        private void DefineFilters()
-        {
-            this.run.DataSource.RemoveFilter();
-
-            var threshold = Convert.ToDouble(this.threshNumeric.Value);
-            var useThresh = this.threshCheckBox.Checked;
-            var useTrackClipping = this.clipOnlyTrackCheckBox.Checked;
-            var useAlbumClipping = this.clipOnlyAlbumCheckBox.Checked;
-            var useClipping = this.clipOnlyCheckBox.Checked;
-            var searchText = this.searchTextBox.Text;
-            var useText = searchText.Length > 0;
-            var useAnd = this.andRadioButton.Checked;
-
-            if (this.threshCheckBox.Checked || this.clipOnlyTrackCheckBox.Checked || this.clipOnlyAlbumCheckBox.Checked || this.clipOnlyCheckBox.Checked || useText)
-            {
-                this.run.DataSource.ApplyFilter(delegate (MP3GainRow row) { return CheckClipOnly(row, useClipping) && CheckTrackClipOnly(row, useTrackClipping) && CheckAlbumClipOnly(row, useAlbumClipping) && CheckThreshOnly(row, useThresh, threshold) && SearchFilePath(row, searchText, useAnd); });
-            }
-
-            ColorTable();
-        }
-
-        private void ColorTable()
-        {
-            if (this.run.DataSource.Count == 0) { return; } 
-
-            var pastFolder = this.run.DataSource.First().Folder;
-            var useAlt = false;
-
-            foreach (var row in this.run.DataSource)
-            {
-                if (row.Folder != pastFolder)
-                {
-                    useAlt = !useAlt;
-                    pastFolder = row.Folder;
-                }
-
-                row.AlbumColorAlternative = useAlt;
-
-                
-            }
-        }
-
-        private bool SearchFilePath(MP3GainRow row, string searchText, bool useAnd)
-        {
-            if (searchText.Length == 0) { return true; }
-
-            var words = searchText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            var found = useAnd;
-
-            foreach (var word in words)
-            {
-                var search = word.Trim();
-
-                if (search.Length > 0)
-                {
-                    found = row.FullPath.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0;
-
-                    if (useAnd)
-                    {
-                        if (!found)
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (found)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return found;
-        }
-
-        private bool CheckClipOnly(MP3GainRow row, bool apply)
-        {
-            if (!apply) { return true; }
-
-            return row.Clipping;
-        }
-
-        private void ThreshCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            DefineFilters();
-        }
-
-        private void ThreshDbNumeric_ValueChanged(object sender, EventArgs e)
-        {
-            DefineFilters();
-        }
-
-        private void FileGridView_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                var isAltColor = Convert.ToBoolean(fileGridView.Rows[e.RowIndex].Cells[14].Value);
-                var color = Color.White;
-
-                if (e.RowIndex % 2 == 0)
-                {
-                    color = isAltColor ? Color.FromArgb(215, 215, 255) : Color.FromArgb(245, 245, 245);
-                }
-                else
-                {
-                    color = isAltColor ? Color.FromArgb(230, 230, 255) : Color.White;
-                }
-
-                fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;
-            }
-        }
-
-        private void SearchTextBox_TextChanged(object sender, EventArgs e)
-        {
-            DefineFilters();
-        }
-
-        private void RemoveButton_Click(object sender, EventArgs e)
-        {
-            searchTextBox.Text = string.Empty;
-        }
-
-        private void SearchRadio_CheckChanged(object sender, EventArgs e)
-        {
-            DefineFilters();
-        }
-
-        private void FileGridView_DragDrop(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.None;
-
-            var foldersArray = (string[])e.Data.GetData(DataFormats.FileDrop);
-            var folderList = foldersArray.ToList();
-            folderList.Sort();
-
-            this.activityLabel.Text = SearchingActivity;
-
-            ApplyFolderToSearchBox(folderList.First());
-            this.run.SearchFolders(folderList);
-        }
-
-        private void FileGridView_DragEnter(object sender, DragEventArgs e)
-        {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                e.Effect = DragDropEffects.None;
-                return;
-            }
-
-            var folders = (string[])e.Data.GetData(DataFormats.FileDrop);
-            var allDirectories = true;
-
-            foreach (var folder in folders)
-            {
-                if (!Directory.Exists(folder) || File.Exists(folder))
-                {
-                    allDirectories = false;
-                    break;
-                }
-            }
-
-            if (allDirectories)
-            {
-                e.Effect = DragDropEffects.Copy;
-            }
-            else
-            {
-                e.Effect = DragDropEffects.None;
-            }
-        }
-
-        private void FileGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            DataGridView dgv = (DataGridView)sender;
-            var col = dgv.Columns[e.ColumnIndex].Name;                    
-
-            if (e.RowIndex >= 0 && (col == "TrackDB" || col == "AlbumDB" || col == "TrackGain" || col == "AlbumGain" || col == "NoClipGain") || col == "Progress")
-            {
-                var tags = "HasGainTags";
-                var hasTags = dgv.Rows[e.RowIndex].Cells[tags].Value is bool && (bool)dgv.Rows[e.RowIndex].Cells[tags].Value;
-
-                if (!hasTags)
-                {
-                    e.Value = "";
-                    e.FormattingApplied = true;
-                }
-            }
         }
     }
 }
