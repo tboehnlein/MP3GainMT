@@ -92,7 +92,7 @@ namespace MP3GainMT.MP3Gain
 
                 if (fileStartString.Contains("..."))
                 {
-                    var fileEndIndex = fileStartString.IndexOf("...");
+                    var fileEndIndex = fileStartString.LastIndexOf("...");
                     var fileString = fileStartString.Substring(0, fileEndIndex);
                     if (this.sortedFiles.Contains(fileString))
                     {
