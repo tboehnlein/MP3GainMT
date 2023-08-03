@@ -43,7 +43,7 @@ namespace MP3GainMT
             this.run.ActivityUpdated += this.Run_ActivityFinished;
             this.run.AnalysisFinished += Run_AnalysisFinished;
             this.run.AskSearchQuestion += Run_AskSearchQuestion;
-            this.folderPathTextBox.Text = run.ParentFolder;
+            
             this.source.DataSource = this.run.DataSource;
 
             fileGridView.DataSource = source;
@@ -370,6 +370,11 @@ namespace MP3GainMT
             return $"Loaded Files [{GetFolderFileCountText()}]";
         }
 
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            this.folderPathTextBox.DeselectAll();
+        }
+
         private void MP3GainButton_Click(object sender, EventArgs e)
         {
             var selectFolder = new OpenFileDialog();
@@ -406,6 +411,7 @@ namespace MP3GainMT
             }
 
             run.ParentFolder = folder;
+            this.folderPathTextBox.Text = folder;
 
             if (this.settings.TargetDb.CompareTo((double)this.targetDbNumeric.Value) > -1)
             {

@@ -632,7 +632,6 @@ namespace MP3GainMT
             this.AlbumColorColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.AlbumColorColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.AlbumColorColumn.Visible = false;
-            this.AlbumColorColumn.Width = 56;
             // 
             // AlbumArtist
             // 
@@ -642,7 +641,6 @@ namespace MP3GainMT
             this.AlbumArtist.Name = "AlbumArtist";
             this.AlbumArtist.ReadOnly = true;
             this.AlbumArtist.Visible = false;
-            this.AlbumArtist.Width = 87;
             // 
             // Updated
             // 
@@ -678,7 +676,6 @@ namespace MP3GainMT
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
             this.Album.Visible = false;
-            this.Album.Width = 61;
             // 
             // Artist
             // 
@@ -688,7 +685,6 @@ namespace MP3GainMT
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
             this.Artist.Visible = false;
-            this.Artist.Width = 55;
             // 
             // Progress
             // 
@@ -817,6 +813,7 @@ namespace MP3GainMT
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "MP3Gain Multi-Threaded";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.activityPanel.ResumeLayout(false);
             this.activityPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).EndInit();
