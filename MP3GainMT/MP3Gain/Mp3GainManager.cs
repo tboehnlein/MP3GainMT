@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace MP3GainMT.MP3Gain
@@ -20,6 +19,7 @@ namespace MP3GainMT.MP3Gain
 
         private List<Mp3Folder> finished = new List<Mp3Folder>();
 
+        private int foldersFinished;
         private Dictionary<string, Mp3File> foundFiles = new Dictionary<string, Mp3File>();
 
         private Stack<FolderWorker> processStack;
@@ -28,16 +28,12 @@ namespace MP3GainMT.MP3Gain
 
         private BackgroundWorker readTagsWorker;
 
+        private Queue<string> searchQeueu;
         private System.Windows.Forms.Timer searchTimeElaspedTimer = null;
 
         private BackgroundWorker searchWorker;
 
         private DateTime startSearchTime;
-        private int foldersFinished;
-        private Queue<string> searchQeueu;
-
-        public long Length { get; private set; } = 0;
-
         public Mp3GainManager(string exePath, string parentFolder = "")
         {
             if (Executable == string.Empty)
@@ -85,34 +81,8 @@ namespace MP3GainMT.MP3Gain
         public event EventHandler<int> TaskProgressed;
 
         public static string Executable { get; set; } = string.Empty;
-
+        public bool Active { get; private set; }
         public bool ActiveActivities => this.AnyWorkersActive();
-
-        public bool ContinueSearch { get; internal set; }
-
-        public BindingListView<MP3GainRow> DataSource { get; private set; } = null;
-
-        public TimeSpan ElaspedSearchTime => DateTime.Now - this.startSearchTime;
-
-        public int FileCount
-        {
-            get { return this.foundFiles.Count; }
-        }
-
-        public Dictionary<string, Mp3Folder> Folders { get; set; } = new Dictionary<string, Mp3Folder>();
-
-        public int FoldersLeft { get; private set; }
-
-        public string ParentFolder { get; set; } = string.Empty;
-
-        public double RunProgress { get; private set; }
-
-        public BindingList<MP3GainRow> Source { get; private set; } = new BindingList<MP3GainRow>();
-
-        public Dictionary<string, MP3GainRow> SourceDictionary { get; private set; } = new Dictionary<string, MP3GainRow>();
-
-        private List<Mp3File> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
-
         public List<Mp3Folder> AllFolders
         {
             get
@@ -128,11 +98,54 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        public bool Active { get; private set; }
+        public bool ContinueSearch { get; internal set; }
+        public BindingListView<MP3GainRow> DataSource { get; private set; } = null;
+        public TimeSpan ElaspedSearchTime => DateTime.Now - this.startSearchTime;
+        public int FileCount
+        {
+            get { return this.foundFiles.Count; }
+        }
 
+        public Dictionary<string, Mp3Folder> Folders { get; set; } = new Dictionary<string, Mp3Folder>();
+        public int FoldersLeft { get; private set; }
+        public long Length { get; private set; } = 0;
+        public string ParentFolder { get; set; } = string.Empty;
+
+        public double RunProgress { get; private set; }
+
+        public BindingList<MP3GainRow> Source { get; private set; } = new BindingList<MP3GainRow>();
+
+        public Dictionary<string, MP3GainRow> SourceDictionary { get; private set; } = new Dictionary<string, MP3GainRow>();
+
+        private List<Mp3File> AllFiles => this.foundFiles.Select(x => x.Value).ToList();
         public static string WordWithEnding<T>(string word, List<T> list)
         {
             return word + (list.Count == 0 ? "" : "s");
+        }
+
+        public void AnalyzeFiles(int cores = 2)
+        {
+            this.ResetAnalysis();
+
+            this.Active = true;
+
+            foreach (var folder in Folders.Values)
+            {
+                var index = Folders.Values.ToList().IndexOf(folder);
+                var worker = new BackgroundWorker();
+                worker.WorkerReportsProgress = true;
+                worker.WorkerSupportsCancellation = true;
+
+                worker.DoWork += ProcessFiles_DoWork;
+                worker.ProgressChanged += ProcessFiles_ProgressChanged;
+                worker.RunWorkerCompleted += ProcessFiles_RunWorkerCompleted;
+
+                this.processStack.Push(new FolderWorker(worker, folder));
+
+                Debug.WriteLine($"PUSHED[{this.processStack.Count}]: {folder.FolderName}");
+            }
+
+            RunFolderGroup(cores);
         }
 
         public void ApplyGain(int cores = 2)
@@ -161,32 +174,6 @@ namespace MP3GainMT.MP3Gain
         {
             return folder.Files.Select(x => x.Value).ToList();
         }
-
-        public void AnalyzeFiles(int cores = 2)
-        {
-            this.ResetAnalysis();
-
-            this.Active = true;
-
-            foreach (var folder in Folders.Values)
-            {
-                var index = Folders.Values.ToList().IndexOf(folder);
-                var worker = new BackgroundWorker();
-                worker.WorkerReportsProgress = true;
-                worker.WorkerSupportsCancellation = true;
-
-                worker.DoWork += ProcessFiles_DoWork;
-                worker.ProgressChanged += ProcessFiles_ProgressChanged;
-                worker.RunWorkerCompleted += ProcessFiles_RunWorkerCompleted;
-
-                this.processStack.Push(new FolderWorker(worker, folder));
-
-                Debug.WriteLine($"PUSHED[{this.processStack.Count}]: {folder.FolderName}");
-            }
-
-            RunFolderGroup(cores);
-        }
-
         public void SearchFolders(IEnumerable<string> parentFolders)
         {
             if (parentFolders.Count() == 0)
@@ -202,21 +189,6 @@ namespace MP3GainMT.MP3Gain
             this.searchWorker = CreateSearchWorker();
 
             this.searchWorker.RunWorkerAsync(this.searchQeueu.Dequeue());
-
-        }
-
-        private BackgroundWorker CreateSearchWorker()
-        {
-            this.searchWorker = new BackgroundWorker();
-
-            searchWorker.WorkerReportsProgress = true;
-            searchWorker.WorkerSupportsCancellation = true;
-
-            searchWorker.DoWork += SearchWorker_DoWork;
-            searchWorker.ProgressChanged += SearchWorker_ProgressChanged;
-            searchWorker.RunWorkerCompleted += SearchWorker_RunWorkerCompleted;
-
-            return searchWorker;
         }
 
         public void SearchFolders(string parentFolder = "")
@@ -380,6 +352,24 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        private void CalculateLength()
+        {
+            this.Length = this.Folders.Sum(x => x.Value.Length);
+        }
+
+        private BackgroundWorker CreateSearchWorker()
+        {
+            this.searchWorker = new BackgroundWorker();
+
+            searchWorker.WorkerReportsProgress = true;
+            searchWorker.WorkerSupportsCancellation = true;
+
+            searchWorker.DoWork += SearchWorker_DoWork;
+            searchWorker.ProgressChanged += SearchWorker_ProgressChanged;
+            searchWorker.RunWorkerCompleted += SearchWorker_RunWorkerCompleted;
+
+            return searchWorker;
+        }
         private void ExecuteMP3Gain_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             this.RaiseTaskProgressed(GetRunProgress(e.ProgressPercentage));
@@ -395,6 +385,48 @@ namespace MP3GainMT.MP3Gain
             else if (e.UserState is string message)
             {
                 this.RaiseAcivityUpdated(message);
+            }
+        }
+
+        private void ExecuteMP3Gain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Result is Mp3Folder folder)
+            {
+                string fileWord = WordWithEnding("file", folder.MP3Files);
+
+                //Debug.WriteLine($"{folder.FolderName} is done. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
+
+                this.finished.Add(folder);
+
+                var execute = new ExecuteMp3GainSync(Executable,
+                                                 $"/o /s c",
+                                                 folder.Files,
+                                                 folder.FolderPath,
+                                                 "GET MAX GAIN",
+                                                 "Calculating Max Gain",
+                                                 "done");
+
+                execute.Execute();
+
+                foreach (var file in folder.Files.Values)
+                {
+                    file.HasTags = false;
+                    file.ExtractTags();
+                }
+
+                this.RaiseFolderFinished(this, folder);
+
+                this.RunProgress = Helpers.GetProgress(this.finished.Count, this.Folders.Count);
+                this.RaiseTaskProgressed(GetRunProgress(0));
+
+                RunNextFolder();
+            }
+
+            if (this.FoldersLeft == 0)
+            {
+                this.Active = false;
+                Debug.WriteLine("All folders are done.");
+                this.RaiseAnalysisFinished();
             }
         }
 
@@ -489,49 +521,6 @@ namespace MP3GainMT.MP3Gain
         {
             this.RaiseFoundFile(sender, e);
         }
-
-        private void ExecuteMP3Gain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Result is Mp3Folder folder)
-            {
-                string fileWord = WordWithEnding("file", folder.MP3Files);
-
-                //Debug.WriteLine($"{folder.FolderName} is done. Gain used {folder.SuggestedGain} for {folder.MP3Files.Count} {fileWord}.");
-
-                this.finished.Add(folder);
-
-                var execute = new ExecuteMp3GainSync(Executable,
-                                                 $"/o /s c",
-                                                 folder.Files,
-                                                 folder.FolderPath,
-                                                 "GET MAX GAIN",
-                                                 "Calculating Max Gain",
-                                                 "done");
-
-                execute.Execute();
-
-                foreach (var file in folder.Files.Values)
-                {
-                    file.HasTags = false;
-                    file.ExtractTags();
-                }
-
-                this.RaiseFolderFinished(this, folder);
-
-                this.RunProgress = Helpers.GetProgress(this.finished.Count, this.Folders.Count);
-                this.RaiseTaskProgressed(GetRunProgress(0));
-
-                RunNextFolder();
-            }
-
-            if (this.FoldersLeft == 0)
-            {
-                this.Active = false;
-                Debug.WriteLine("All folders are done.");
-                this.RaiseAnalysisFinished();
-            }
-        }
-
         private void ProcessFiles_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument is Mp3Folder folder)
@@ -656,6 +645,14 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        private void RaiseSearchFinishedFolder()
+        {
+            if (this.SearchFinishedFolder != null)
+            {
+                this.SearchFinishedFolder.Invoke(this, null);
+            }
+        }
+
         private void RaiseSearchTimeElapsed()
         {
             if (SearchTimeElasped != null)
@@ -753,12 +750,6 @@ namespace MP3GainMT.MP3Gain
             this.RaiseRefreshTable();
             this.RaiseAcivityUpdated("Finished.");
         }
-
-        private void CalculateLength()
-        {
-            this.Length = this.Folders.Sum(x => x.Value.Length);
-        }
-
         private void ResetAnalysis()
         {
             this.finished.Clear();
@@ -834,20 +825,11 @@ namespace MP3GainMT.MP3Gain
             if (this.searchQeueu.Count > 0)
             {
                 SearchFolders(this.searchQeueu);
-            }            
+            }
 
             this.RaiseRefreshTable();
             this.RaiseSearchFinishedFolder();
         }
-
-        private void RaiseSearchFinishedFolder()
-        {
-            if (this.SearchFinishedFolder != null)
-            {
-                this.SearchFinishedFolder.Invoke(this, null);
-            }
-        }
-
         private void StartSearchTimer()
         {
             this.startSearchTime = DateTime.Now;
