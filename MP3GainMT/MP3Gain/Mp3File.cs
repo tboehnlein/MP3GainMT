@@ -9,6 +9,7 @@ namespace MP3GainMT.MP3Gain
 {
     public class Mp3File
     {
+        public const double FiveLog10Two = 1.50514997831991;
         public const string TagMp3GainAlbumMinMax = "MP3GAIN_ALBUM_MINMAX";
         public const string TagMp3GainMinMax = "MP3GAIN_MINMAX";
         public const string TagMp3GainUndo = "MP3GAIN_UNDO";
@@ -17,18 +18,16 @@ namespace MP3GainMT.MP3Gain
         public const string TagReplayTrackGain = "REPLAYGAIN_TRACK_GAIN";
         public const string TagReplayTrackPeak = "REPLAYGAIN_TRACK_PEAK";
         public double GainAlbumMax = 0.0;
-        public double MaxNoClipGainAlbum = 0.0;
         public double GainMax = 0.0;
-        public double MaxNoClipGainTrack = 0.0;
         public double GainUndoAlbum = 0.0;
         public string GainUndoLabel = string.Empty;
         public double GainUndoTrack = 0.0;
+        public double MaxNoClipGainAlbum = 0.0;
+        public double MaxNoClipGainTrack = 0.0;
         public double ReplayAlbumGain = 0.0;
         public double ReplayAlbumPeak = 0.0;
         public double ReplayTrackGain = 0.0;
         public double ReplayTrackPeak = 0.0;
-        public const double FiveLog10Two = 1.50514997831991;
-
         public Mp3File(string file)
         {
             this.FilePath = file;
@@ -65,29 +64,36 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        private static string GetRightSubFolder(List<string> folders, int index)
-        {
-            var folder = string.Empty;
-
-            if (folders.Count > (index + 1))
-            {
-                folder = $"{folders[folders.Count - index]}\\";
-            }
-
-            return folder;
-        }
-
         public string Album { get; private set; } = string.Empty;
+
         public string AlbumArtist { get; private set; }
+
         public string Artist { get; private set; } = string.Empty;
+
         public double DBOffset { get; set; } = 0.0;
+
         public List<string> ErrorMessages { get; private set; } = new List<string>();
+
         public string FileName { get; set; } = string.Empty;
+
         public string FilePath { get; set; } = string.Empty;
+
         public string Folder { get; set; } = string.Empty;
+
         public string FolderPath { get; set; } = string.Empty;
+
         public bool HasErrors => this.ErrorMessages.Count > 0;
+
+        public bool HasGainTags { get; private set; } = false;
+
         public bool HasTags { get; internal set; } = false;
+
+        public long Length { get; private set; }
+
+        public double MaxNoClipGainAlbumRaw { get; internal set; } = 0.0;
+
+        public double MaxNoClipGainTrackRaw { get; internal set; } = 0.0;
+
         public int Progress { get; internal set; } = 0;
 
         public double ReplayAlbumGainRounded
@@ -98,18 +104,6 @@ namespace MP3GainMT.MP3Gain
 
                 return gain;
             }
-        }
-
-        public int SuggestedAlbumGain => Convert.ToInt32(Math.Round(ReplayAlbumGain / FiveLog10Two));
-
-        public static double DbRounding(double x)
-        {
-            return Math.Round(x / FiveLog10Two) * FiveLog10Two;
-        }
-
-        public static double GainRounding(double x)
-        {
-            return Math.Floor(x / FiveLog10Two) * FiveLog10Two;
         }
 
         public double ReplayTrackGainRounded
@@ -123,16 +117,28 @@ namespace MP3GainMT.MP3Gain
         }
 
         public int SourceIndex { get; internal set; }
+
+        public int SuggestedAlbumGain => Convert.ToInt32(Math.Round(ReplayAlbumGain / FiveLog10Two));
+
         public double SuggestedGain { get; set; } = 0;
+
         public string Title { get; set; } = string.Empty;
+
         public uint Track { get; private set; }
+
         public bool Updated { get; internal set; }
-        public long Length { get; private set; }
-        public double MaxNoClipGainAlbumRaw { get; internal set; } = 0.0;
-        public double MaxNoClipGainTrackRaw { get; internal set; } = 0.0;
+
         public bool UseAlternativeColor { get; internal set; }
 
-        public bool HasGainTags { get; private set; } = false;
+        public static double DbRounding(double x)
+        {
+            return Math.Round(x / FiveLog10Two) * FiveLog10Two;
+        }
+
+        public static double GainRounding(double x)
+        {
+            return Math.Floor(x / FiveLog10Two) * FiveLog10Two;
+        }
 
         public bool IsFileLocked()
         {
@@ -233,6 +239,17 @@ namespace MP3GainMT.MP3Gain
             this.HasTags = false;
         }
 
+        private static string GetRightSubFolder(List<string> folders, int index)
+        {
+            var folder = string.Empty;
+
+            if (folders.Count > (index + 1))
+            {
+                folder = $"{folders[folders.Count - index]}\\";
+            }
+
+            return folder;
+        }
         private static bool GetTagValue(TagLib.Ape.Tag apeTag, string key, out double value)
         {
             var hasTag = apeTag.HasItem(key);
