@@ -127,7 +127,7 @@ namespace MP3GainMT.MP3Gain
             return word + (list.Count == 0 ? "" : "s");
         }
 
-        public void AnalyzeFiles(int cores = 2)
+        public void AnalyzeGain(int cores = 2)
         {
             this.ResetAnalysis();
 
@@ -142,7 +142,7 @@ namespace MP3GainMT.MP3Gain
                 worker.WorkerReportsProgress = true;
                 worker.WorkerSupportsCancellation = true;
 
-                worker.DoWork += ProcessFiles_DoWork;
+                worker.DoWork += AnalyzeGain_DoWork;
                 worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
                 worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
 
@@ -352,6 +352,15 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        private void AnalyzeGain_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (e.Argument is Mp3Folder folder)
+            {
+                folder.AnalyzeGainFolder(Executable, sender as BackgroundWorker);
+                e.Result = folder;
+            }
+        }
+
         private bool AnyWorkersActive()
         {
             return ActiveWorker(this.readTagsWorker) || ActiveWorker(this.searchWorker);
@@ -536,16 +545,6 @@ namespace MP3GainMT.MP3Gain
         {
             this.RaiseFoundFile(sender, e);
         }
-
-        private void ProcessFiles_DoWork(object sender, DoWorkEventArgs e)
-        {
-            if (e.Argument is Mp3Folder folder)
-            {
-                folder.ProcessFiles(Executable, sender as BackgroundWorker);
-                e.Result = folder;
-            }
-        }
-
         private void ProcessFiles_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             //if ((DateTime.Now - this.lastRefresh).TotalSeconds > .250)

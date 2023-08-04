@@ -78,10 +78,10 @@ namespace MP3GainMT.MP3Gain
             this.ExecuteApplyGain(executable);
         }
 
-        internal void ProcessFiles(string executable, BackgroundWorker worker)
+        internal void AnalyzeGainFolder(string executable, BackgroundWorker worker)
         {
             this.worker = worker;
-            this.RunAnalysis(executable);
+            this.ExecuteAnalyzeGain(executable);
         }
 
         internal void UndoGain(string executable, BackgroundWorker worker)
@@ -311,8 +311,8 @@ namespace MP3GainMT.MP3Gain
             {
                 //Debug.WriteLine($"Finished {gainFile.FilePath}");
                 gainFile.Progress = 100;
-                //this.RaiseChangedFile(gainFile);
-                this.worker.ReportProgress(100, gainFile);
+                this.RaiseChangedFile(gainFile);
+                //this.worker.ReportProgress(100, gainFile);
             }
 
             return found;
@@ -348,7 +348,7 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        private void RunAnalysis(string executable)
+        private void ExecuteAnalyzeGain(string executable)
         {
             var parameters = $"\"{Path.Combine(FolderPath, "*.mp3")}\"";
             var analysisStart = new ProcessStartInfo(executable, parameters);

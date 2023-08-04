@@ -107,7 +107,7 @@ namespace MP3GainMT
                 this.StartTime = DateTime.Now;
                 this.ResetFileProgress();
                 
-                this.run.AnalyzeFiles(SelectedCores);
+                this.run.AnalyzeGain(SelectedCores);
             }
             else
             {
