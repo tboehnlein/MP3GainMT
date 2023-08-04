@@ -104,16 +104,10 @@ namespace MP3GainMT
         {
             if (!this.run.Active)
             {
-                this.fileGridView.SuspendLayout();
-                this.run.SuspendDataSource();
-
                 this.StartTime = DateTime.Now;
-                var parentFolder = this.folderPathTextBox.Text;
-
-                if (Directory.Exists(parentFolder))
-                {
-                    this.run.AnalyzeFiles(SelectedCores);
-                }
+                this.ResetFileProgress();
+                
+                this.run.AnalyzeFiles(SelectedCores);
             }
             else
             {
@@ -127,6 +121,21 @@ namespace MP3GainMT
             this.settings.ParentFolder = folder;
 
             CheckFolderPath();
+        }
+
+        private void ApplyGainButton_Click(object sender, EventArgs e)
+        {
+            if (!this.run.Active)
+            {
+                this.StartTime = DateTime.Now;
+                this.ResetFileProgress();
+
+                this.run.ApplyGain(this.SelectedCores);
+            }
+            else
+            {
+                MessageBox.Show("Please wait for the current activity to finish.");
+            }
         }
 
         private void ApplyMP3GainExecutable(string fileName)
@@ -570,15 +579,6 @@ namespace MP3GainMT
             UpdateProgressBar(progress);
         }
 
-        private void RunButton_Click(object sender, EventArgs e)
-        {
-            this.StartTime = DateTime.Now;
-
-            this.ResetFileProgress();
-
-            this.run.ApplyGain(this.SelectedCores);
-        }
-
         private void SearchButton_Click(object sender, EventArgs e)
         {
             if (CheckFolderPath())
@@ -685,9 +685,17 @@ namespace MP3GainMT
 
         private void UndoButton_Click(object sender, EventArgs e)
         {
-            this.ResetFileProgress();
+            if (!this.run.Active)
+            {
+                this.StartTime = DateTime.Now;
+                this.ResetFileProgress();
 
-            this.run.UndoGain(this.SelectedCores);
+                this.run.UndoGain(this.SelectedCores);
+            }
+            else
+            {
+                MessageBox.Show("Please wait for the current activity to finish.");
+            }
         }
 
         private void UpdataDataGridView()

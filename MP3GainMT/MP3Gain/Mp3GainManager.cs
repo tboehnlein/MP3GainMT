@@ -133,16 +133,18 @@ namespace MP3GainMT.MP3Gain
 
             this.Active = true;
 
-            foreach (var folder in Folders.Values)
+            var orderedList = Folders.Values.ToList();
+
+            foreach (var folder in Folders.Values.Reverse())
             {
-                var index = Folders.Values.ToList().IndexOf(folder);
+                var index = orderedList.IndexOf(folder);
                 var worker = new BackgroundWorker();
                 worker.WorkerReportsProgress = true;
                 worker.WorkerSupportsCancellation = true;
 
                 worker.DoWork += ProcessFiles_DoWork;
-                worker.ProgressChanged += ProcessFiles_ProgressChanged;
-                worker.RunWorkerCompleted += ProcessFiles_RunWorkerCompleted;
+                worker.ProgressChanged += ExecuteMP3Gain_ProgressChanged;
+                worker.RunWorkerCompleted += ExecuteMP3Gain_RunWorkerCompleted;
 
                 this.processStack.Push(new FolderWorker(worker, folder));
 
@@ -156,9 +158,13 @@ namespace MP3GainMT.MP3Gain
         {
             this.ResetAnalysis();
 
+            this.Active = true;
+
+            var orderedList = Folders.Values.ToList();
+
             foreach (var folder in Folders.Values.Reverse())
             {
-                var index = Folders.Values.ToList().IndexOf(folder);
+                var index = orderedList.IndexOf(folder);
                 var worker = new BackgroundWorker();
                 worker.WorkerReportsProgress = true;
 
@@ -294,10 +300,13 @@ namespace MP3GainMT.MP3Gain
         internal void UndoGain(int cores = 2)
         {
             this.ResetAnalysis();
+            this.Active = true;
+
+            var orderedList = Folders.Values.ToList();
 
             foreach (var folder in Folders.Values.Reverse())
             {
-                var index = Folders.Values.ToList().IndexOf(folder);
+                var index = orderedList.IndexOf(folder);
                 var worker = new BackgroundWorker();
                 worker.WorkerReportsProgress = true;
 

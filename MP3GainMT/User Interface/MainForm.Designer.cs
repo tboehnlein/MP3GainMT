@@ -31,13 +31,13 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
-            this.runButton = new System.Windows.Forms.Button();
+            this.applyGainButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.fileListLabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.analyzeButton = new System.Windows.Forms.Button();
             this.clearButton = new System.Windows.Forms.Button();
             this.searchButton = new System.Windows.Forms.Button();
             this.activityProgressBar = new System.Windows.Forms.ProgressBar();
@@ -118,16 +118,16 @@ namespace MP3GainMT
             this.folderPathTextBox.Size = new System.Drawing.Size(541, 20);
             this.folderPathTextBox.TabIndex = 1;
             // 
-            // runButton
+            // applyGainButton
             // 
-            this.runButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.runButton.Location = new System.Drawing.Point(1221, 55);
-            this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(87, 28);
-            this.runButton.TabIndex = 6;
-            this.runButton.Text = "Apply &Gain";
-            this.runButton.UseVisualStyleBackColor = true;
-            this.runButton.Click += new System.EventHandler(this.RunButton_Click);
+            this.applyGainButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.applyGainButton.Location = new System.Drawing.Point(1221, 55);
+            this.applyGainButton.Name = "applyGainButton";
+            this.applyGainButton.Size = new System.Drawing.Size(87, 28);
+            this.applyGainButton.TabIndex = 6;
+            this.applyGainButton.Text = "Apply &Gain";
+            this.applyGainButton.UseVisualStyleBackColor = true;
+            this.applyGainButton.Click += new System.EventHandler(this.ApplyGainButton_Click);
             // 
             // label1
             // 
@@ -147,16 +147,16 @@ namespace MP3GainMT
             this.fileListLabel.TabIndex = 8;
             this.fileListLabel.Text = "Loaded Files [Album Folder Count = %s, File Count = %s]";
             // 
-            // button1
+            // analyzeButton
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(1153, 56);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(62, 28);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "&Analyze";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.AnalyzeButton_Click);
+            this.analyzeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.analyzeButton.Location = new System.Drawing.Point(1153, 56);
+            this.analyzeButton.Name = "analyzeButton";
+            this.analyzeButton.Size = new System.Drawing.Size(62, 28);
+            this.analyzeButton.TabIndex = 5;
+            this.analyzeButton.Text = "&Analyze";
+            this.analyzeButton.UseVisualStyleBackColor = true;
+            this.analyzeButton.Click += new System.EventHandler(this.AnalyzeButton_Click);
             // 
             // clearButton
             // 
@@ -560,9 +560,9 @@ namespace MP3GainMT
             this.fileGridView.AllowDrop = true;
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -795,7 +795,7 @@ namespace MP3GainMT
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.undoButton);
             this.Controls.Add(this.clearButton);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.analyzeButton);
             this.Controls.Add(this.fileGridView);
             this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.mp3GainButton);
@@ -805,7 +805,7 @@ namespace MP3GainMT
             this.Controls.Add(this.mp3GainLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.folderPathTextBox);
-            this.Controls.Add(this.runButton);
+            this.Controls.Add(this.applyGainButton);
             this.Controls.Add(this.browseButton);
             this.MinimumSize = new System.Drawing.Size(1100, 300);
             this.Name = "MainForm";
@@ -830,11 +830,11 @@ namespace MP3GainMT
 
         private Button browseButton;
         private TextBox folderPathTextBox;
-        private Button runButton;
+        private Button applyGainButton;
         private Label label1;
         private MP3GainMT.User_Interface.DataGridViewBuffered fileGridView;
         private Label fileListLabel;
-        private Button button1;
+        private Button analyzeButton;
         private Button clearButton;
         private Button searchButton;
         private ProgressBar activityProgressBar;
