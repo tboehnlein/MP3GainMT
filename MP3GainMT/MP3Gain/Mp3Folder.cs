@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace MP3GainMT.MP3Gain
@@ -100,6 +101,8 @@ namespace MP3GainMT.MP3Gain
 
                 //Debug.WriteLine(e.Data);
 
+                //Debug.Write(e.Data);
+
                 if (e.Data.Contains("%"))
                 {
                     var items = e.Data.Split('%');
@@ -117,6 +120,13 @@ namespace MP3GainMT.MP3Gain
                         this.activeFile.Progress = percent;
                         this.RaiseChangedFile(this.activeFile);
                         lastWrite = DateTime.Now;
+
+                        this.activeFile.FlagUpdateTags();
+                        var fileOverall = (percent / 100.0) * (1.0 / this.sortedFiles.Count);
+                        int overallProgress = Convert.ToInt32((fileOverall + ((float)index / this.sortedFiles.Count)) * 100.0);
+                        this.worker.ReportProgress(overallProgress, new FileProgress(this.activeFile, this.activeFile.Progress));
+
+                        Debug.WriteLine($"OVERALL: {overallProgress} PROGRESS: {fileOverall} for {this.activeFile.FileName}");
                     }
                 }
             }
@@ -130,7 +140,7 @@ namespace MP3GainMT.MP3Gain
 
                 // Add the text to the collected output.
                 sortOutput.Append(e.Data);
-                //Debug.WriteLine(e.Data);
+                //Debug.Write(e.Data);
                 ProcessAnalysisOutputLine(e.Data, ref this.activeFile);
             }
         }
@@ -311,8 +321,12 @@ namespace MP3GainMT.MP3Gain
             {
                 //Debug.WriteLine($"Finished {gainFile.FilePath}");
                 gainFile.Progress = 100;
-                this.RaiseChangedFile(gainFile);
+                //this.RaiseChangedFile(gainFile);
                 //this.worker.ReportProgress(100, gainFile);
+                gainFile.FlagUpdateTags();
+                var fileOverall = 1.0 / this.sortedFiles.Count;
+                int overallProgress = Convert.ToInt32((fileOverall + ((float)(this.sortedFiles.IndexOf(gainFile.FileName)) / this.sortedFiles.Count)) * 100.0);
+                this.worker.ReportProgress(overallProgress, new FileProgress(gainFile, gainFile.Progress));
             }
 
             return found;
@@ -350,6 +364,17 @@ namespace MP3GainMT.MP3Gain
 
         private void ExecuteAnalyzeGain(string executable)
         {
+            //this.ApplyGainExecution = new ExecuteMp3GainAsync(executable,
+            //                                            $"\"{Path.Combine(FolderPath, "*.mp3")}\"",
+            //                                            this.Files,
+            //                                            this.FolderPath,
+            //                                            "ANALYZE GAIN",
+            //                                            this.worker,
+            //                                            "Applying gain",
+            //                                            "done");
+
+            //this.ApplyGainExecution.Execute();
+
             var parameters = $"\"{Path.Combine(FolderPath, "*.mp3")}\"";
             var analysisStart = new ProcessStartInfo(executable, parameters);
             analysisStart.UseShellExecute = false;

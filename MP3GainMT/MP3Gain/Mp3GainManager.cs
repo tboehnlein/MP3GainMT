@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace MP3GainMT.MP3Gain
@@ -254,6 +255,8 @@ namespace MP3GainMT.MP3Gain
 
         internal void ReadTags()
         {
+            
+
             this.readTagsWorker = new BackgroundWorker();
 
             readTagsWorker.WorkerReportsProgress = true;
@@ -403,6 +406,7 @@ namespace MP3GainMT.MP3Gain
                 if (this.readTagEventCheck.CheckTime(fileProg.Progress == 100))
                 {
                     this.DataSource[fileProg.File.SourceIndex].Object.Progress = fileProg.Progress;
+
                     this.RaiseRowUpdated(fileProg.File.SourceIndex);
                 }
             }
@@ -748,7 +752,7 @@ namespace MP3GainMT.MP3Gain
                 this.RaiseRowUpdated(file.SourceIndex);
 
                 if (updateGui)
-                {
+                {                  
                     this.RaiseTagRead(file);
                 }
             }

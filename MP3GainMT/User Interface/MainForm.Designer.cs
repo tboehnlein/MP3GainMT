@@ -31,7 +31,7 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.applyGainButton = new System.Windows.Forms.Button();
@@ -560,9 +560,9 @@ namespace MP3GainMT
             this.fileGridView.AllowDrop = true;
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -610,6 +610,7 @@ namespace MP3GainMT
             this.HasGainTags.HeaderText = "Tags";
             this.HasGainTags.Name = "HasGainTags";
             this.HasGainTags.ReadOnly = true;
+            this.HasGainTags.Visible = false;
             this.HasGainTags.Width = 37;
             // 
             // FullPath
@@ -632,6 +633,7 @@ namespace MP3GainMT
             this.AlbumColorColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.AlbumColorColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.AlbumColorColumn.Visible = false;
+            this.AlbumColorColumn.Width = 56;
             // 
             // AlbumArtist
             // 
@@ -641,6 +643,7 @@ namespace MP3GainMT
             this.AlbumArtist.Name = "AlbumArtist";
             this.AlbumArtist.ReadOnly = true;
             this.AlbumArtist.Visible = false;
+            this.AlbumArtist.Width = 87;
             // 
             // Updated
             // 
@@ -676,6 +679,7 @@ namespace MP3GainMT
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
             this.Album.Visible = false;
+            this.Album.Width = 61;
             // 
             // Artist
             // 
@@ -685,6 +689,7 @@ namespace MP3GainMT
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
             this.Artist.Visible = false;
+            this.Artist.Width = 55;
             // 
             // Progress
             // 

@@ -259,7 +259,7 @@ namespace MP3GainMT
             DataGridView dgv = (DataGridView)sender;
             var col = dgv.Columns[e.ColumnIndex].Name;
 
-            if (e.RowIndex >= 0 && (col == "TrackDB" || col == "AlbumDB" || col == "TrackGain" || col == "AlbumGain" || col == "NoClipGain") || col == "Progress")
+            if (e.RowIndex >= 0 && (col == "TrackDB" || col == "AlbumDB" || col == "TrackGain" || col == "AlbumGain" || col == "NoClipGain")) // || col == "Progress"
             {
                 var tags = "HasGainTags";
                 var hasTags = dgv.Rows[e.RowIndex].Cells[tags].Value is bool && (bool)dgv.Rows[e.RowIndex].Cells[tags].Value;
@@ -459,8 +459,11 @@ namespace MP3GainMT
             {
                 row.Progress = 0;
                 this.source.ResetItem(index);
+                this.fileGridView.Update();
                 index++;
             }
+
+            this.fileGridView.Refresh();
         }
 
         private void ResizeAllColumns()
@@ -554,6 +557,7 @@ namespace MP3GainMT
             if (index > -1 && index < this.source.Count)
             {
                 this.source.ResetItem(index);
+                this.fileGridView.Update();
             }
         }
 
