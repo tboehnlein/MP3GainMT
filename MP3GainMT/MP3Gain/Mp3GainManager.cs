@@ -399,10 +399,12 @@ namespace MP3GainMT.MP3Gain
 
         private void ExecuteMP3Gain_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            this.RaiseTaskProgressed(GetRunProgress(e.ProgressPercentage));
+            
 
             if (e.UserState is FileProgress fileProg)
             {
+                this.RaiseTaskProgressed(GetRunProgress(e.ProgressPercentage));
+
                 if (this.readTagEventCheck.CheckTime(fileProg.Progress == 100))
                 {
                     this.DataSource[fileProg.File.SourceIndex].Object.Progress = fileProg.Progress;

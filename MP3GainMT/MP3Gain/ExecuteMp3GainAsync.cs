@@ -12,6 +12,7 @@ namespace MP3GainMT.MP3Gain
         protected Mp3File activeFile = null;
         protected int filesFinished = 0;
         protected TimeCheck progressTimeCheck = new TimeCheck(5);
+        private Dictionary<string, string> fileLookUp;
         protected List<string> sortedFiles = new List<string>();
 
         public ExecuteMp3GainAsync(string executable,
@@ -46,8 +47,17 @@ namespace MP3GainMT.MP3Gain
 
         public virtual void Execute()
         {
+            //TODO: rename all of the files with a lookup dictionary to rename back to original
+            // names at the end of the process
+
+            this.fileLookUp = new Dictionary<string, string>();
+
             this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
             sortedFiles.Sort();
+
+            Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
+
+            this.sortedFiles = this.fileLookUp.Keys.ToList();
 
             var parameters = $"{this.Arguments} \"{Path.Combine(FolderPath, "*.mp3")}\"";
             var processStart = new ProcessStartInfo(Executable, parameters);
@@ -64,7 +74,7 @@ namespace MP3GainMT.MP3Gain
             this.Process.ErrorDataReceived += Process_ErrorDataReceived;
 
             // assume first file will be ran first in *.mp3
-            this.activeFile = this.Files[sortedFiles.First()];
+            this.activeFile = this.Files[this.fileLookUp[sortedFiles.First()]];
 
             this.Process.Start();
 
@@ -77,9 +87,13 @@ namespace MP3GainMT.MP3Gain
 
             this.Process.OutputDataReceived -= Process_OutputDataReceived;
             this.Process.ErrorDataReceived -= Process_ErrorDataReceived;
+            
+            Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
 
             //Debug.WriteLine($"FINISHED {this.ActionName} FOR {this.FolderName}");
         }
+
+        
 
         public virtual void ExtractActiveFile(DataReceivedEventArgs e)
         {
@@ -96,7 +110,7 @@ namespace MP3GainMT.MP3Gain
                     var fileString = fileStartString.Substring(0, fileEndIndex);
                     if (this.sortedFiles.Contains(fileString))
                     {
-                        this.activeFile = this.Files[fileString];
+                        this.activeFile = this.Files[this.fileLookUp[fileString]];
                     }
                 }
             }

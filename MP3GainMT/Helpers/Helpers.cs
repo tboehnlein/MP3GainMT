@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MP3GainMT
@@ -48,6 +49,30 @@ namespace MP3GainMT
 
             label.Invalidate();
             label.Refresh();
+        }
+
+        public static void UndoRandomlyRenameFiles(Dictionary<string, string> fileLookUp)
+        {
+            foreach (var renameFile in fileLookUp)
+            {
+                File.Move(renameFile.Key, renameFile.Value);
+            }
+        }
+
+        public static void RandomlyRenameFiles(Dictionary<string, string> fileLookUp, List<string> originalFiles)
+        {
+            Random random = new Random();
+
+            foreach (var file in originalFiles)
+            {
+                var name = $"{originalFiles.IndexOf(file).ToString("00000")}_{random.Next(1000)}.mp3";
+                var finalName = Path.Combine(Path.GetDirectoryName(file), name);
+
+                //rename file in same folder
+                File.Move(file, finalName);
+
+                fileLookUp.Add(finalName, file);
+            }
         }
     }
 }
