@@ -20,6 +20,8 @@ namespace MP3GainMT
         private MP3GainSettings settings;
         private BindingSource source;
 
+
+
         public MainForm()
         {
             InitializeComponent();
@@ -42,10 +44,11 @@ namespace MP3GainMT
             this.run.SearchTimeElasped += this.Run_SearchTimeElasped;
             this.run.ActivityUpdated += this.Run_ActivityFinished;
             this.run.AnalysisFinished += Run_AnalysisFinished;
-            
+
             this.source.DataSource = this.run.DataSource;
 
             fileGridView.DataSource = source;
+            fileGridView.CellDoubleClick += FileGridView_CellDoubleClick;
 
             this.ColumnTimer.Interval = 250;
             this.ColumnTimer.Tick += ColumnTimer_Tick;
@@ -68,6 +71,19 @@ namespace MP3GainMT
 
             this.UpdateFileListLabel();
             this.CheckFolderPath();
+        }
+
+        private void FileGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && fileGridView.Columns[e.ColumnIndex].Name == "FullPath")
+            {
+                var cellValue = fileGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                var directory = Path.GetDirectoryName(cellValue);
+                if (Directory.Exists(directory))
+                {
+                    Process.Start("explorer.exe", $"/select,\"{cellValue}\"");
+                }
+            }
         }
 
         public List<string> FoldersLeft { get; private set; } = new List<string>();
