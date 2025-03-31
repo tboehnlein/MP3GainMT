@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using TagLib;
+using TagLib.Id3v2;
 
 namespace MP3GainMT.MP3Gain
 {
@@ -151,7 +152,7 @@ namespace MP3GainMT.MP3Gain
                     stream.Close();
                 }
             }
-            catch (IOException exp)
+            catch (IOException)
             {
                 //the file is unavailable because it is:
                 //still being written to
@@ -199,12 +200,11 @@ namespace MP3GainMT.MP3Gain
                     var tagFile = TagLib.File.Create(this.FilePath);
                     if (tagFile.Tag.Performers.Length > 0) { this.Artist = tagFile.Tag.Performers[0]; }
                     var types = tagFile.TagTypes;
-                    var tags = tagFile.GetTag(TagTypes.Ape);
+                    var apeTags = tagFile.GetTag(TagTypes.Ape);
+                    var id3Tags = tagFile.GetTag(TagTypes.Id3v2);
 
-                    if (tags is TagLib.Ape.Tag apeTag)
+                    if (apeTags is TagLib.Ape.Tag apeTag)
                     {
-                        //GetTagValuePair(apeTag, TagMp3GainAlbumMinMax, out MaxNoClipGainAlbum, out GainAlbumMax);
-                        //GetTagValuePair(apeTag, TagMp3GainMinMax, out GainMin, out GainMax);
                         GetTagValueTriple(apeTag, TagMp3GainUndo, out GainUndoTrack, out GainUndoAlbum, out GainUndoLabel);
                         var hasAll = GetTagValue(apeTag, TagReplayAlbumGain, out this.ReplayAlbumGain);
                         GetTagValue(apeTag, TagReplayAlbumPeak, out this.ReplayAlbumPeak);
@@ -212,6 +212,26 @@ namespace MP3GainMT.MP3Gain
                         GetTagValue(apeTag, TagReplayTrackPeak, out this.ReplayTrackPeak);
 
                         this.HasGainTags = hasAll;
+                    }
+                    else if (id3Tags is TagLib.Id3v2.Tag id3v2Tag)
+                    {
+                        //var execute = new ExecuteMp3GainSync(Executable,
+                        //                         $"/o /s c",
+                        //                         folder.Files,
+                        //                         folder.FolderPath,
+                        //                         "GET MAX GAIN",
+                        //                         "Calculating Max Gain",
+                        //                         "done");
+
+                        //execute.Execute();
+
+                        // TODO: write code that runs mp3gain /o /s /c and extracts
+                        // the tags values from the file using the output rather than
+                        // the taglib library which currently does not support id3v2 properly
+                        // if lyrics tags are in the the tag list where APE tag is after it
+                        // This is the backup procedure
+
+                        this.ErrorMessages.Add($"File does not contain gain information.");
                     }
 
                     this.Album = tagFile.Tag.Album;
@@ -310,6 +330,32 @@ namespace MP3GainMT.MP3Gain
                 Double.TryParse(vector[1], out value1);
                 label = vector[2];
             }
+
+            return hasTag;
+        }
+
+        private bool GetTagValueTriple(TagLib.Id3v2.Tag id3v1Tag, string key, out double value0, out double value1, out string label)
+        {
+
+
+            //var list = id3v2Tag.GetFrames(key);
+            //var fields = list.Select(x => x.FrameId).ToList();
+            //var hasTag = list.ToList().Exists(x => x. == key);
+            value0 = -1.0;
+            value1 = -1.0;
+            label = string.Empty;
+
+            //if (hasTag)
+            //{
+            //    var item = apeTag.GetItem(key);
+            //    var vector = item.ToString().Split(',');
+
+            //    Double.TryParse(vector[0], out value0);
+            //    Double.TryParse(vector[1], out value1);
+            //    label = vector[2];
+            //}
+
+            var hasTag = false;
 
             return hasTag;
         }

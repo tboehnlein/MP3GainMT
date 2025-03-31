@@ -42,7 +42,6 @@ namespace MP3GainMT
             this.run.SearchTimeElasped += this.Run_SearchTimeElasped;
             this.run.ActivityUpdated += this.Run_ActivityFinished;
             this.run.AnalysisFinished += Run_AnalysisFinished;
-            this.run.AskSearchQuestion += Run_AskSearchQuestion;
             
             this.source.DataSource = this.run.DataSource;
 

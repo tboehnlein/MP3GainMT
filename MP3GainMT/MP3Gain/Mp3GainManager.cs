@@ -20,7 +20,6 @@ namespace MP3GainMT.MP3Gain
 
         private List<Mp3Folder> finished = new List<Mp3Folder>();
 
-        private int foldersFinished;
         private Dictionary<string, Mp3File> foundFiles = new Dictionary<string, Mp3File>();
 
         private Stack<FolderWorker> processStack;
@@ -59,8 +58,6 @@ namespace MP3GainMT.MP3Gain
         public event EventHandler<string> ActivityUpdated;
 
         public event EventHandler AnalysisFinished;
-
-        public event EventHandler<string> AskSearchQuestion;
 
         public event EventHandler<Mp3File> ChangedFile;
 

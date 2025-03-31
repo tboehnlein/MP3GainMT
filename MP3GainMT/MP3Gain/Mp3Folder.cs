@@ -10,6 +10,11 @@ using System.Threading;
 
 namespace MP3GainMT.MP3Gain
 {
+
+
+    /// <summary>
+    /// Represents a folder containing MP3 files and provides methods to analyze and apply gain adjustments.
+    /// </summary>
     public class Mp3Folder
     {
         private static DateTime lastWrite = DateTime.Now;
@@ -21,22 +26,54 @@ namespace MP3GainMT.MP3Gain
         private int suggestedGain;
         private Dictionary<string, string> fileLookUp;
 
+        /// <summary>
+        /// Initializes a new instance of the Mp3Folder class with the specified folder path.
+        /// </summary>
+        /// <param name="path">The path to the folder containing MP3 files.</param>
         public Mp3Folder(string path)
         {
             this.FolderPath = path;
             this.FolderName = Path.GetFileName(path);
         }
 
+        /// <summary>
+        /// Event triggered when an MP3 file is changed.
+        /// </summary>
         public event EventHandler<Mp3File> ChangedFile;
 
+        /// <summary>
+        /// Event triggered when an MP3 file is found.
+        /// </summary>
         public event EventHandler<Mp3File> FoundFile;
 
+        /// <summary>
+        /// Gets the execution context for applying gain adjustments.
+        /// </summary>
         public ExecuteMp3GainAsync ApplyGainExecution { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the dB offset for the folder.
+        /// </summary>
         public double DBOffset { get; set; } = 0.0;
+
+        /// <summary>
+        /// Gets or sets the dictionary of MP3 files in the folder.
+        /// </summary>
         public Dictionary<string, Mp3File> Files { get; set; } = new Dictionary<string, Mp3File>();
+
+        /// <summary>
+        /// Gets or sets the name of the folder.
+        /// </summary>
         public string FolderName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the path to the folder.
+        /// </summary>
         public string FolderPath { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Gets the list of MP3 file paths in the folder.
+        /// </summary>
         public List<string> MP3Files
         {
             get
@@ -45,9 +82,19 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        /// <summary>
+        /// Gets the total length of all MP3 files in the folder.
+        /// </summary>
         public long Length => this.Files.Sum(x => x.Value.Length);
 
+        /// <summary>
+        /// Gets the suggested gain for undoing the last gain adjustment.
+        /// </summary>
         public int UndoSuggestedGain { get; private set; }
+
+        /// <summary>
+        /// Gets the suggested gain for the folder.
+        /// </summary>
         public int SuggestedGain
         {
             get
@@ -63,47 +110,66 @@ namespace MP3GainMT.MP3Gain
                 {
                     this.suggestedGain = first.SuggestedAlbumGain;
                 }
-                
+
                 return this.suggestedGain;
             }
         }
 
+        /// <summary>
+        /// Gets the execution context for undoing gain adjustments.
+        /// </summary>
         public ExecuteMp3GainAsync UndoGainExecution { get; private set; }
 
+        /// <summary>
+        /// Searches the folder for MP3 files and adds them to the Files dictionary.
+        /// </summary>
         public void SearchFolder()
         {
             this.FindFiles(this.FolderPath);
         }
 
+        /// <summary>
+        /// Applies gain adjustments to the MP3 files in the folder.
+        /// </summary>
+        /// <param name="executable">The path to the executable for applying gain.</param>
+        /// <param name="worker">The background worker for reporting progress.</param>
         internal void ApplyGainFolder(string executable, BackgroundWorker worker)
         {
             this.worker = worker;
             this.ExecuteApplyGain(executable);
         }
 
+        /// <summary>
+        /// Analyzes the gain of the MP3 files in the folder.
+        /// </summary>
+        /// <param name="executable">The path to the executable for analyzing gain.</param>
+        /// <param name="worker">The background worker for reporting progress.</param>
         internal void AnalyzeGainFolder(string executable, BackgroundWorker worker)
         {
             this.worker = worker;
             this.ExecuteAnalyzeGain(executable);
         }
 
+        /// <summary>
+        /// Undoes the gain adjustments for the MP3 files in the folder.
+        /// </summary>
+        /// <param name="executable">The path to the executable for undoing gain.</param>
+        /// <param name="worker">The background worker for reporting progress.</param>
         internal void UndoGain(string executable, BackgroundWorker worker)
         {
             this.worker = worker;
             this.ExecuteUndoGain(executable);
         }
 
+        /// <summary>
+        /// Handles the error data received from the analysis process.
+        /// </summary>
         private void AnalysisProcess_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!String.IsNullOrEmpty(e.Data))
             {
                 // Add the text to the collected output.
                 sortError.Append(e.Data);
-                //Debug.WriteLine(e.Data);
-
-                //Debug.WriteLine(e.Data);
-
-                //Debug.Write(e.Data);
 
                 if (e.Data.Contains("%"))
                 {
@@ -132,19 +198,22 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        /// <summary>
+        /// Handles the output data received from the analysis process.
+        /// </summary>
         private void AnalysisProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (!String.IsNullOrEmpty(e.Data))
             {
-                //Debug.WriteLine(e.Data);
-
                 // Add the text to the collected output.
                 sortOutput.Append(e.Data);
-                //Debug.Write(e.Data);
                 ProcessAnalysisOutputLine(e.Data, ref this.activeFile);
             }
         }
 
+        /// <summary>
+        /// Executes the apply gain process.
+        /// </summary>
         private void ExecuteApplyGain(string executable)
         {
             this.ApplyGainExecution = new ExecuteMp3GainAsync(executable,
@@ -159,21 +228,24 @@ namespace MP3GainMT.MP3Gain
             this.ApplyGainExecution.Execute();
 
             ResetSuggestedGain();
-
-            //Debug.WriteLine($"APPLY SUGG: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
         }
 
+        /// <summary>
+        /// Resets the suggested gain to zero.
+        /// </summary>
         private void ResetSuggestedGain()
         {
             if (this.SuggestedGain != 0)
             {
                 this.UndoSuggestedGain = this.suggestedGain;
-                //Debug.WriteLine($"APPLY STORED PREV {this.UndoSuggestedGain} for {this.FolderName}");
             }
 
             this.suggestedGain = 0;
         }
 
+        /// <summary>
+        /// Executes the undo gain process.
+        /// </summary>
         private void ExecuteUndoGain(string executable)
         {
             RecordUndoSuggestedTag();
@@ -192,13 +264,17 @@ namespace MP3GainMT.MP3Gain
             RestoreUndoSuggestedGain();
         }
 
+        /// <summary>
+        /// Restores the suggested gain to the previous value.
+        /// </summary>
         private void RestoreUndoSuggestedGain()
         {
             this.suggestedGain = this.UndoSuggestedGain;
-
-            //Debug.WriteLine($"UNDO SUGG: {this.SuggestedGain} PREV: {this.UndoSuggestedGain} for {this.FolderName}");
         }
 
+        /// <summary>
+        /// Records the undo suggested tag.
+        /// </summary>
         private void RecordUndoSuggestedTag()
         {
             var undoAlbumGain = -Convert.ToInt32(this.Files.Values.First().GainUndoAlbum);
@@ -206,10 +282,12 @@ namespace MP3GainMT.MP3Gain
             if (undoAlbumGain != 0)
             {
                 this.UndoSuggestedGain = undoAlbumGain;
-                //Debug.WriteLine($"UNDO RECOVERED PREV: {this.UndoSuggestedGain} for {this.FolderName}");
             }
         }
 
+        /// <summary>
+        /// Finds MP3 files in the specified folder path and adds them to the Files dictionary.
+        /// </summary>
         private void FindFiles(string folderPath)
         {
             var files = Directory.GetFiles(folderPath, "*.mp3", SearchOption.TopDirectoryOnly);
@@ -227,6 +305,9 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        /// <summary>
+        /// Processes the album gain from the analysis output line.
+        /// </summary>
         private bool ProcessAlbumGain(string line)
         {
             bool found = false;
@@ -266,9 +347,12 @@ namespace MP3GainMT.MP3Gain
             return found;
         }
 
+        /// <summary>
+        /// Processes the analysis output line and updates the gain file accordingly.
+        /// </summary>
         private void ProcessAnalysisOutputLine(string line, ref Mp3File gainFile)
         {
-            //start mp3 file
+            // Start MP3 file
             if (ProcessFilePath(ref gainFile, line))
             {
                 return;
@@ -285,6 +369,9 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        /// <summary>
+        /// Processes the file gain from the analysis output line.
+        /// </summary>
         private bool ProcessFileGain(Mp3File gainFile, string line)
         {
             bool found = false;
@@ -319,10 +406,7 @@ namespace MP3GainMT.MP3Gain
 
             if (done)
             {
-                //Debug.WriteLine($"Finished {gainFile.FilePath}");
                 gainFile.Progress = 100;
-                //this.RaiseChangedFile(gainFile);
-                //this.worker.ReportProgress(100, gainFile);
                 gainFile.FlagUpdateTags();
                 var fileOverall = 1.0 / this.sortedFiles.Count;
                 int overallProgress = Convert.ToInt32((fileOverall + ((float)(this.fileLookUp.Values.Cast<string>().ToList().IndexOf(gainFile.FilePath)) / this.sortedFiles.Count)) * 100.0);
@@ -332,6 +416,9 @@ namespace MP3GainMT.MP3Gain
             return found;
         }
 
+        /// <summary>
+        /// Processes the file path from the analysis output line.
+        /// </summary>
         private bool ProcessFilePath(ref Mp3File gainFile, string line)
         {
             bool found = false;
@@ -345,15 +432,20 @@ namespace MP3GainMT.MP3Gain
             return found;
         }
 
+        /// <summary>
+        /// Raises the ChangedFile event.
+        /// </summary>
         private void RaiseChangedFile(Mp3File file)
         {
             if (ChangedFile != null)
             {
-                //this.ChangedFile.Invoke(this, file);
                 this.worker.ReportProgress(0, file);
             }
         }
 
+        /// <summary>
+        /// Raises the FoundFile event.
+        /// </summary>
         private void RaiseFoundFile(Mp3File file)
         {
             if (FoundFile != null)
@@ -362,6 +454,9 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
+        /// <summary>
+        /// Executes the analyze gain process.
+        /// </summary>
         private void ExecuteAnalyzeGain(string executable)
         {
             //this.ApplyGainExecution = new ExecuteMp3GainAsync(executable,
@@ -397,7 +492,14 @@ namespace MP3GainMT.MP3Gain
 
             this.fileLookUp = new Dictionary<string, string>();
 
-            Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
+            bool renameSuccess = Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
+
+            if (!renameSuccess)
+            {
+                Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
+
+                return;
+            }
 
             this.sortedFiles = this.fileLookUp.Keys.ToList();
 
@@ -408,18 +510,17 @@ namespace MP3GainMT.MP3Gain
             analysisProcess.BeginOutputReadLine();
             analysisProcess.BeginErrorReadLine();
 
-            //Debug.WriteLine($"STARTED ANALYSIS FOR {this.FolderName}");
-
             analysisProcess.WaitForExit();
 
             analysisProcess.OutputDataReceived -= AnalysisProcess_OutputDataReceived;
             analysisProcess.ErrorDataReceived -= AnalysisProcess_ErrorDataReceived;
 
-            //Debug.WriteLine($"FINSHED ANALYSIS FOR {this.FolderName}");
-
             Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
         }
 
+        /// <summary>
+        /// Sets the alternative color flag for all MP3 files in the folder.
+        /// </summary>
         internal void SetAltColorFlag(bool useAlternativeColor)
         {
             foreach (var file in this.Files.Values)
