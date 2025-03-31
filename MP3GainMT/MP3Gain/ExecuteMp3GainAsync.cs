@@ -55,8 +55,6 @@ namespace MP3GainMT.MP3Gain
             this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
             sortedFiles.Sort();
 
-            Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
-
             bool renameSuccess = Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
 
             if (!renameSuccess)

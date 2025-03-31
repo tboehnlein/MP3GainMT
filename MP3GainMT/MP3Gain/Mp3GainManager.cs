@@ -253,7 +253,6 @@ namespace MP3GainMT.MP3Gain
         internal void ReadTags()
         {
             
-
             this.readTagsWorker = new BackgroundWorker();
 
             readTagsWorker.WorkerReportsProgress = true;
@@ -496,6 +495,8 @@ namespace MP3GainMT.MP3Gain
 
             foreach (var folder in folders)
             {
+                Helpers.UndoFileRenamesFromTextFile(folder);
+
                 var mp3Folder = new Mp3Folder(folder);
 
                 mp3Folder.FoundFile += Mp3Folder_FoundFile;
@@ -707,6 +708,7 @@ namespace MP3GainMT.MP3Gain
 
                 foreach (var folder in folders)
                 {
+
                     var execute = new ExecuteMp3GainSync(Executable,
                                                      $"/o /s c",
                                                      folder.Files,
@@ -871,5 +873,6 @@ namespace MP3GainMT.MP3Gain
                 e.Result = folder;
             }
         }
+        
     }
 }

@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace MP3GainMT
 {
     public static class Helpers
     {
+        public static string BackupRandomFileName { get; private set; } = "random_file.txt";
+
         public static string AsSingleLine(this List<string> list)
         {
             var line = string.Empty;
@@ -55,6 +59,13 @@ namespace MP3GainMT
         {
             bool success = true;
 
+            if (fileLookUp.Count == 0)
+            {
+                return success;
+            }
+
+            string randomFilePath = Path.Combine(fileLookUp.Values.First(), Helpers.BackupRandomFileName);
+
             foreach (var renameFile in fileLookUp)
             {
                 try
@@ -88,7 +99,62 @@ namespace MP3GainMT
 
             if (success)
             {
-                File.Delete("random_file.txt");
+                if (File.Exists(randomFilePath))
+                {
+                    File.Delete(randomFilePath);
+                }
+            }
+
+            return success;
+        }
+
+        public static bool UndoFileRenamesFromTextFile(string folderPath)
+        {
+            bool success = true;
+            string randomTextFilePath = Path.Combine(folderPath, Helpers.BackupRandomFileName);
+
+            if (File.Exists(randomTextFilePath))
+            {
+                var lines = File.ReadAllLines(randomTextFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+                    if (parts.Length == 2)
+                    {
+                        var oldFilePath = Path.Combine(folderPath, parts[0]);
+                        var newFilePath = Path.Combine(folderPath, parts[1]);
+                        if (File.Exists(newFilePath))
+                        {
+                            try
+                            {
+                                File.Move(newFilePath, oldFilePath);
+                            }
+                            catch (IOException ex)
+                            {
+                                // Handle IO exceptions, such as file access issues
+                                Console.WriteLine($"IO Exception for {newFilePath} while undoing the file rename: {ex.Message}");
+                                success = false;
+                            }
+                            catch (UnauthorizedAccessException ex)
+                            {
+                                // Handle unauthorized access exceptions
+                                Console.WriteLine($"Unauthorized Access Exception for {newFilePath} while undoing the file rename: {ex.Message}");
+                                success = false;
+                            }
+                            catch (Exception ex)
+                            {
+                                // Handle any other exceptions
+                                Console.WriteLine($"Exception for {newFilePath} while undoing the file rename: {ex.Message}");
+                                success = false;
+                            }
+                        }
+                    }
+                }
+
+                if (success)
+                {
+                    File.Delete(randomTextFilePath);
+                }
             }
 
             return success;
@@ -98,9 +164,16 @@ namespace MP3GainMT
         {
             bool success = true;
 
+            if (originalFiles.Count == 0)
+            {
+                return success;
+            }
+
             Random random = new Random();
 
-            using (StreamWriter writer = new StreamWriter("random_file.txt"))
+            string fullRandomPath = Path.Combine(Path.GetDirectoryName(originalFiles[0]), BackupRandomFileName);
+
+            using (StreamWriter writer = new StreamWriter(fullRandomPath))
             {
                 foreach (var file in originalFiles)
                 {
@@ -110,7 +183,7 @@ namespace MP3GainMT
                         var finalName = Path.Combine(Path.GetDirectoryName(file), name);
 
                         // Write to file
-                        writer.WriteLine($"{file} -> {finalName}");
+                        writer.WriteLine($"{file}|{finalName}");
                         writer.Flush();
 
                         // Rename file in the same folder
