@@ -31,7 +31,7 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.applyGainButton = new System.Windows.Forms.Button();
@@ -68,6 +68,10 @@ namespace MP3GainMT
             this.label8 = new System.Windows.Forms.Label();
             this.mp3GainButton = new System.Windows.Forms.Button();
             this.mp3GainLabel = new System.Windows.Forms.Label();
+            this.userInterfaceGroupBox = new System.Windows.Forms.GroupBox();
+            this.openFolderRadioButton = new System.Windows.Forms.RadioButton();
+            this.playFileRadioButton = new System.Windows.Forms.RadioButton();
+            this.doubleClickRowLabel = new System.Windows.Forms.Label();
             this.readOnlyCheckBox1 = new MP3GainMT.User_Interface.ReadOnlyCheckBox();
             this.fileGridView = new MP3GainMT.User_Interface.DataGridViewBuffered();
             this.HasGainTags = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -93,6 +97,7 @@ namespace MP3GainMT
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
             this.filterGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.threshNumeric)).BeginInit();
+            this.userInterfaceGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -346,7 +351,7 @@ namespace MP3GainMT
             this.filterGroupBox.Controls.Add(this.clipOnlyTrackCheckBox);
             this.filterGroupBox.Controls.Add(this.removeButton);
             this.filterGroupBox.Controls.Add(this.threshLabel);
-            this.filterGroupBox.Location = new System.Drawing.Point(479, 89);
+            this.filterGroupBox.Location = new System.Drawing.Point(479, 86);
             this.filterGroupBox.MinimumSize = new System.Drawing.Size(675, 0);
             this.filterGroupBox.Name = "filterGroupBox";
             this.filterGroupBox.Size = new System.Drawing.Size(953, 57);
@@ -384,7 +389,7 @@ namespace MP3GainMT
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(862, 12);
+            this.label7.Location = new System.Drawing.Point(862, 15);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(38, 13);
             this.label7.TabIndex = 16;
@@ -393,7 +398,7 @@ namespace MP3GainMT
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(336, 13);
+            this.label6.Location = new System.Drawing.Point(336, 16);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(41, 13);
             this.label6.TabIndex = 16;
@@ -544,6 +549,53 @@ namespace MP3GainMT
             this.mp3GainLabel.TabIndex = 0;
             this.mp3GainLabel.Text = "MP3 Gain Location";
             // 
+            // userInterfaceGroupBox
+            // 
+            this.userInterfaceGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.userInterfaceGroupBox.Controls.Add(this.openFolderRadioButton);
+            this.userInterfaceGroupBox.Controls.Add(this.playFileRadioButton);
+            this.userInterfaceGroupBox.Controls.Add(this.doubleClickRowLabel);
+            this.userInterfaceGroupBox.Location = new System.Drawing.Point(311, 86);
+            this.userInterfaceGroupBox.MinimumSize = new System.Drawing.Size(163, 0);
+            this.userInterfaceGroupBox.Name = "userInterfaceGroupBox";
+            this.userInterfaceGroupBox.Size = new System.Drawing.Size(163, 57);
+            this.userInterfaceGroupBox.TabIndex = 18;
+            this.userInterfaceGroupBox.TabStop = false;
+            this.userInterfaceGroupBox.Text = "User Interface Options";
+            // 
+            // openFolderRadioButton
+            // 
+            this.openFolderRadioButton.AutoSize = true;
+            this.openFolderRadioButton.Checked = true;
+            this.openFolderRadioButton.Location = new System.Drawing.Point(78, 33);
+            this.openFolderRadioButton.Name = "openFolderRadioButton";
+            this.openFolderRadioButton.Size = new System.Drawing.Size(83, 17);
+            this.openFolderRadioButton.TabIndex = 17;
+            this.openFolderRadioButton.TabStop = true;
+            this.openFolderRadioButton.Text = "&Open Folder";
+            this.openFolderRadioButton.UseVisualStyleBackColor = true;
+            this.openFolderRadioButton.CheckedChanged += new System.EventHandler(this.DoubleClickChoice_Changed);
+            // 
+            // playFileRadioButton
+            // 
+            this.playFileRadioButton.AutoSize = true;
+            this.playFileRadioButton.Location = new System.Drawing.Point(14, 33);
+            this.playFileRadioButton.Name = "playFileRadioButton";
+            this.playFileRadioButton.Size = new System.Drawing.Size(64, 17);
+            this.playFileRadioButton.TabIndex = 17;
+            this.playFileRadioButton.Text = "&Play File";
+            this.playFileRadioButton.UseVisualStyleBackColor = true;
+            this.playFileRadioButton.CheckedChanged += new System.EventHandler(this.DoubleClickChoice_Changed);
+            // 
+            // doubleClickRowLabel
+            // 
+            this.doubleClickRowLabel.AutoSize = true;
+            this.doubleClickRowLabel.Location = new System.Drawing.Point(12, 18);
+            this.doubleClickRowLabel.Name = "doubleClickRowLabel";
+            this.doubleClickRowLabel.Size = new System.Drawing.Size(67, 13);
+            this.doubleClickRowLabel.TabIndex = 16;
+            this.doubleClickRowLabel.Text = "Double Click";
+            // 
             // readOnlyCheckBox1
             // 
             this.readOnlyCheckBox1.AutoSize = true;
@@ -560,9 +612,9 @@ namespace MP3GainMT
             this.fileGridView.AllowDrop = true;
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -611,7 +663,6 @@ namespace MP3GainMT
             this.HasGainTags.Name = "HasGainTags";
             this.HasGainTags.ReadOnly = true;
             this.HasGainTags.Visible = false;
-            this.HasGainTags.Width = 37;
             // 
             // FullPath
             // 
@@ -633,7 +684,6 @@ namespace MP3GainMT
             this.AlbumColorColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.AlbumColorColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.AlbumColorColumn.Visible = false;
-            this.AlbumColorColumn.Width = 56;
             // 
             // AlbumArtist
             // 
@@ -643,7 +693,6 @@ namespace MP3GainMT
             this.AlbumArtist.Name = "AlbumArtist";
             this.AlbumArtist.ReadOnly = true;
             this.AlbumArtist.Visible = false;
-            this.AlbumArtist.Width = 87;
             // 
             // Updated
             // 
@@ -679,7 +728,6 @@ namespace MP3GainMT
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
             this.Album.Visible = false;
-            this.Album.Width = 61;
             // 
             // Artist
             // 
@@ -689,7 +737,6 @@ namespace MP3GainMT
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
             this.Artist.Visible = false;
-            this.Artist.Width = 55;
             // 
             // Progress
             // 
@@ -790,6 +837,7 @@ namespace MP3GainMT
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1444, 864);
+            this.Controls.Add(this.userInterfaceGroupBox);
             this.Controls.Add(this.readOnlyCheckBox1);
             this.Controls.Add(this.coresComboBox);
             this.Controls.Add(this.filterGroupBox);
@@ -825,6 +873,8 @@ namespace MP3GainMT
             this.filterGroupBox.ResumeLayout(false);
             this.filterGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.threshNumeric)).EndInit();
+            this.userInterfaceGroupBox.ResumeLayout(false);
+            this.userInterfaceGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -890,6 +940,10 @@ namespace MP3GainMT
         private DataGridViewCheckBoxColumn AlbumClip;
         private DataGridViewTextBoxColumn NoClipGain;
         private DataGridViewTextBoxColumn ErrorMessage;
+        private GroupBox userInterfaceGroupBox;
+        private RadioButton openFolderRadioButton;
+        private RadioButton playFileRadioButton;
+        private Label doubleClickRowLabel;
     }
 }
 

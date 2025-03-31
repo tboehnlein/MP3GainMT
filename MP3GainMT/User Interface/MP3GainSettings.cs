@@ -17,6 +17,7 @@ namespace MP3GainMT
         private static readonly string TopPositionLabel = "Top Position";
         private static readonly string UseAndLabel = "Use And";
         private static readonly string WidthSizeLabel = "Width Length";
+        private static readonly string DoubleClickTableLabel = "Double Click Table";
         private JObject _json = null;
 
         public MP3GainSettings()
@@ -120,6 +121,18 @@ namespace MP3GainMT
             }
         }
 
+        public string DoubleClickTable
+        {
+            get
+            {
+                return ReadKey<string>(DoubleClickTableLabel);
+            }
+            set
+            {
+                WriteKey<string>(value, DoubleClickTableLabel);
+            }
+        }
+
         public int WidthSize
         {
             get
@@ -208,6 +221,7 @@ namespace MP3GainMT
             PrepareKey<int>(PathWidthLabel);
             PrepareKey<bool>(UseAndLabel);
             PrepareKey<string>(ExecutableLabel);
+            PrepareKey<string>(DoubleClickTableLabel);
 
             if (reader != null)
             {

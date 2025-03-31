@@ -10,6 +10,8 @@ namespace MP3GainMT
     public static class Helpers
     {
         public static string BackupRandomFileName { get; private set; } = "random_file.txt";
+        public static readonly string PlayFileChoice = "Play File";
+        public static readonly string OpenFolderChoice = "Open Folder";
 
         public static string AsSingleLine(this List<string> list)
         {

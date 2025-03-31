@@ -19,9 +19,8 @@ namespace MP3GainMT
         private Mp3GainManager run;
         private MP3GainSettings settings;
         private BindingSource source;
+        private string doubleClickTableChoice = Helpers.OpenFolderChoice;
 
-
-        
         public MainForm()
         {
             InitializeComponent();
@@ -99,6 +98,10 @@ namespace MP3GainMT
                 this.ContextMenuRowIndex = hitTestInfo.RowIndex;
                 this.fileGridView.Rows[this.ContextMenuRowIndex].Selected = true;
             }
+            else
+            {
+                this.ContextMenuRowIndex = -1;
+            }
         }
 
         private void OpenFolderMenuItem_Click(object sender, EventArgs e)
@@ -143,7 +146,16 @@ namespace MP3GainMT
         {
             if (e.RowIndex >= 0 && fileGridView.Columns[e.ColumnIndex].Name == "FullPath")
             {
-                OpenMP3FolderFromTable();
+                this.ContextMenuRowIndex = e.RowIndex;
+
+                if (this.doubleClickTableChoice == Helpers.OpenFolderChoice)
+                {
+                    OpenMP3FolderFromTable();
+                }
+                else
+                {
+                    PlayMP3FileFromTable();
+                }
             }
         }
 
@@ -486,6 +498,7 @@ namespace MP3GainMT
             this.Width = this.settings.WidthSize;
             this.andRadioButton.Checked = this.settings.UseAnd;
             this.orRadioButton.Checked = !this.settings.UseAnd;
+            this.doubleClickTableChoice = this.settings.DoubleClickTable;
 
             ApplyMP3GainExecutable(this.settings.Executable);
 
@@ -505,6 +518,15 @@ namespace MP3GainMT
             }
 
             this.fileGridView.Columns["FullPath"].Width = this.settings.PathWidth;
+
+            if (this.doubleClickTableChoice == Helpers.PlayFileChoice)
+            {
+                this.playFileRadioButton.Checked = true;
+            }
+            else
+            {
+                this.openFolderRadioButton.Checked = true;
+            }
         }
 
         private void ReadTagsButton_Click(object sender, EventArgs e)
@@ -827,10 +849,23 @@ namespace MP3GainMT
             this.settings.PathWidth = this.fileGridView.Columns["FullPath"].Width;
             this.settings.UseAnd = this.andRadioButton.Checked;
             this.settings.Executable = Mp3GainManager.Executable;
+            this.settings.DoubleClickTable = this.doubleClickTableChoice;
 
             this.settings.ParentFolder = run.ParentFolder;
 
             this.settings.WriteSettingsFile();
+        }
+
+        private void DoubleClickChoice_Changed(object sender, EventArgs e)
+        {
+            if (this.playFileRadioButton.Checked)
+            {
+                this.doubleClickTableChoice = Helpers.PlayFileChoice;
+            }
+            else
+            {
+                this.doubleClickTableChoice = Helpers.OpenFolderChoice;
+            }
         }
     }
 }
