@@ -21,7 +21,7 @@ namespace MP3GainMT
         private BindingSource source;
 
 
-
+        
         public MainForm()
         {
             InitializeComponent();
@@ -49,6 +49,7 @@ namespace MP3GainMT
 
             fileGridView.DataSource = source;
             fileGridView.CellDoubleClick += FileGridView_CellDoubleClick;
+            AddTableContextMenu();
 
             this.ColumnTimer.Interval = 250;
             this.ColumnTimer.Tick += ColumnTimer_Tick;
@@ -73,16 +74,76 @@ namespace MP3GainMT
             this.CheckFolderPath();
         }
 
-        private void FileGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        public void AddTableContextMenu()
         {
-            if (e.RowIndex >= 0 && fileGridView.Columns[e.ColumnIndex].Name == "FullPath")
+            // Add context menu to DataGridView
+            var contextMenu = new ContextMenuStrip();
+            var openFolderMenuItem = new ToolStripMenuItem("Open Folder", null, OpenFolderMenuItem_Click);
+            var playFileMenuItem = new ToolStripMenuItem("Play File", null, PlayFileMenuItem_Click);
+
+            // Add icons to the menu items
+            openFolderMenuItem.Image = Properties.Resources.folder;
+            playFileMenuItem.Image = Properties.Resources.play;
+
+            contextMenu.Items.AddRange(new ToolStripItem[] { openFolderMenuItem, playFileMenuItem });
+            fileGridView.ContextMenuStrip = contextMenu;
+            fileGridView.ContextMenuStrip.Opened += ContextMenuStrip_Opened;
+        }
+
+        private void ContextMenuStrip_Opened(object sender, EventArgs e)
+        {
+            var hitTestInfo = fileGridView.HitTest(fileGridView.PointToClient(MousePosition).X, fileGridView.PointToClient(MousePosition).Y);
+
+            if (hitTestInfo.RowIndex >= 0 && hitTestInfo.ColumnIndex >= 0)
             {
-                var cellValue = fileGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                this.ContextMenuRowIndex = hitTestInfo.RowIndex;
+                this.fileGridView.Rows[this.ContextMenuRowIndex].Selected = true;
+            }
+        }
+
+        private void OpenFolderMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenMP3FolderFromTable();
+        }
+
+        private void OpenMP3FolderFromTable()
+        {
+            if (this.ContextMenuRowIndex >= 0)
+            {
+                var row = fileGridView.Rows[this.ContextMenuRowIndex];
+                var cellValue = row.Cells["FullPath"].Value.ToString();
                 var directory = Path.GetDirectoryName(cellValue);
                 if (Directory.Exists(directory))
                 {
                     Process.Start("explorer.exe", $"/select,\"{cellValue}\"");
                 }
+                this.ContextMenuRowIndex = -1;
+            }
+        }
+
+        private void PlayFileMenuItem_Click(object sender, EventArgs e)
+        {
+            PlayMP3FileFromTable();
+        }
+
+        private void PlayMP3FileFromTable()
+        {
+            if (this.ContextMenuRowIndex >= 0)
+            {
+                var row = fileGridView.Rows[this.ContextMenuRowIndex];
+                var cellValue = row.Cells["FullPath"].Value.ToString();
+                if (File.Exists(cellValue))
+                {
+                    Process.Start(cellValue);
+                }
+            }
+        }
+
+        private void FileGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && fileGridView.Columns[e.ColumnIndex].Name == "FullPath")
+            {
+                OpenMP3FolderFromTable();
             }
         }
 
@@ -93,6 +154,7 @@ namespace MP3GainMT
 
         public int SelectedCores => Convert.ToInt32(this.coresComboBox.SelectedItem);
         public DateTime StartTime { get; private set; }
+        public int ContextMenuRowIndex { get; private set; } = -1;
 
         public bool CheckAlbumClipOnly(MP3GainRow row, bool apply)
         {
