@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using WK.Libraries.BetterFolderBrowserNS;
 
 namespace MP3GainMT
@@ -71,6 +72,8 @@ namespace MP3GainMT
 
             this.UpdateFileListLabel();
             this.CheckFolderPath();
+
+            ApplyTheme();
         }
 
         public void AddTableContextMenu()
@@ -264,13 +267,13 @@ namespace MP3GainMT
         {
             if (Directory.Exists(this.folderPathTextBox.Text))
             {
-                this.folderPathTextBox.BackColor = Color.White;
+                //this.folderPathTextBox.BackColor = Color.White;
                 this.run.ParentFolder = this.folderPathTextBox.Text;
                 return true;
             }
             else
             {
-                this.folderPathTextBox.BackColor = Color.Yellow;
+                //this.folderPathTextBox.BackColor = Color.Yellow;
                 this.run.ParentFolder = string.Empty;
                 return false;
             }
@@ -427,11 +430,11 @@ namespace MP3GainMT
 
                 if (e.RowIndex % 2 == 0)
                 {
-                    color = isAltColor ? Color.FromArgb(215, 215, 255) : Color.FromArgb(245, 245, 245);
+                    color = isAltColor ? ThemeManager.RowAltColor : ThemeManager.RowColor;// Color.FromArgb(215, 215, 255) : Color.FromArgb(245, 245, 245);
                 }
                 else
                 {
-                    color = isAltColor ? Color.FromArgb(230, 230, 255) : Color.White;
+                    color = isAltColor ? ThemeManager.OddRowAltColor : ThemeManager.OddRowColor; //Color.FromArgb(230, 230, 255) : Color.White;
                 }
 
                 fileGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = color;
@@ -499,6 +502,7 @@ namespace MP3GainMT
             this.andRadioButton.Checked = this.settings.UseAnd;
             this.orRadioButton.Checked = !this.settings.UseAnd;
             this.doubleClickTableChoice = this.settings.DoubleClickTable;
+            this.themeComboBox.Text = this.settings.Theme;
 
             ApplyMP3GainExecutable(this.settings.Executable);
 
@@ -850,6 +854,7 @@ namespace MP3GainMT
             this.settings.UseAnd = this.andRadioButton.Checked;
             this.settings.Executable = Mp3GainManager.Executable;
             this.settings.DoubleClickTable = this.doubleClickTableChoice;
+            this.settings.Theme = this.themeComboBox.Text;
 
             this.settings.ParentFolder = run.ParentFolder;
 
@@ -866,6 +871,18 @@ namespace MP3GainMT
             {
                 this.doubleClickTableChoice = Helpers.OpenFolderChoice;
             }
+        }
+
+        private void ThemeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ApplyTheme();
+            this.Invalidate();
+            this.Refresh();
+        }
+
+        private void ApplyTheme()
+        {
+            ThemeManager.ApplyTheme(this, this.themeComboBox.Text == "Dark");
         }
     }
 }

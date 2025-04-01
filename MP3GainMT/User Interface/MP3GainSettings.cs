@@ -18,6 +18,7 @@ namespace MP3GainMT
         private static readonly string UseAndLabel = "Use And";
         private static readonly string WidthSizeLabel = "Width Length";
         private static readonly string DoubleClickTableLabel = "Double Click Table";
+        private static readonly string ThemeLabel = "Theme";
         private JObject _json = null;
 
         public MP3GainSettings()
@@ -118,6 +119,18 @@ namespace MP3GainMT
             set
             {
                 WriteKey<bool>(value, UseAndLabel);
+            }
+        }
+
+        public string Theme
+        {
+            get
+            {
+                return ReadKey<string>(ThemeLabel);
+            }
+            set
+            {
+                WriteKey<string>(value, ThemeLabel);
             }
         }
 
@@ -222,6 +235,7 @@ namespace MP3GainMT
             PrepareKey<bool>(UseAndLabel);
             PrepareKey<string>(ExecutableLabel);
             PrepareKey<string>(DoubleClickTableLabel);
+            PrepareKey<string>(ThemeLabel);
 
             if (reader != null)
             {

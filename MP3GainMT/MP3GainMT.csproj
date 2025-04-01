@@ -104,6 +104,7 @@
     <Compile Include="User Interface\ReadOnlyCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="User Interface\ThemeManager.cs" />
     <EmbeddedResource Include="User Interface\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
