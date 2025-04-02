@@ -10,6 +10,8 @@ It still has a lot of bugs regarding doing any value besides 89.0 target dB. Sti
 
 This is nowhere near feature complete compared to MP3Gain. Tons of stuff has yet to be implemented. If you aren't just doing the very basics, go back to the original program.
 
+If your files names are all messed up after a crash, open the folder in the software again and it should fix everything.
+
 ## Operation
 You have to locate your own copy of mp3gain.exe. See the browse button in the upper left corner.
 Standard Wortkflow: Browse for your directory. Click Add Files. Click Read Tags. Click Analysis. Click Apply Gain. Do not skip pressing any of the buttons.
