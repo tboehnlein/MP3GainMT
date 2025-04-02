@@ -10,10 +10,13 @@ namespace MP3GainMT
         public static Color LightForeColor = Color.Black;
         public static Color LightButtonColor = Color.FromKnownColor(KnownColor.ControlLight);
         public static Color LightInputColor = Color.FromKnownColor(KnownColor.ControlLightLight);
-        public static Color DarkBackColor = Color.FromArgb(45, 45, 48);
-        public static Color DarkForeColor = Color.FromArgb(225, 225, 225);
-        public static Color DarkButtonColor = Color.FromKnownColor(KnownColor.ControlDarkDark);
-        public static Color DarkInputColor = Color.FromArgb(10,10, 10);
+        public static Color DarkBackColor = Color.FromArgb(75, 75, 78);
+        public static Color DarkForeColor = Color.FromArgb(187, 213, 220);
+        public static Color DarkButtonColor = Color.FromArgb(65, 65, 68);
+        public static Color DarkInputColor = Color.FromArgb(40,40, 43);
+
+        public static Color LightButtonBorderColor = Color.FromArgb(200, 200, 200);
+        public static Color DarkButtonBorderColor = Color.FromArgb(35, 35, 38);
 
         public static Color RowAltColor = Color.FromArgb(215, 215, 255);
         public static Color RowColor = Color.FromArgb(245, 245, 245);
@@ -50,6 +53,7 @@ namespace MP3GainMT
         public static Color HeaderSelectColor = LightHeaderSelectColor;
         public static Color InstructionText = LightInstructionText;
         public static Color InstructionBackColor = LightInstructionBackColor;
+        public static Color ButtonBorderColor = LightButtonBorderColor;
 
         public static void ApplyTheme(Form form, bool isDarkTheme)
         {
@@ -67,7 +71,7 @@ namespace MP3GainMT
             HeaderSelectColor = isDarkTheme ? DarkHeaderSelectColor : LightHeaderSelectColor;
             InstructionText = isDarkTheme ? DarkInstructionText : LightInstructionText;
             InstructionBackColor = isDarkTheme ? DarkInstructionBackColor : LightInstructionBackColor;
-
+            ButtonBorderColor = isDarkTheme ? DarkButtonBorderColor : LightButtonBorderColor;
 
             form.BackColor = backColor;
             form.ForeColor = foreColor;
@@ -94,16 +98,17 @@ namespace MP3GainMT
                     dataGridView.RowsDefaultCellStyle.ForeColor = foreColor;
                     dataGridView.GridColor = GridColor;
                     dataGridView.BackgroundColor = TableColor;
+                    //dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
                 }
                 else if (control is Panel panel && panel.Tag.ToString() == "Instruction")
                 {
-                    panel.BackColor = InstructionBackColor;
-                    panel.ForeColor = InstructionText;
+                    //panel.BackColor = InstructionBackColor;
+                    //panel.ForeColor = InstructionText;
 
-                    if (control.HasChildren)
-                    {
-                        ApplyInvertThemeToControls(panel.Controls, InstructionBackColor, InstructionText, buttonColor, inputColor);
-                    }
+                    //if (control.HasChildren)
+                    //{
+                    //    ApplyInvertThemeToControls(panel.Controls, InstructionBackColor, InstructionText, buttonColor, inputColor);
+                    //}
                 }
                 else if (control is NumericUpDown numeric)
                 {
@@ -120,7 +125,7 @@ namespace MP3GainMT
                     button.BackColor = buttonColor;
                     button.ForeColor = foreColor;
                     button.FlatStyle = FlatStyle.Flat;
-                    button.FlatAppearance.BorderColor = Color.LightGray;
+                    button.FlatAppearance.BorderColor = ButtonBorderColor;
                 }
                 else
                 {
