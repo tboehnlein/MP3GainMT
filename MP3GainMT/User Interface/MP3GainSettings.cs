@@ -19,6 +19,7 @@ namespace MP3GainMT
         private static readonly string WidthSizeLabel = "Width Length";
         private static readonly string DoubleClickTableLabel = "Double Click Table";
         private static readonly string ThemeLabel = "Theme";
+        private static readonly string TableFontSizeLabel = "Table Font";
         private JObject _json = null;
 
         public MP3GainSettings()
@@ -83,6 +84,18 @@ namespace MP3GainMT
             set
             {
                 WriteKey<int>(value, PathWidthLabel);
+            }
+        }
+
+        public int TableFontSize
+        {
+            get
+            {
+                return ReadKey<int>(TableFontSizeLabel);
+            }
+            set
+            {
+                WriteKey<int>(value, TableFontSizeLabel);
             }
         }
 
@@ -236,6 +249,7 @@ namespace MP3GainMT
             PrepareKey<string>(ExecutableLabel);
             PrepareKey<string>(DoubleClickTableLabel);
             PrepareKey<string>(ThemeLabel);
+            PrepareKey<int>(TableFontSizeLabel);
 
             if (reader != null)
             {

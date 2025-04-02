@@ -55,6 +55,8 @@ namespace MP3GainMT
         public static Color InstructionBackColor = LightInstructionBackColor;
         public static Color ButtonBorderColor = LightButtonBorderColor;
 
+        public static int TableFontSize = 10;
+
         public static void ApplyTheme(Form form, bool isDarkTheme)
         {
             Color backColor = isDarkTheme ? DarkBackColor : LightBackColor;
@@ -98,7 +100,7 @@ namespace MP3GainMT
                     dataGridView.RowsDefaultCellStyle.ForeColor = foreColor;
                     dataGridView.GridColor = GridColor;
                     dataGridView.BackgroundColor = TableColor;
-                    //dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                    dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", TableFontSize, FontStyle.Regular);
                 }
                 else if (control is Panel panel && panel.Tag.ToString() == "Instruction")
                 {

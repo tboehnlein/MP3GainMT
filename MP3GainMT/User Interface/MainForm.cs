@@ -73,6 +73,11 @@ namespace MP3GainMT
             this.UpdateFileListLabel();
             this.CheckFolderPath();
 
+            //EnableDoubleBuffering();
+
+            // Subscribe to the Scroll event
+            fileGridView.Scroll += FileGridView_Scroll;
+
             ApplyTheme();
         }
 
@@ -321,6 +326,7 @@ namespace MP3GainMT
         private void ColumnTimer_Tick(object sender, EventArgs e)
         {
             this.ResizeAllColumns();
+            this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
 
             this.ColumnTimer.Stop();
         }
@@ -344,6 +350,7 @@ namespace MP3GainMT
             }
 
             ColorTable();
+            this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
         }
 
         private void FileGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -503,6 +510,16 @@ namespace MP3GainMT
             this.orRadioButton.Checked = !this.settings.UseAnd;
             this.doubleClickTableChoice = this.settings.DoubleClickTable;
             this.themeComboBox.Text = this.settings.Theme;
+            this.tableFontSizeNumeric.Value = this.settings.TableFontSize;
+
+            decimal dB = (decimal)this.settings.TargetDb;
+
+            if (dB > this.targetDbNumeric.Maximum || dB < this.targetDbNumeric.Minimum)
+            {
+                dB = 89.0m;
+            }   
+
+            this.targetDbNumeric.Value = dB;
 
             ApplyMP3GainExecutable(this.settings.Executable);
 
@@ -668,6 +685,7 @@ namespace MP3GainMT
         {
             //run.RefreshDataSource(run.FolderFiles(e));
             //SortTable();
+            this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
         }
 
         private void Run_SearchTimeElasped(object sender, TimeSpan e)
@@ -855,6 +873,8 @@ namespace MP3GainMT
             this.settings.Executable = Mp3GainManager.Executable;
             this.settings.DoubleClickTable = this.doubleClickTableChoice;
             this.settings.Theme = this.themeComboBox.Text;
+            this.settings.TargetDb = (double)this.targetDbNumeric.Value;
+            this.settings.TableFontSize = (int)this.tableFontSizeNumeric.Value;
 
             this.settings.ParentFolder = run.ParentFolder;
 
@@ -882,7 +902,23 @@ namespace MP3GainMT
 
         private void ApplyTheme()
         {
+            this.fileGridView.SuspendLayout();
+            ThemeManager.TableFontSize = (int)this.tableFontSizeNumeric.Value;
             ThemeManager.ApplyTheme(this, this.themeComboBox.Text == "Dark");
+            this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
+            this.fileGridView.ResumeLayout();
+        }
+
+        private void TableFontSizeNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            ApplyTheme();            
+        }
+
+        private void EnableDoubleBuffering()
+        {
+            typeof(DataGridView).InvokeMember("DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
+                null, fileGridView, new object[] { true });
         }
     }
 }
