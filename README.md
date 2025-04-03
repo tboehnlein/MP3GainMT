@@ -52,7 +52,7 @@ User Interface Customization:
 + Right-click context menu to do either one
 
 
-Libraries I Use:
+## Libraries I Use
 + BetterFolderBrowser (https://github.com/Willy-Kimura/BetterFolderBrowser)
 + Equin ApplicationFramework BindingListView (https://sourceforge.net/projects/blw/)
 + Newtonsoft JSON (https://www.newtonsoft.com/json)
