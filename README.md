@@ -53,9 +53,9 @@ User Interface Customization:
 
 
 ## Libraries I Use
-+ BetterFolderBrowser (https://github.com/Willy-Kimura/BetterFolderBrowser)
-+ Equin ApplicationFramework BindingListView (https://sourceforge.net/projects/blw/)
-+ Newtonsoft JSON (https://www.newtonsoft.com/json)
-+ NLog (https://nlog-project.org/)
-+ TagLibSharp (https://github.com/mono/taglib-sharp) 
++ BetterFolderBrowser [Website](https://github.com/Willy-Kimura/BetterFolderBrowser) [MIT Lisense](https://github.com/Willy-Kimura/BetterFolderBrowser?tab=MIT-1-ov-file#readme)
++ Equin ApplicationFramework BindingListView [Website](https://github.com/waynebloss/BindingListView) MIT License?
++ Newtonsoft JSON [Website](https://www.newtonsoft.com/json) [MIT License](https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md)
++ NLog [Website](https://nlog-project.org/) [BSD License](https://github.com/NLog/NLog/blob/master/LICENSE.txt)
++ TagLibSharp [Website](https://github.com/mono/taglib-sharp) [LGPL v2.2](https://github.com/mono/taglib-sharp?tab=LGPL-2.1-1-ov-file#readme)
 
