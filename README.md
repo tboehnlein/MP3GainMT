@@ -50,3 +50,12 @@ User Interface Customization:
   + Open MP3 file
   + Open MP3 file's folder
 + Right-click context menu to do either one
+
+
+Libraries I Use:
+BetterFolderBrowser (https://github.com/Willy-Kimura/BetterFolderBrowser)
+Equin ApplicationFramework BindingListView (https://sourceforge.net/projects/blw/)
+Newtonsoft JSON (https://www.newtonsoft.com/json)
+NLog (https://nlog-project.org/)
+TagLibSharp (https://github.com/mono/taglib-sharp) 
+
