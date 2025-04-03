@@ -53,9 +53,9 @@ User Interface Customization:
 
 
 Libraries I Use:
-BetterFolderBrowser (https://github.com/Willy-Kimura/BetterFolderBrowser)
-Equin ApplicationFramework BindingListView (https://sourceforge.net/projects/blw/)
-Newtonsoft JSON (https://www.newtonsoft.com/json)
-NLog (https://nlog-project.org/)
-TagLibSharp (https://github.com/mono/taglib-sharp) 
++ BetterFolderBrowser (https://github.com/Willy-Kimura/BetterFolderBrowser)
++ Equin ApplicationFramework BindingListView (https://sourceforge.net/projects/blw/)
++ Newtonsoft JSON (https://www.newtonsoft.com/json)
++ NLog (https://nlog-project.org/)
++ TagLibSharp (https://github.com/mono/taglib-sharp) 
 
