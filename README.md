@@ -28,7 +28,7 @@ Standard Wortkflow:
 ## Performance
 The whole point of this is to allow you to run MP3gain on multiple folders in parallel.  Huge performance gains can be had here.
 
-I spent an enormous amount of time optimizing this software for extremely large MP3 collections.  It loads tens of thousands of files with ease. No flickering. No slow down.
+I focused on performance from day 1 with this project so it would work well with extremely large MP3 collections. It loads tens of thousands of files with ease. No flickering. No slow down.
 
 If you have a large list of files, there are a lot of filtering and searching options so you can easily see what's going on with your folders without having to scroll through the whole list.
 
