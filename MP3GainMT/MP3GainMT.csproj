@@ -143,7 +143,9 @@
     <None Include="Images\play.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LICENSE.txt" />
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
