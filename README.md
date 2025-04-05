@@ -1,6 +1,6 @@
 # MP3GainMT
 
-This is a multi-threaded front end for MP3Gain aka one of the greatest programs ever written.  The way it is multi-threaded is each folder of files gets a seprate thread to do gain analysis.  So if you have an 8 core CPU, you can process 8 folders at once. I'm assuming your folders are individual albums.
+This is a multi-threaded front end for MP3Gain aka one of the greatest programs ever written.  The way it is multi-threaded is each folder of files gets a separate thread to do gain analysis.  So if you have an 8 core CPU, you can process 8 folders at once. I'm assuming your folders are individual albums.
 
 ## History
 I've been working on this for years. You need Visual Studio 2022 to compile it. You can use Community Edition if you don't own Visual Studio Pro. I'm putting this out here in an incomplete state because I know somebody somewhere would love to use it. Also, hoping it motivate me to track down bugs and finish it.
