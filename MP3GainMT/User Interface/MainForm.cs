@@ -932,6 +932,7 @@ namespace MP3GainMT
             ThemeManager.TableFontSize = (int)this.tableFontSizeNumeric.Value;
             ThemeManager.ApplyTheme(this, this.themeComboBox.Text == "Dark");
             this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
+            this.fileGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
             this.fileGridView.ResumeLayout();
         }
 
