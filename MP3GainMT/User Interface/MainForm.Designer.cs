@@ -31,8 +31,8 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.applyGainButton = new System.Windows.Forms.Button();
@@ -716,22 +716,22 @@ namespace MP3GainMT
             this.fileGridView.AllowDrop = true;
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.fileGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.fileGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.ControlLight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fileGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.ControlLight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fileGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.fileGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.HasGainTags,
@@ -779,6 +779,7 @@ namespace MP3GainMT
             this.HasGainTags.Name = "HasGainTags";
             this.HasGainTags.ReadOnly = true;
             this.HasGainTags.Visible = false;
+            this.HasGainTags.Width = 35;
             // 
             // FullPath
             // 
@@ -800,6 +801,7 @@ namespace MP3GainMT
             this.AlbumColorColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.AlbumColorColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.AlbumColorColumn.Visible = false;
+            this.AlbumColorColumn.Width = 54;
             // 
             // AlbumArtist
             // 
@@ -809,6 +811,7 @@ namespace MP3GainMT
             this.AlbumArtist.Name = "AlbumArtist";
             this.AlbumArtist.ReadOnly = true;
             this.AlbumArtist.Visible = false;
+            this.AlbumArtist.Width = 85;
             // 
             // Updated
             // 
@@ -844,6 +847,7 @@ namespace MP3GainMT
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
             this.Album.Visible = false;
+            this.Album.Width = 59;
             // 
             // Artist
             // 
@@ -853,16 +857,17 @@ namespace MP3GainMT
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
             this.Artist.Visible = false;
+            this.Artist.Width = 53;
             // 
             // Progress
             // 
-            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Progress.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Progress.DataPropertyName = "Progress";
             this.Progress.HeaderText = "%";
             this.Progress.Name = "Progress";
             this.Progress.ReadOnly = true;
             this.Progress.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Progress.Width = 30;
+            this.Progress.Width = 38;
             // 
             // TrackDB
             // 
@@ -886,12 +891,12 @@ namespace MP3GainMT
             // 
             // TrackGain
             // 
-            this.TrackGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.TrackGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.TrackGain.DataPropertyName = "TrackGain";
             this.TrackGain.HeaderText = "Track Gain";
             this.TrackGain.Name = "TrackGain";
             this.TrackGain.ReadOnly = true;
-            this.TrackGain.Width = 50;
+            this.TrackGain.Width = 77;
             // 
             // TrackClip
             // 
@@ -913,12 +918,12 @@ namespace MP3GainMT
             // 
             // AlbumGain
             // 
-            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.AlbumGain.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.AlbumGain.DataPropertyName = "AlbumGain";
             this.AlbumGain.HeaderText = "Album Gain";
             this.AlbumGain.Name = "AlbumGain";
             this.AlbumGain.ReadOnly = true;
-            this.AlbumGain.Width = 50;
+            this.AlbumGain.Width = 77;
             // 
             // AlbumClip
             // 
@@ -1038,6 +1043,15 @@ namespace MP3GainMT
         private Button mp3GainButton;
         private Label mp3GainLabel;
         private ReadOnlyCheckBox readOnlyCheckBox1;
+        private GroupBox userInterfaceGroupBox;
+        private RadioButton openFolderRadioButton;
+        private RadioButton playFileRadioButton;
+        private Label doubleClickRowLabel;
+        private Label label9;
+        private ComboBox themeComboBox;
+        private NumericUpDown tableFontSizeNumeric;
+        private Label tableFontSizeUnitLabel;
+        private Label tableFontSizeLabel;
         private DataGridViewCheckBoxColumn HasGainTags;
         private DataGridViewTextBoxColumn FullPath;
         private DataGridViewCheckBoxColumn AlbumColorColumn;
@@ -1057,15 +1071,6 @@ namespace MP3GainMT
         private DataGridViewCheckBoxColumn AlbumClip;
         private DataGridViewTextBoxColumn NoClipGain;
         private DataGridViewTextBoxColumn ErrorMessage;
-        private GroupBox userInterfaceGroupBox;
-        private RadioButton openFolderRadioButton;
-        private RadioButton playFileRadioButton;
-        private Label doubleClickRowLabel;
-        private Label label9;
-        private ComboBox themeComboBox;
-        private NumericUpDown tableFontSizeNumeric;
-        private Label tableFontSizeUnitLabel;
-        private Label tableFontSizeLabel;
     }
 }
 
