@@ -528,7 +528,15 @@ namespace MP3GainMT
             this.orRadioButton.Checked = !this.settings.UseAnd;
             this.doubleClickTableChoice = this.settings.DoubleClickTable;
             this.themeComboBox.Text = this.settings.Theme;
-            this.tableFontSizeNumeric.Value = this.settings.TableFontSize;
+
+            int fontSize = this.settings.TableFontSize;
+
+            if (fontSize > this.tableFontSizeNumeric.Maximum || fontSize < this.tableFontSizeNumeric.Minimum)
+            {
+                fontSize = 10;
+            }
+
+            this.tableFontSizeNumeric.Value = fontSize;
 
             decimal dB = (decimal)this.settings.TargetDb;
 
