@@ -69,7 +69,7 @@ namespace MP3GainMT
             fileGridView.CellDoubleClick += FileGridView_CellDoubleClick;
             AddTableContextMenu();
 
-            this.ColumnTimer.Interval = 250;
+            this.ColumnTimer.Interval = 150;
             this.ColumnTimer.Tick += ColumnTimer_Tick;
 
             this.coresComboBox.Items.Clear();
@@ -736,6 +736,8 @@ namespace MP3GainMT
             {
                 SearchFolder(this.run.ParentFolder);
             }
+
+            this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
         }
 
         private bool SearchFilePath(MP3GainRow row, string searchText, bool useAnd)
@@ -864,6 +866,7 @@ namespace MP3GainMT
 
             ResizeAllColumns();
             ColorTable();
+            this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
         }
 
         private void UpdateFileListLabel()
