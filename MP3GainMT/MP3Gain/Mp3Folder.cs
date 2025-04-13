@@ -193,8 +193,18 @@ namespace MP3GainMT.MP3Gain
                 {
                     var items = e.Data.Split('%');
                     var percentItems = items[0].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    var index = Convert.ToInt32(percentItems[0].Split('/')[0].Substring(1)) - 1;
-                    var percent = Convert.ToInt32(percentItems[1]);
+                    var index = 0;
+                    var percent = 0;
+
+                    if (percentItems[0].Contains('/'))
+                    {
+                        index = Convert.ToInt32(percentItems[0].Split('/')[0].Substring(1)) - 1;
+                        percent = Convert.ToInt32(percentItems[1]);
+                    }
+                    else
+                    {
+                        percent = Convert.ToInt32(percentItems[0]);
+                    }
 
                     if (this.activeFile.FilePath != this.Files[this.fileLookUp[this.sortedFiles[index]]].FilePath)
                     {
