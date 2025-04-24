@@ -84,7 +84,7 @@ namespace MP3GainMT
                 return success;
             }
 
-            string randomFilePath = Path.Combine(fileLookUp.Values.First(), Helpers.BackupRandomFileName);
+            string randomFilePath = Path.Combine(Path.GetDirectoryName(fileLookUp.Values.First()), Helpers.BackupRandomFileName);
 
             foreach (var renameFile in fileLookUp)
             {
