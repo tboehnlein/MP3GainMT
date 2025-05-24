@@ -32,10 +32,15 @@ namespace MP3GainMT.MP3Gain
         protected TimeCheck progressTimeCheck = new TimeCheck(5);
         private Dictionary<string, string> fileLookUp;
         protected List<string> sortedFiles = new List<string>();
+        private readonly Helpers.IFileRenamer _fileRenamer;
+        private readonly Func<Interfaces.IProcess> _processFactory; // Added IProcess factory
+        protected Interfaces.IProcess Process { get; set; } // Changed type to IProcess
 
         public ExecuteMp3GainAsync(string executable,
                               string arguments,
                               Dictionary<string, Mp3File> files,
+                              Helpers.IFileRenamer fileRenamer,
+                              Func<Interfaces.IProcess> processFactory, // Added IProcess factory param
                               string folder,
                               string actionName,
                               BackgroundWorker worker,
@@ -50,6 +55,8 @@ namespace MP3GainMT.MP3Gain
             this.Worker = worker;
             this.FilePrefix = fileOutputPrefix;
             this.EndingText = endingOutputText;
+            this._fileRenamer = fileRenamer ?? throw new ArgumentNullException(nameof(fileRenamer));
+            this._processFactory = processFactory ?? throw new ArgumentNullException(nameof(processFactory)); // Store IProcess factory
         }
 
         public string ActionName { get; set; } = string.Empty;
@@ -57,9 +64,9 @@ namespace MP3GainMT.MP3Gain
         public string EndingText { get; private set; }
         public string Executable { get; set; }
         public Dictionary<string, Mp3File> Files { get; set; } = new Dictionary<string, Mp3File>();
-        public string FolderName => Path.GetDirectoryName(FolderPath);
+        public string FolderName => Path.GetDirectoryName(FolderPath); // Should be Path.GetFileName
         public string FolderPath { get; set; } = string.Empty;
-        public Process Process { get; set; }
+        // Process property is now above, typed as IProcess
         public BackgroundWorker Worker { get; private set; }
         protected string FilePrefix { get; set; } = string.Empty;
 
@@ -73,12 +80,13 @@ namespace MP3GainMT.MP3Gain
             this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
             sortedFiles.Sort();
 
-            bool renameSuccess = Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
+            // Use injected _fileRenamer
+            bool renameSuccess = _fileRenamer.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
 
             if (!renameSuccess)
             {
-                Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
-
+                // Attempt to undo with _fileRenamer if initial rename failed partway
+                _fileRenamer.UndoRandomlyRenameFiles(this.fileLookUp);
                 return;
             }
 
@@ -91,9 +99,10 @@ namespace MP3GainMT.MP3Gain
             processStart.RedirectStandardError = true;
             processStart.CreateNoWindow = true;
 
-            this.Process = new Process();
-
+            this.Process = _processFactory(); // Use the factory
             this.Process.StartInfo = processStart;
+            // EnableRaisingEvents should be true to receive events
+            this.Process.EnableRaisingEvents = true; 
 
             this.Process.OutputDataReceived += Process_OutputDataReceived;
             this.Process.ErrorDataReceived += Process_ErrorDataReceived;
@@ -113,7 +122,8 @@ namespace MP3GainMT.MP3Gain
             this.Process.OutputDataReceived -= Process_OutputDataReceived;
             this.Process.ErrorDataReceived -= Process_ErrorDataReceived;
             
-            Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
+            // Use injected _fileRenamer
+            _fileRenamer.UndoRandomlyRenameFiles(this.fileLookUp);
 
             //Debug.WriteLine($"FINISHED {this.ActionName} FOR {this.FolderName}");
         }

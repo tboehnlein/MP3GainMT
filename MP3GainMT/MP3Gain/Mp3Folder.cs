@@ -35,6 +35,23 @@ namespace MP3GainMT.MP3Gain
     /// </summary>
     public class Mp3Folder
     {
+        // Delegate for the ExecuteMp3GainAsync factory
+        public delegate ExecuteMp3GainAsync ExecuteMp3GainAsyncFactory(
+            string executable,
+            string arguments,
+            Dictionary<string, Mp3File> files,
+            Helpers.IFileRenamer fileRenamer,
+            Func<Interfaces.IProcess> processFactory, // Added IProcess factory
+            string folderPath,
+            string action,
+            BackgroundWorker worker,
+            string successMessage,
+            string errorMessage);
+
+        private readonly ExecuteMp3GainAsyncFactory _executeMp3GainAsyncFactory;
+        private readonly Helpers.IFileRenamer _fileRenamer;
+        private readonly Func<Interfaces.IProcess> _processFactory; // Store the process factory
+
         private static DateTime lastWrite = DateTime.Now;
         private Mp3File activeFile;
         private List<string> sortedFiles;
@@ -49,9 +66,27 @@ namespace MP3GainMT.MP3Gain
         /// </summary>
         /// <param name="path">The path to the folder containing MP3 files.</param>
         public Mp3Folder(string path)
+            : this(path,
+                  (exec, args, fls, renamer, procFactory, pth, act, wrkr, succMsg, errMsg) => // Updated factory signature
+                        new ExecuteMp3GainAsync(exec, args, fls, renamer, procFactory, pth, act, wrkr, succMsg, errMsg),
+                  new Helpers.FileRenamer(),
+                  () => new Wrappers.ProcessWrapper()) // Provide default Process factory
+        {
+        }
+
+        // Internal constructor for testing with injected factory, renamer, and process factory
+        internal Mp3Folder(string path, 
+                           ExecuteMp3GainAsyncFactory executeAsyncFactory, 
+                           Helpers.IFileRenamer fileRenamer,
+                           Func<Interfaces.IProcess> processFactory)
         {
             this.FolderPath = path;
             this.FolderName = Path.GetFileName(path);
+            this._executeMp3GainAsyncFactory = executeAsyncFactory ?? throw new ArgumentNullException(nameof(executeAsyncFactory));
+            this._fileRenamer = fileRenamer ?? throw new ArgumentNullException(nameof(fileRenamer));
+            this._processFactory = processFactory ?? throw new ArgumentNullException(nameof(processFactory)); // Store IProcess factory
+            // Initialize other members like Files if they are not initialized by default
+            this.Files = this.Files ?? new Dictionary<string, Mp3File>();
         }
 
         /// <summary>
@@ -244,9 +279,11 @@ namespace MP3GainMT.MP3Gain
         /// </summary>
         private void ExecuteApplyGain(string executable)
         {
-            this.ApplyGainExecution = new ExecuteMp3GainAsync(executable,
+            this.ApplyGainExecution = _executeMp3GainAsyncFactory(executable,
                                                         $"/o /g {this.SuggestedGain}",
                                                         this.Files,
+                                                        this._fileRenamer,
+                                                        this._processFactory, // Pass IProcess factory
                                                         this.FolderPath,
                                                         "APPLY GAIN",
                                                         this.worker,
@@ -278,9 +315,11 @@ namespace MP3GainMT.MP3Gain
         {
             RecordUndoSuggestedTag();
 
-            this.UndoGainExecution = new ExecuteMp3GainAsync(executable,
+            this.UndoGainExecution = _executeMp3GainAsyncFactory(executable,
                                                         "/u",
                                                         this.Files,
+                                                        this._fileRenamer,
+                                                        this._processFactory, // Pass IProcess factory
                                                         this.FolderPath,
                                                         "UNDO GAIN",
                                                         this.worker,
@@ -520,11 +559,11 @@ namespace MP3GainMT.MP3Gain
 
             this.fileLookUp = new Dictionary<string, string>();
 
-            bool renameSuccess = Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
+            bool renameSuccess = this._fileRenamer.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
 
             if (!renameSuccess)
             {
-                Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
+                this._fileRenamer.UndoRandomlyRenameFiles(this.fileLookUp);
 
                 return;
             }
@@ -543,7 +582,7 @@ namespace MP3GainMT.MP3Gain
             analysisProcess.OutputDataReceived -= AnalysisProcess_OutputDataReceived;
             analysisProcess.ErrorDataReceived -= AnalysisProcess_ErrorDataReceived;
 
-            Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
+            this._fileRenamer.UndoRandomlyRenameFiles(this.fileLookUp);
         }
 
         /// <summary>

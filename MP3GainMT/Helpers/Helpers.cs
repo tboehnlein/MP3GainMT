@@ -27,7 +27,7 @@ namespace MP3GainMT
 {
     public static class Helpers
     {
-        public static string BackupRandomFileName { get; private set; } = "random_file.txt";
+        // public static string BackupRandomFileName { get; private set; } = "random_file.txt"; // Moved to FileRenamer
         public static readonly string PlayFileChoice = "Play File";
         public static readonly string OpenFolderChoice = "Open Folder";
 
@@ -75,6 +75,7 @@ namespace MP3GainMT
             label.Refresh();
         }
 
+        [Obsolete("Use an instance of the FileRenamer class instead.")]
         public static bool UndoRandomlyRenameFiles(Dictionary<string, string> fileLookUp)
         {
             bool success = true;
@@ -180,6 +181,7 @@ namespace MP3GainMT
             return success;
         }
 
+        [Obsolete("Use an instance of the FileRenamer class instead.")]
         public static bool RandomlyRenameFiles(Dictionary<string, string> fileLookUp, List<string> originalFiles)
         {
             bool success = true;

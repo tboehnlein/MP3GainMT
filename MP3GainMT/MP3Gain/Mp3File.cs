@@ -47,9 +47,19 @@ namespace MP3GainMT.MP3Gain
         public double ReplayAlbumPeak = 0.0;
         public double ReplayTrackGain = 0.0;
         public double ReplayTrackPeak = 0.0;
-        public Mp3File(string file)
+
+        // Factory for creating TagLib.File instances, allowing for mocking
+        private readonly Func<string, TagLib.File> _fileCreator;
+
+        public Mp3File(string file) : this(file, TagLib.File.Create)
+        {
+        }
+
+        // Constructor for dependency injection (testing)
+        public Mp3File(string file, Func<string, TagLib.File> fileCreator)
         {
             this.FilePath = file;
+            this._fileCreator = fileCreator ?? throw new ArgumentNullException(nameof(fileCreator));
             this.Progress = 0;
             this.FileName = Path.GetFileName(this.FilePath);
             this.FolderPath = Path.GetDirectoryName(this.FilePath);
@@ -215,7 +225,7 @@ namespace MP3GainMT.MP3Gain
 
                 try
                 {
-                    var tagFile = TagLib.File.Create(this.FilePath);
+                    var tagFile = this._fileCreator(this.FilePath); // Use the factory
                     if (tagFile.Tag.Performers.Length > 0) { this.Artist = tagFile.Tag.Performers[0]; }
                     var types = tagFile.TagTypes;
                     var apeTags = tagFile.GetTag(TagTypes.Ape);

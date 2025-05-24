@@ -1,0 +1,51 @@
+name: .NET Build and Test
+
+on:
+  push:
+    branches: [ master, main ] # Adjust if your main branch has a different name
+  pull_request:
+    branches: [ master, main ] # Adjust accordingly
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest # .NET Framework projects are best built on Windows
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x' # Install .NET SDK 6 (which includes MSBuild for .NET Framework)
+                                # And can build .NET Framework projects if targeting packs are present or restored.
+
+    # Attempt to install .NET Framework 4.8.1 Developer Pack (Targeting Pack)
+    # This is often necessary for building .NET Framework projects with newer SDKs.
+    - name: Install .NET Framework 4.8.1 Developer Pack
+      shell: pwsh
+      run: |
+        Invoke-WebRequest -Uri "https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net481-developer-pack-offline-installer" -OutFile "net481-devpack.exe"
+        Start-Process -FilePath "net481-devpack.exe" -ArgumentList "/q", "/norestart" -Wait -PassThru
+        if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 3010) { # 3010 is success, restart required
+            Write-Error ".NET Framework 4.8.1 Developer Pack installation failed with exit code $LASTEXITCODE"
+            exit $LASTEXITCODE
+        }
+        Write-Host ".NET Framework 4.8.1 Developer Pack installed or already present."
+
+    - name: Restore dependencies
+      run: dotnet restore MP3GainMT.sln
+
+    - name: Build solution
+      run: dotnet build MP3GainMT.sln --configuration Release --no-restore
+
+    - name: Run tests
+      run: dotnet test MP3GainMT.sln --configuration Release --no-build --no-restore --logger "trx;LogFileName=test-results.trx"
+
+    - name: Upload test results
+      if: always() # Always run this step to upload results even if tests fail
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: '**/*.trx' # Path to the test results file (trx logger creates it in test project's TestResults dir)
+        retention-days: 7
