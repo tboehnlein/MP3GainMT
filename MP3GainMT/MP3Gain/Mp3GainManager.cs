@@ -520,7 +520,6 @@ namespace MP3GainMT.MP3Gain
 
             foreach (var folder in folders)
             {
-                Helper.UndoFileRenamesFromTextFile(folder);
 
                 var mp3Folder = new Mp3Folder(folder);
 
