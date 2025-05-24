@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using MP3GainMT.Interfaces;
 
 namespace MP3GainMT.MP3Gain
 {
@@ -36,6 +37,8 @@ namespace MP3GainMT.MP3Gain
                                   // Added for base constructor requirements
                                   Helpers.IFileRenamer fileRenamer, 
                                   Func<Interfaces.IProcess> processFactory
+// Add the missing using directive for the 'Interfaces' namespace
+
                                  ) : base(executable,
                                           arguments,
                                           files,

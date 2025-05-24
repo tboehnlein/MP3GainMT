@@ -18,6 +18,7 @@
 
 using MP3GainMT.MP3Gain;
 using System;
+using MP3GainMT.Helpers;
 
 namespace MP3GainMT
 {
@@ -149,7 +150,7 @@ namespace MP3GainMT
         /// <summary>
         /// Error messages associated with the MP3 file.
         /// </summary>
-        public string ErrorMessage => $"{this.file.ErrorMessages.AsSingleLine()}";
+        public string ErrorMessage => $"{Helper.AsSingleLine(this.file.ErrorMessages)}";
 
         /// <summary>
         /// Has the file been updated?

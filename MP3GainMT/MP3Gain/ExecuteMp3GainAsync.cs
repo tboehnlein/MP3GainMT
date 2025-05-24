@@ -33,7 +33,7 @@ namespace MP3GainMT.MP3Gain
         private Dictionary<string, string> fileLookUp;
         protected List<string> sortedFiles = new List<string>();
         private readonly Helpers.IFileRenamer _fileRenamer;
-        private readonly Func<Interfaces.IProcess> _processFactory; // Added IProcess factory
+        protected readonly Func<Interfaces.IProcess> _processFactory; // Added IProcess factory
         protected Interfaces.IProcess Process { get; set; } // Changed type to IProcess
 
         public ExecuteMp3GainAsync(string executable,

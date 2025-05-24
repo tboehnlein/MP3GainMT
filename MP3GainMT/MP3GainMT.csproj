@@ -78,6 +78,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factories\BackgroundWorkerFactory.cs" />
+    <Compile Include="Factories\Mp3FolderFactory.cs" />
+    <Compile Include="Helpers\FileRenamer.cs" />
+    <Compile Include="Helpers\Helper.cs" />
+    <Compile Include="Helpers\IFileRenamer.cs" />
+    <Compile Include="Interfaces\IBackgroundWorker.cs" />
+    <Compile Include="Interfaces\IBackgroundWorkerFactory.cs" />
+    <Compile Include="Interfaces\IMp3FolderFactory.cs" />
+    <Compile Include="Interfaces\IProcess.cs" />
     <Compile Include="MP3Gain\ExecuteMp3GainAsync.cs" />
     <Compile Include="Helpers\FileProgress.cs" />
     <Compile Include="Helpers\FolderWorker.cs" />
@@ -91,7 +100,6 @@
     <Compile Include="User Interface\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="MP3Gain\Mp3File.cs" />
     <Compile Include="MP3Gain\Mp3Folder.cs" />
     <Compile Include="User Interface\MP3GainRow.cs" />
@@ -105,6 +113,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="User Interface\ThemeManager.cs" />
+    <Compile Include="Wrappers\BackgroundWorkerWrapper.cs" />
+    <Compile Include="Wrappers\ProcessWrapper.cs" />
     <EmbeddedResource Include="User Interface\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -118,6 +128,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="Images\context_menu.xcf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

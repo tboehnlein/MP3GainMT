@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using MP3GainMT.Helpers;
 
 namespace MP3GainMT.MP3Gain
 {
@@ -460,7 +461,7 @@ namespace MP3GainMT.MP3Gain
 
                 this.RaiseFolderFinished(this, folder);
 
-                this.RunProgress = Helpers.GetProgress(this.finished.Count, this.Folders.Count);
+                this.RunProgress = Helper.GetProgress(this.finished.Count, this.Folders.Count);
                 this.RaiseTaskProgressed(GetRunProgress(0));
 
                 RunNextFolder();
@@ -513,7 +514,7 @@ namespace MP3GainMT.MP3Gain
 
             foreach (var folder in folders)
             {
-                Helpers.UndoFileRenamesFromTextFile(folder);
+                Helper.UndoFileRenamesFromTextFile(folder);
 
                 var mp3Folder = new Mp3Folder(folder);
 
@@ -528,7 +529,7 @@ namespace MP3GainMT.MP3Gain
                         this.Folders.Add(folder, mp3Folder);
                         addedFilesCount += mp3Folder.MP3Files.Count;
 
-                        var progress = Helpers.GetProgress(addedFilesCount, newFilesCount);
+                        var progress = Helper.GetProgress(addedFilesCount, newFilesCount);
                         searchWorker.ReportProgress(progress, mp3Folder);
 
                         if (searchWorker.CancellationPending)
@@ -741,7 +742,7 @@ namespace MP3GainMT.MP3Gain
                     {
                         file.ExtractTags();
                         file.SourceIndex = this.filesDone;
-                        var progress = Helpers.GetProgress(this.filesDone, totalFiles);
+                        var progress = Helper.GetProgress(this.filesDone, totalFiles);
                         worker.ReportProgress(progress, file);
                         this.filesDone++;
 

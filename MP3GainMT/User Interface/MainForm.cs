@@ -27,6 +27,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using WK.Libraries.BetterFolderBrowserNS;
+using MP3GainMT.Helpers;
 
 namespace MP3GainMT
 {
@@ -38,7 +39,7 @@ namespace MP3GainMT
         private Mp3GainManager run;
         private MP3GainSettings settings;
         private BindingSource source;
-        private string doubleClickTableChoice = Helpers.OpenFolderChoice;
+        private string doubleClickTableChoice = Helper.OpenFolderChoice;
 
         public MainForm()
         {
@@ -174,7 +175,7 @@ namespace MP3GainMT
             {
                 this.ContextMenuRowIndex = e.RowIndex;
 
-                if (this.doubleClickTableChoice == Helpers.OpenFolderChoice)
+                if (this.doubleClickTableChoice == Helper.OpenFolderChoice)
                 {
                     OpenMP3FolderFromTable();
                 }
@@ -566,7 +567,7 @@ namespace MP3GainMT
 
             this.fileGridView.Columns["FullPath"].Width = this.settings.PathWidth;
 
-            if (this.doubleClickTableChoice == Helpers.PlayFileChoice)
+            if (this.doubleClickTableChoice == Helper.PlayFileChoice)
             {
                 this.playFileRadioButton.Checked = true;
             }
@@ -833,7 +834,7 @@ namespace MP3GainMT
 
         private void TickActivityLabel()
         {
-            Helpers.UpdateProgressTick(this.SearchingActivity, this.activityLabel, 3);
+            Helper.UpdateProgressTick(this.SearchingActivity, this.activityLabel, 3);
         }
 
         private void UndoButton_Click(object sender, EventArgs e)
@@ -914,11 +915,11 @@ namespace MP3GainMT
         {
             if (this.playFileRadioButton.Checked)
             {
-                this.doubleClickTableChoice = Helpers.PlayFileChoice;
+                this.doubleClickTableChoice = Helper.PlayFileChoice;
             }
             else
             {
-                this.doubleClickTableChoice = Helpers.OpenFolderChoice;
+                this.doubleClickTableChoice = Helper.OpenFolderChoice;
             }
         }
 
