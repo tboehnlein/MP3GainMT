@@ -26,6 +26,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using MP3GainMT.Helpers;
+using MP3GainMT.Interfaces;
+using MP3GainMT.Wrappers;
 
 namespace MP3GainMT.MP3Gain
 {
@@ -443,13 +445,17 @@ namespace MP3GainMT.MP3Gain
 
                 this.finished.Add(folder);
 
+                var fileRenamer = new FileRenamer();
+                Func<MP3GainMT.Interfaces.IProcess> processFactory = () => new MP3GainMT.Wrappers.ProcessWrapper();
                 var execute = new ExecuteMp3GainSync(Executable,
                                                  $"/o /s c",
                                                  folder.Files,
                                                  folder.FolderPath,
                                                  "GET MAX GAIN",
                                                  "Calculating Max Gain",
-                                                 "done");
+                                                 "done",
+                                                 fileRenamer,
+                                                 processFactory);
 
                 execute.Execute();
 
@@ -580,13 +586,17 @@ namespace MP3GainMT.MP3Gain
         {
             if (e.Result is Mp3Folder folder)
             {
+                var fileRenamer = new FileRenamer();
+                Func<MP3GainMT.Interfaces.IProcess> processFactory = () => new MP3GainMT.Wrappers.ProcessWrapper();
                 var execute = new ExecuteMp3GainSync(Executable,
                                                      $"/o /s c",
                                                      folder.Files,
                                                      folder.FolderPath,
                                                      "GET MAX GAIN",
                                                      "Calculating Max Gain",
-                                                     "done");
+                                                     "done",
+                                                     fileRenamer,
+                                                     processFactory);
 
                 execute.Execute();
 
@@ -728,13 +738,17 @@ namespace MP3GainMT.MP3Gain
                 foreach (var folder in folders)
                 {
 
+                    var fileRenamer = new FileRenamer();
+                    Func<MP3GainMT.Interfaces.IProcess> processFactory = () => new MP3GainMT.Wrappers.ProcessWrapper();
                     var execute = new ExecuteMp3GainSync(Executable,
                                                      $"/o /s c",
                                                      folder.Files,
                                                      folder.FolderPath,
                                                      "GET MAX GAIN",
                                                      "Calculating Max Gain",
-                                                     "done");
+                                                     "done",
+                                                     fileRenamer,
+                                                     processFactory);
 
                     execute.Execute();
 
