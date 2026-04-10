@@ -6,7 +6,7 @@ This is a multi-threaded front end for MP3Gain aka one of the greatest programs 
 I've been working on this for years. You need Visual Studio 2022 to compile it. You can use Community Edition if you don't own Visual Studio Pro. I'm putting this out here in an incomplete state because I know somebody somewhere would love to use it. Also, hoping it motivate me to track down bugs and finish it.
 
 ## Warning
-It still has a lot of bugs regarding doing any value besides 89.0 target dB. Still trying to figure that out. Undoing an analysis is also wonky.
+It still has a lot of bugs to figure out doing anything but the simple default. I did fix some bugs so you can do values besides 89.0 dB now
 
 This is nowhere near feature complete compared to MP3Gain. Tons of stuff has yet to be implemented. If you are doing more than the basics, go back to the original program.
 
