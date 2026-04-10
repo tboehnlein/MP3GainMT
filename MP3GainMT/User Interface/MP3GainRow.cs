@@ -96,7 +96,7 @@ namespace MP3GainMT
         /// <summary>
         /// The MP3 files's track volumn in decibels relative to the target decibels.
         /// </summary>
-        public double TrackDB => Math.Round(TargetDB - this.file.ReplayTrackGain, 1);
+        public double TrackDB => Math.Round(TargetDefault - this.file.ReplayTrackGain, 1);
 
         /// <summary>
         /// Is that track clipping in it's current volume state?
@@ -116,7 +116,7 @@ namespace MP3GainMT
         /// <summary>
         /// The MP3 files's album volumn in decibels relative to the target decibels.
         /// </summary>
-        public double AlbumDB => Math.Round(TargetDB - this.file.ReplayAlbumGain, 1);
+        public double AlbumDB => Math.Round(TargetDefault - this.file.ReplayAlbumGain, 1);
 
         /// <summary>
         /// Difference between the album's gain and the target's volume in decibels.
@@ -165,11 +165,6 @@ namespace MP3GainMT
                 this.file.Updated = value;
             }
         }
-
-        /// <summary>
-        /// Difference between the default volume and the target volume.
-        /// </summary>
-        private static double TargetDifference => MP3GainRow.TargetDefault - MP3GainRow.TargetDB;
 
         /// <summary>
         /// Checks ot see if two MP3GainRow objects are equal.
