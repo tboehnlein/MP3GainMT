@@ -119,7 +119,7 @@ namespace MP3GainMT.MP3Gain
             {
                 if (this.Files.Count == 0)
                 {
-                    return this.suggestedGain;
+                    return Convert.ToInt32(Math.Round((this.DBOffset - MP3GainRow.TargetDiffDB) / Mp3File.FiveLog10Two));
                 }
 
                 var first = this.Files.First().Value;
@@ -127,6 +127,10 @@ namespace MP3GainMT.MP3Gain
                 if (first.HasTags)
                 {
                     this.suggestedGain = first.SuggestedAlbumGain;
+                }
+                else
+                {
+                    this.suggestedGain = Convert.ToInt32(Math.Round((this.DBOffset - MP3GainRow.TargetDiffDB) / Mp3File.FiveLog10Two));
                 }
 
                 return this.suggestedGain;

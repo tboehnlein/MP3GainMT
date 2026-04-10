@@ -137,7 +137,7 @@ namespace MP3GainMT.MP3Gain
 
         public int SourceIndex { get; internal set; }
 
-        public int SuggestedAlbumGain => Convert.ToInt32(Math.Round(ReplayAlbumGain / FiveLog10Two));
+        public int SuggestedAlbumGain => Convert.ToInt32(Math.Round((ReplayAlbumGain - MP3GainRow.TargetDiffDB) / FiveLog10Two));
 
         public double SuggestedGain { get; set; } = 0;
 
