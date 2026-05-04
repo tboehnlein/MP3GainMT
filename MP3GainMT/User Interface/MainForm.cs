@@ -520,10 +520,11 @@ namespace MP3GainMT
 
         private void ReadSettings(Mp3GainManager run)
         {
-            this.Left = this.settings.LeftPosition;
-            this.Top = this.settings.TopPosition;
             this.Height = this.settings.HeightSize;
             this.Width = this.settings.WidthSize;
+
+            RestoreWindowPosition();
+
             this.andRadioButton.Checked = this.settings.UseAnd;
             this.orRadioButton.Checked = !this.settings.UseAnd;
             this.doubleClickTableChoice = this.settings.DoubleClickTable;
@@ -574,6 +575,39 @@ namespace MP3GainMT
             {
                 this.openFolderRadioButton.Checked = true;
             }
+        }
+
+        private void RestoreWindowPosition()
+        {
+            Rectangle windowRect = new Rectangle(this.settings.LeftPosition, this.settings.TopPosition, this.Width, this.Height);
+            bool isVisible = false;
+            Screen currentScreen = Screen.PrimaryScreen;
+
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                Rectangle intersection = Rectangle.Intersect(screen.WorkingArea, windowRect);
+                if (intersection.Width > 10 && intersection.Height > 10)
+                {
+                    isVisible = true;
+                    currentScreen = screen;
+                    break;
+                }
+            }
+
+            if (isVisible)
+            {
+                this.Left = this.settings.LeftPosition;
+                this.Top = this.settings.TopPosition;
+            }
+            else
+            {
+                currentScreen = Screen.PrimaryScreen;
+                this.Left = Math.Max(currentScreen.WorkingArea.Left, currentScreen.WorkingArea.Left + (currentScreen.WorkingArea.Width - this.Width) / 2);
+                this.Top = Math.Max(currentScreen.WorkingArea.Top, currentScreen.WorkingArea.Top + (currentScreen.WorkingArea.Height - this.Height) / 2);
+            }
+
+            this.Width = Math.Max(this.MinimumSize.Width, Math.Min(this.Width, currentScreen.WorkingArea.Width));
+            this.Height = Math.Max(this.MinimumSize.Height, Math.Min(this.Height, currentScreen.WorkingArea.Height));
         }
 
         private void ReadTagsButton_Click(object sender, EventArgs e)
