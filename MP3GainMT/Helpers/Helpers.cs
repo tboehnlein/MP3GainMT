@@ -31,6 +31,38 @@ namespace MP3GainMT
         public static readonly string PlayFileChoice = "Play File";
         public static readonly string OpenFolderChoice = "Open Folder";
 
+        private static readonly object _activeFoldersLock = new object();
+        private static readonly HashSet<string> _activeFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        public static void AddActiveFolder(string folderPath)
+        {
+            lock (_activeFoldersLock)
+            {
+                _activeFolders.Add(folderPath);
+            }
+        }
+
+        public static void RemoveActiveFolder(string folderPath)
+        {
+            lock (_activeFoldersLock)
+            {
+                _activeFolders.Remove(folderPath);
+            }
+        }
+
+        public static void UndoAllActiveRenames()
+        {
+            List<string> foldersToUndo;
+            lock (_activeFoldersLock)
+            {
+                foldersToUndo = _activeFolders.ToList();
+            }
+            foreach (var folder in foldersToUndo)
+            {
+                UndoFileRenamesFromTextFile(folder);
+            }
+        }
+
         public static string AsSingleLine(this List<string> list)
         {
             var line = string.Empty;
@@ -84,7 +116,8 @@ namespace MP3GainMT
                 return success;
             }
 
-            string randomFilePath = Path.Combine(Path.GetDirectoryName(fileLookUp.Values.First()), Helpers.BackupRandomFileName);
+            string folderPath = Path.GetDirectoryName(fileLookUp.Values.First());
+            string randomFilePath = Path.Combine(folderPath, Helpers.BackupRandomFileName);
 
             foreach (var renameFile in fileLookUp)
             {
@@ -123,6 +156,7 @@ namespace MP3GainMT
                 {
                     File.Delete(randomFilePath);
                 }
+                RemoveActiveFolder(folderPath);
             }
 
             return success;
@@ -174,6 +208,7 @@ namespace MP3GainMT
                 if (success)
                 {
                     File.Delete(randomTextFilePath);
+                    RemoveActiveFolder(folderPath);
                 }
             }
 
@@ -191,7 +226,10 @@ namespace MP3GainMT
 
             Random random = new Random();
 
-            string fullRandomPath = Path.Combine(Path.GetDirectoryName(originalFiles[0]), BackupRandomFileName);
+            string folderPath = Path.GetDirectoryName(originalFiles[0]);
+            string fullRandomPath = Path.Combine(folderPath, BackupRandomFileName);
+
+            AddActiveFolder(folderPath);
 
             using (StreamWriter writer = new StreamWriter(fullRandomPath))
             {

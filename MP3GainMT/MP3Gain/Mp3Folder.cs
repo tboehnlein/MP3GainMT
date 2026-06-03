@@ -322,6 +322,8 @@ namespace MP3GainMT.MP3Gain
         /// </summary>
         private void FindFiles(string folderPath)
         {
+            Helpers.UndoFileRenamesFromTextFile(folderPath);
+
             var files = Directory.GetFiles(folderPath, "*.mp3", SearchOption.TopDirectoryOnly);
 
             foreach (var file in files)

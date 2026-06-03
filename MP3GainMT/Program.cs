@@ -18,6 +18,7 @@
 
 using System;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace MP3GainMT
 {
@@ -29,11 +30,36 @@ namespace MP3GainMT
         [STAThread]
         private static void Main()
         {
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
 
             // new comment
+        }
+
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Helpers.UndoAllActiveRenames();
+            Environment.Exit(1);
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Helpers.UndoAllActiveRenames();
+            if (e.IsTerminating)
+            {
+                Environment.Exit(1);
+            }
+        }
+
+        private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            Helpers.UndoAllActiveRenames();
         }
     }
 }
