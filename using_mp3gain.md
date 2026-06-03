@@ -1,3 +1,36 @@
+# MP3Gain Command Line Parameters Used in MP3GainMT
+
+This document outlines the specific command-line parameters that MP3GainMT passes to `mp3gain.exe` across different operations.
+
+## 1. Analysis
+**Operation:** `ExecuteAnalyzeGain`
+**Parameters Used:** None (only the target files are passed)
+**Example:** `mp3gain.exe "C:\Path\To\Folder\*.mp3"`
+**Purpose:** Analyzes the target MP3 files to calculate their current volume levels and determine the necessary gain adjustments. 
+
+## 2. Applying Gain
+**Operation:** `ExecuteApplyGain`
+**Parameters Used:** `/o /g <SuggestedGain>`
+**Example:** `mp3gain.exe /o /g 3.0 "C:\Path\To\Folder\*.mp3"`
+**Purpose:** Applies a specific volume gain adjustment to the files.
+- `/o`: Outputs data in a database-friendly, tab-delimited list format (making it easier for the C# code to parse the standard output).
+- `/g <SuggestedGain>`: Applies the specified gain change (e.g., `3.0` or `-1.5`).
+
+## 3. Undoing Gain Changes
+**Operation:** `ExecuteUndoGain`
+**Parameters Used:** `/u`
+**Example:** `mp3gain.exe /u "C:\Path\To\Folder\*.mp3"`
+**Purpose:** Undoes previous MP3Gain changes.
+- `/u`: Removes the gain tag information and restores the original audio data based on the stored undo information.
+
+## 4. Checking Existing Tags (Calculating Max Gain)
+**Operation:** `ExecuteMp3GainSync` (Used during "GET MAX GAIN" process)
+**Parameters Used:** `/o /s c`
+**Example:** `mp3gain.exe /o /s c "C:\Path\To\Folder\*.mp3"`
+**Purpose:** Quickly checks the files for existing gain tags without performing a full audio analysis.
+- `/o`: Outputs data in a database-friendly list format.
+- `/s c`: Check stored tag info (reads existing ReplayGain/MP3Gain tags to get current volume and undo data, bypassing audio processing).
+
 # MP3Gain / AACGain Command Line Usage
 
 ```text
