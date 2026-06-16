@@ -31,8 +31,8 @@ namespace MP3GainMT
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.applyGainButton = new System.Windows.Forms.Button();
@@ -185,7 +185,7 @@ namespace MP3GainMT
             this.clearButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.clearButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.clearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearButton.Location = new System.Drawing.Point(975, 57);
+            this.clearButton.Location = new System.Drawing.Point(1110, 57);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(76, 24);
             this.clearButton.TabIndex = 7;
@@ -199,7 +199,7 @@ namespace MP3GainMT
             this.searchButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.searchButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.searchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.searchButton.Location = new System.Drawing.Point(882, 57);
+            this.searchButton.Location = new System.Drawing.Point(876, 57);
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(87, 24);
             this.searchButton.TabIndex = 3;
@@ -223,7 +223,7 @@ namespace MP3GainMT
             this.readTagsButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.readTagsButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.readTagsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.readTagsButton.Location = new System.Drawing.Point(1057, 57);
+            this.readTagsButton.Location = new System.Drawing.Point(1192, 57);
             this.readTagsButton.Name = "readTagsButton";
             this.readTagsButton.Size = new System.Drawing.Size(87, 24);
             this.readTagsButton.TabIndex = 4;
@@ -313,7 +313,7 @@ namespace MP3GainMT
             0,
             0,
             65536});
-            this.targetDbNumeric.Location = new System.Drawing.Point(1167, 59);
+            this.targetDbNumeric.Location = new System.Drawing.Point(980, 59);
             this.targetDbNumeric.Maximum = new decimal(new int[] {
             1059,
             0,
@@ -338,7 +338,7 @@ namespace MP3GainMT
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1172, 41);
+            this.label4.Location = new System.Drawing.Point(985, 41);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(38, 13);
             this.label4.TabIndex = 0;
@@ -348,7 +348,7 @@ namespace MP3GainMT
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1219, 63);
+            this.label5.Location = new System.Drawing.Point(1032, 63);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(20, 13);
             this.label5.TabIndex = 0;
@@ -549,7 +549,7 @@ namespace MP3GainMT
             "1/2 Cores",
             "1/4 Cores",
             "1 Cores"});
-            this.coresComboBox.Location = new System.Drawing.Point(1243, 59);
+            this.coresComboBox.Location = new System.Drawing.Point(1056, 59);
             this.coresComboBox.Name = "coresComboBox";
             this.coresComboBox.Size = new System.Drawing.Size(36, 21);
             this.coresComboBox.TabIndex = 16;
@@ -558,7 +558,7 @@ namespace MP3GainMT
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1244, 41);
+            this.label8.Location = new System.Drawing.Point(1057, 41);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(34, 13);
             this.label8.TabIndex = 0;
@@ -716,22 +716,22 @@ namespace MP3GainMT
             this.fileGridView.AllowDrop = true;
             this.fileGridView.AllowUserToAddRows = false;
             this.fileGridView.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            this.fileGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.fileGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.fileGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.fileGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.ControlLight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.fileGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.ControlLight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.fileGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.fileGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.fileGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.HasGainTags,
