@@ -215,10 +215,20 @@ namespace MP3GainMT
             return row.TrackClipping;
         }
 
+        /// <summary>
+        /// Track if tags are read before analysis so user doesn't have to do it manually.
+        /// </summary>
+        bool isTagsRead = false;
+
         private void AnalyzeButton_Click(object sender, EventArgs e)
         {
             if (!this.run.Active)
             {
+                if (!isTagsRead)
+                {
+                    this.readTagsButton.PerformClick();
+                }
+
                 this.StartTime = DateTime.Now;
                 this.ResetFileProgress();
                 
@@ -414,6 +424,7 @@ namespace MP3GainMT
 
             ApplyFolderToSearchBox(folderList.First());
             this.run.SearchFolders(folderList);
+            this.isTagsRead = false;
         }
 
         private void FileGridView_DragEnter(object sender, DragEventArgs e)
@@ -615,6 +626,8 @@ namespace MP3GainMT
             if (CheckFolderPath())
             {
                 this.run.ReadTags();
+
+                isTagsRead = true;
             }
         }
 
@@ -769,6 +782,8 @@ namespace MP3GainMT
             if (CheckFolderPath())
             {
                 SearchFolder(this.run.ParentFolder);
+
+                isTagsRead = false;
             }
 
             this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
