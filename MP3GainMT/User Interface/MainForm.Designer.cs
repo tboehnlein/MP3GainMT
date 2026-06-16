@@ -203,7 +203,7 @@ namespace MP3GainMT
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(87, 24);
             this.searchButton.TabIndex = 3;
-            this.searchButton.Text = "Add &Files";
+            this.searchButton.Text = "Load &Folder";
             this.searchButton.UseVisualStyleBackColor = false;
             this.searchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
@@ -779,7 +779,6 @@ namespace MP3GainMT
             this.HasGainTags.Name = "HasGainTags";
             this.HasGainTags.ReadOnly = true;
             this.HasGainTags.Visible = false;
-            this.HasGainTags.Width = 35;
             // 
             // FullPath
             // 
@@ -801,7 +800,6 @@ namespace MP3GainMT
             this.AlbumColorColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.AlbumColorColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.AlbumColorColumn.Visible = false;
-            this.AlbumColorColumn.Width = 54;
             // 
             // AlbumArtist
             // 
@@ -811,7 +809,6 @@ namespace MP3GainMT
             this.AlbumArtist.Name = "AlbumArtist";
             this.AlbumArtist.ReadOnly = true;
             this.AlbumArtist.Visible = false;
-            this.AlbumArtist.Width = 85;
             // 
             // Updated
             // 
@@ -847,7 +844,6 @@ namespace MP3GainMT
             this.Album.Name = "Album";
             this.Album.ReadOnly = true;
             this.Album.Visible = false;
-            this.Album.Width = 59;
             // 
             // Artist
             // 
@@ -857,7 +853,6 @@ namespace MP3GainMT
             this.Artist.Name = "Artist";
             this.Artist.ReadOnly = true;
             this.Artist.Visible = false;
-            this.Artist.Width = 53;
             // 
             // Progress
             // 
