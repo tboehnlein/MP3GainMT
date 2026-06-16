@@ -24,6 +24,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using WK.Libraries.BetterFolderBrowserNS;
@@ -215,19 +216,25 @@ namespace MP3GainMT
             return row.TrackClipping;
         }
 
-        /// <summary>
-        /// Track if tags are read before analysis so user doesn't have to do it manually.
-        /// </summary>
-        bool isTagsRead = false;
-
-        private void AnalyzeButton_Click(object sender, EventArgs e)
+        private async void AnalyzeButton_Click(object sender, EventArgs e)
         {
             if (!this.run.Active)
             {
-                if (!isTagsRead)
+                bool waitingForTags = false;
+
+                if (!this.run.IsTagsRead)
                 {
                     this.readTagsButton.PerformClick();
+                    waitingForTags = true;
                 }
+
+                while (this.run.ActiveActivities)
+                {
+                    await Task.Delay(100);
+                }
+
+                // If we were waiting for tags but they still aren't read, the operation was likely cancelled.
+                if (waitingForTags && !this.run.IsTagsRead) return;
 
                 this.StartTime = DateTime.Now;
                 this.ResetFileProgress();
@@ -424,7 +431,6 @@ namespace MP3GainMT
 
             ApplyFolderToSearchBox(folderList.First());
             this.run.SearchFolders(folderList);
-            this.isTagsRead = false;
         }
 
         private void FileGridView_DragEnter(object sender, DragEventArgs e)
@@ -627,7 +633,6 @@ namespace MP3GainMT
             {
                 this.run.ReadTags();
 
-                isTagsRead = true;
             }
         }
 
@@ -783,7 +788,6 @@ namespace MP3GainMT
             {
                 SearchFolder(this.run.ParentFolder);
 
-                isTagsRead = false;
             }
 
             this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);

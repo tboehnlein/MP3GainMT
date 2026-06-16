@@ -101,6 +101,11 @@ namespace MP3GainMT.MP3Gain
         public bool Active { get; private set; }
         public bool ActiveActivities => this.AnyWorkersActive();
 
+        /// <summary>
+        /// Track if tags are read before analysis so user doesn't have to do it manually.
+        /// </summary>
+        public bool IsTagsRead { get; private set; } = false;
+
         public List<Mp3Folder> AllFolders
         {
             get
@@ -242,6 +247,7 @@ namespace MP3GainMT.MP3Gain
         {
             if (!this.foundFiles.ContainsKey(file.FilePath))
             {
+                this.IsTagsRead = false;
                 this.foundFiles.Add(file.FilePath, file);
             }
             else
@@ -254,6 +260,7 @@ namespace MP3GainMT.MP3Gain
         {
             CancelWorker(this.readTagsWorker);
             CancelWorker(this.searchWorker);
+            this.IsTagsRead = false;
         }
 
         internal void Clear()
@@ -266,6 +273,7 @@ namespace MP3GainMT.MP3Gain
             this.SourceDictionary.Clear();
             this.RaiseRefreshTable();
             this.filesDone = 0;
+            this.IsTagsRead = false;
         }
 
         internal void ReadTags()
@@ -494,6 +502,11 @@ namespace MP3GainMT.MP3Gain
             folders.Add(parentFolder);
 
             var newFilesCount = this.GetNewFileCount(songs);
+
+            if (newFilesCount > 0)
+            {
+                this.IsTagsRead = false;
+            }
 
             if (newFilesCount > 25000)
             {
@@ -751,9 +764,18 @@ namespace MP3GainMT.MP3Gain
                             break;
                         }
                     }
+
+                if (worker.CancellationPending)
+                {
+                    break;
+                }
                 }
 
+            if (!worker.CancellationPending)
+            {
                 worker.ReportProgress(100);
+                e.Result = true;
+            }
             }
         }
 
@@ -784,6 +806,11 @@ namespace MP3GainMT.MP3Gain
         private void ReadTagsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.CalculateLength();
+
+            if (e.Result is bool success && success)
+            {
+                this.IsTagsRead = true;
+            }
 
             this.RaiseRefreshTable();
             this.RaiseAcivityUpdated("Finished.");
