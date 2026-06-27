@@ -999,7 +999,7 @@ namespace MP3GainMT
             this.settings.TopPosition = this.Top;
             this.settings.PathWidth = this.fileGridView.Columns["FullPath"].Width;
             this.settings.UseAnd = this.andRadioButton.Checked;
-            this.settings.Executable = Mp3GainManager.Executable;
+            this.settings.Executable = this.run?.Backend?.ExecutablePath ?? this.settings.Executable;
             this.settings.DoubleClickTable = this.doubleClickTableChoice;
             this.settings.Theme = this.themeComboBox.Text;
             this.settings.TargetDb = (double)this.targetDbNumeric.Value;
