@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 Thomas Boehnlein
+// Copyright (c) 2025 Thomas Boehnlein
 // 
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -53,14 +53,10 @@ namespace MP3GainMT.MP3Gain
 
         private DateTime startSearchTime;
 
-        public Mp3GainManager(string exePath, string parentFolder = "")
+        public Mp3GainManager(IMp3GainBackend backend, string parentFolder = "")
         {
-            if (Executable == string.Empty)
-            {
-                Executable = exePath;
-            }
+            this.Backend = backend;
 
-            ParentFolder = parentFolder;
 
             this.searchTimeElaspedTimer = new System.Windows.Forms.Timer();
 
@@ -97,7 +93,7 @@ namespace MP3GainMT.MP3Gain
 
         public event EventHandler<int> TaskProgressed;
 
-        public static string Executable { get; set; } = string.Empty;
+        public IMp3GainBackend Backend { get; set; }
         public bool Active { get; private set; }
         public bool ActiveActivities => this.AnyWorkersActive();
 
@@ -381,7 +377,7 @@ namespace MP3GainMT.MP3Gain
         {
             if (e.Argument is Mp3Folder folder)
             {
-                folder.AnalyzeGainFolder(Executable, sender as BackgroundWorker);
+                this.Backend.AnalyzeGain(folder, sender as BackgroundWorker);
                 e.Result = folder;
             }
         }
@@ -395,7 +391,7 @@ namespace MP3GainMT.MP3Gain
         {
             if (e.Argument is Mp3Folder folder)
             {
-                folder.ApplyGainFolder(Executable, sender as BackgroundWorker);
+                this.Backend.ApplyGain(folder, sender as BackgroundWorker);
                 e.Result = folder;
             }
         }
@@ -450,15 +446,7 @@ namespace MP3GainMT.MP3Gain
 
                 this.finished.Add(folder);
 
-                var execute = new ExecuteMp3GainSync(Executable,
-                                                 $"/o /s c",
-                                                 folder.Files,
-                                                 folder.FolderPath,
-                                                 "GET MAX GAIN",
-                                                 "Calculating Max Gain",
-                                                 "done");
-
-                execute.Execute();
+                this.Backend.CalculateMaxGain(folder, null);
 
                 foreach (var file in folder.Files.Values)
                 {
@@ -592,15 +580,7 @@ namespace MP3GainMT.MP3Gain
         {
             if (e.Result is Mp3Folder folder)
             {
-                var execute = new ExecuteMp3GainSync(Executable,
-                                                     $"/o /s c",
-                                                     folder.Files,
-                                                     folder.FolderPath,
-                                                     "GET MAX GAIN",
-                                                     "Calculating Max Gain",
-                                                     "done");
-
-                execute.Execute();
+                this.Backend.CalculateMaxGain(folder, null);
 
                 foreach (var file in folder.Files.Values)
                 {
@@ -739,16 +719,7 @@ namespace MP3GainMT.MP3Gain
 
                 foreach (var folder in folders)
                 {
-
-                    var execute = new ExecuteMp3GainSync(Executable,
-                                                     $"/o /s c",
-                                                     folder.Files,
-                                                     folder.FolderPath,
-                                                     "GET MAX GAIN",
-                                                     "Calculating Max Gain",
-                                                     "done");
-
-                    execute.Execute();
+                    this.Backend.CalculateMaxGain(folder, worker);
 
                     foreach (var file in folder.Files.Values)
                     {
@@ -914,7 +885,7 @@ namespace MP3GainMT.MP3Gain
         {
             if (e.Argument is Mp3Folder folder)
             {
-                folder.UndoGain(Executable, sender as BackgroundWorker);
+                this.Backend.UndoGain(folder, sender as BackgroundWorker);
                 e.Result = folder;
             }
         }

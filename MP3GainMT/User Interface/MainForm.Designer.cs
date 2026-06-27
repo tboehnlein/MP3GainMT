@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 using MP3GainMT.User_Interface;
 
 namespace MP3GainMT
@@ -34,6 +34,7 @@ namespace MP3GainMT
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
+            this.backendComboBox = new System.Windows.Forms.ComboBox();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.applyGainButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -577,6 +578,20 @@ namespace MP3GainMT
             this.mp3GainButton.UseVisualStyleBackColor = false;
             this.mp3GainButton.Click += new System.EventHandler(this.MP3GainButton_Click);
             // 
+            // backendComboBox
+            // 
+            this.backendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.backendComboBox.FormattingEnabled = true;
+            this.backendComboBox.Items.AddRange(new object[] {
+            "Original mp3gain",
+            "mp3rgain (M-Igashi)",
+            "mp3gain-modern (Multi-threaded)"});
+            this.backendComboBox.Location = new System.Drawing.Point(16, 86);
+            this.backendComboBox.Name = "backendComboBox";
+            this.backendComboBox.Size = new System.Drawing.Size(200, 21);
+            this.backendComboBox.TabIndex = 24;
+            this.backendComboBox.SelectedIndexChanged += new System.EventHandler(this.BackendComboBox_SelectedIndexChanged);
+            // 
             // mp3GainLabel
             // 
             this.mp3GainLabel.AutoSize = true;
@@ -966,6 +981,8 @@ namespace MP3GainMT
             this.Controls.Add(this.analyzeButton);
             this.Controls.Add(this.fileGridView);
             this.Controls.Add(this.fileListLabel);
+            this.Controls.Add(this.backendComboBox);
+            this.Controls.Add(this.mp3GainLabel);
             this.Controls.Add(this.mp3GainButton);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label8);
@@ -1037,6 +1054,7 @@ namespace MP3GainMT
         private Label label8;
         private Button mp3GainButton;
         private Label mp3GainLabel;
+        private ComboBox backendComboBox;
         private ReadOnlyCheckBox readOnlyCheckBox1;
         private GroupBox userInterfaceGroupBox;
         private RadioButton openFolderRadioButton;

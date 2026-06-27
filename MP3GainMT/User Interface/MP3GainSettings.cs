@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 Thomas Boehnlein
+// Copyright (c) 2025 Thomas Boehnlein
 // 
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -38,6 +38,7 @@ namespace MP3GainMT
         private static readonly string DoubleClickTableLabel = "Double Click Table";
         private static readonly string ThemeLabel = "Theme";
         private static readonly string TableFontSizeLabel = "Table Font";
+        private static readonly string BackendTypeLabel = "Backend Type";
         private JObject _json = null;
 
         public MP3GainSettings()
@@ -54,6 +55,18 @@ namespace MP3GainMT
             set
             {
                 WriteKey<string>(value, ExecutableLabel);
+            }
+        }
+
+        public string BackendType
+        {
+            get
+            {
+                return ReadKey<string>(BackendTypeLabel);
+            }
+            set
+            {
+                WriteKey<string>(value, BackendTypeLabel);
             }
         }
 
@@ -268,6 +281,7 @@ namespace MP3GainMT
             PrepareKey<string>(DoubleClickTableLabel);
             PrepareKey<string>(ThemeLabel);
             PrepareKey<int>(TableFontSizeLabel);
+            PrepareKey<string>(BackendTypeLabel);
 
             if (reader != null)
             {

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 Thomas Boehnlein
+// Copyright (c) 2025 Thomas Boehnlein
 // 
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -47,7 +47,9 @@ namespace MP3GainMT
 
             this.settings = new MP3GainSettings();
             this.source = new BindingSource();
-            this.run = new Mp3GainManager(@"C:\MP3Gain\mp3gain.exe");
+
+            IMp3GainBackend defaultBackend = new OriginalMp3GainBackend(@"C:\MP3Gain\mp3gain.exe");
+            this.run = new Mp3GainManager(defaultBackend);
 
             this.ReadSettings(run);
 
@@ -272,8 +274,44 @@ namespace MP3GainMT
 
         private void ApplyMP3GainExecutable(string fileName)
         {
-            Mp3GainManager.Executable = fileName;
-            this.readOnlyCheckBox1.Checked = File.Exists(Mp3GainManager.Executable);
+            this.settings.Executable = fileName;
+            if (this.run != null && this.run.Backend != null)
+            {
+                this.run.Backend.ExecutablePath = fileName;
+                this.readOnlyCheckBox1.Checked = File.Exists(this.run.Backend.ExecutablePath);
+            }
+            else
+            {
+                this.readOnlyCheckBox1.Checked = File.Exists(fileName);
+            }
+        }
+
+        private void BackendComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.backendComboBox.SelectedItem != null && this.run != null)
+            {
+                var selection = this.backendComboBox.SelectedItem.ToString();
+                this.settings.BackendType = selection;
+                
+                string exePath = this.settings.Executable;
+                if (string.IsNullOrEmpty(exePath))
+                {
+                    exePath = @"C:\MP3Gain\mp3gain.exe";
+                }
+
+                if (selection == "Original mp3gain")
+                {
+                    this.run.Backend = new OriginalMp3GainBackend(exePath);
+                }
+                else if (selection == "mp3rgain (M-Igashi)")
+                {
+                    this.run.Backend = new Mp3rgainBackend(exePath);
+                }
+                else if (selection == "mp3gain-modern (Multi-threaded)")
+                {
+                    this.run.Backend = new Mp3gainModernBackend(exePath);
+                }
+            }
         }
 
         private void BrowseButton_Click(object sender, EventArgs e)
@@ -522,7 +560,7 @@ namespace MP3GainMT
         {
             var selectFolder = new OpenFileDialog();
 
-            selectFolder.InitialDirectory = Mp3GainManager.Executable;
+            selectFolder.InitialDirectory = this.settings.Executable;
             selectFolder.Title = "Select MP3Gain.exe";
             selectFolder.Filter = "MP3Gain|MP3Gain.exe";
 
@@ -564,6 +602,15 @@ namespace MP3GainMT
             }   
 
             this.targetDbNumeric.Value = dB;
+
+            if (!string.IsNullOrEmpty(this.settings.BackendType))
+            {
+                this.backendComboBox.SelectedItem = this.settings.BackendType;
+            }
+            else
+            {
+                this.backendComboBox.SelectedIndex = 0; // Default to original
+            }
 
             ApplyMP3GainExecutable(this.settings.Executable);
 
