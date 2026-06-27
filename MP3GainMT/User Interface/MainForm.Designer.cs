@@ -115,7 +115,7 @@ namespace MP3GainMT
             this.browseButton.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.browseButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.browseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.browseButton.Location = new System.Drawing.Point(799, 57);
+            this.browseButton.Location = new System.Drawing.Point(587, 57);
             this.browseButton.Name = "browseButton";
             this.browseButton.Size = new System.Drawing.Size(70, 24);
             this.browseButton.TabIndex = 2;
@@ -123,15 +123,29 @@ namespace MP3GainMT
             this.browseButton.UseVisualStyleBackColor = false;
             this.browseButton.Click += new System.EventHandler(this.BrowseButton_Click);
             // 
+            // backendComboBox
+            // 
+            this.backendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.backendComboBox.FormattingEnabled = true;
+            this.backendComboBox.Items.AddRange(new object[] {
+            "Original",
+            "mp3rgain",
+            "mp3gain-modern"});
+            this.backendComboBox.Location = new System.Drawing.Point(33, 58);
+            this.backendComboBox.Name = "backendComboBox";
+            this.backendComboBox.Size = new System.Drawing.Size(107, 21);
+            this.backendComboBox.TabIndex = 24;
+            this.backendComboBox.SelectedIndexChanged += new System.EventHandler(this.BackendComboBox_SelectedIndexChanged);
+            // 
             // folderPathTextBox
             // 
             this.folderPathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.folderPathTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.folderPathTextBox.Location = new System.Drawing.Point(120, 59);
+            this.folderPathTextBox.Location = new System.Drawing.Point(223, 59);
             this.folderPathTextBox.Name = "folderPathTextBox";
             this.folderPathTextBox.ReadOnly = true;
-            this.folderPathTextBox.Size = new System.Drawing.Size(673, 20);
+            this.folderPathTextBox.Size = new System.Drawing.Size(358, 20);
             this.folderPathTextBox.TabIndex = 1;
             // 
             // applyGainButton
@@ -140,7 +154,7 @@ namespace MP3GainMT
             this.applyGainButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.applyGainButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.applyGainButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.applyGainButton.Location = new System.Drawing.Point(1353, 57);
+            this.applyGainButton.Location = new System.Drawing.Point(1141, 57);
             this.applyGainButton.Name = "applyGainButton";
             this.applyGainButton.Size = new System.Drawing.Size(87, 24);
             this.applyGainButton.TabIndex = 6;
@@ -151,7 +165,7 @@ namespace MP3GainMT
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(122, 41);
+            this.label1.Location = new System.Drawing.Point(229, 41);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 0;
@@ -172,7 +186,7 @@ namespace MP3GainMT
             this.analyzeButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.analyzeButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.analyzeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.analyzeButton.Location = new System.Drawing.Point(1285, 57);
+            this.analyzeButton.Location = new System.Drawing.Point(1073, 57);
             this.analyzeButton.Name = "analyzeButton";
             this.analyzeButton.Size = new System.Drawing.Size(62, 24);
             this.analyzeButton.TabIndex = 5;
@@ -186,7 +200,7 @@ namespace MP3GainMT
             this.clearButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.clearButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.clearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearButton.Location = new System.Drawing.Point(970, 57);
+            this.clearButton.Location = new System.Drawing.Point(758, 57);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(76, 24);
             this.clearButton.TabIndex = 7;
@@ -200,7 +214,7 @@ namespace MP3GainMT
             this.searchButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.searchButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.searchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.searchButton.Location = new System.Drawing.Point(876, 57);
+            this.searchButton.Location = new System.Drawing.Point(664, 57);
             this.searchButton.Name = "searchButton";
             this.searchButton.Size = new System.Drawing.Size(87, 24);
             this.searchButton.TabIndex = 3;
@@ -212,7 +226,7 @@ namespace MP3GainMT
             // 
             this.activityProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.activityProgressBar.Location = new System.Drawing.Point(1294, 5);
+            this.activityProgressBar.Location = new System.Drawing.Point(1082, 5);
             this.activityProgressBar.Name = "activityProgressBar";
             this.activityProgressBar.Size = new System.Drawing.Size(277, 19);
             this.activityProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
@@ -224,7 +238,7 @@ namespace MP3GainMT
             this.readTagsButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.readTagsButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.readTagsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.readTagsButton.Location = new System.Drawing.Point(1192, 57);
+            this.readTagsButton.Location = new System.Drawing.Point(980, 57);
             this.readTagsButton.Name = "readTagsButton";
             this.readTagsButton.Size = new System.Drawing.Size(87, 24);
             this.readTagsButton.TabIndex = 4;
@@ -243,7 +257,7 @@ namespace MP3GainMT
             this.activityLabel.Location = new System.Drawing.Point(55, 7);
             this.activityLabel.Margin = new System.Windows.Forms.Padding(3, 0, 20, 0);
             this.activityLabel.Name = "activityLabel";
-            this.activityLabel.Size = new System.Drawing.Size(1156, 17);
+            this.activityLabel.Size = new System.Drawing.Size(944, 17);
             this.activityLabel.TabIndex = 10;
             // 
             // label2
@@ -272,7 +286,7 @@ namespace MP3GainMT
             this.activityPanel.Controls.Add(this.label2);
             this.activityPanel.Location = new System.Drawing.Point(0, 0);
             this.activityPanel.Name = "activityPanel";
-            this.activityPanel.Size = new System.Drawing.Size(1576, 29);
+            this.activityPanel.Size = new System.Drawing.Size(1364, 29);
             this.activityPanel.TabIndex = 12;
             this.activityPanel.Tag = "Instruction";
             // 
@@ -283,7 +297,7 @@ namespace MP3GainMT
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(1212, 7);
+            this.label3.Location = new System.Drawing.Point(1000, 7);
             this.label3.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
             this.label3.Name = "label3";
             this.label3.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -297,7 +311,7 @@ namespace MP3GainMT
             this.cancelButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.cancelButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.cancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cancelButton.Location = new System.Drawing.Point(1446, 57);
+            this.cancelButton.Location = new System.Drawing.Point(1234, 57);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(55, 24);
             this.cancelButton.TabIndex = 7;
@@ -314,7 +328,7 @@ namespace MP3GainMT
             0,
             0,
             65536});
-            this.targetDbNumeric.Location = new System.Drawing.Point(1062, 59);
+            this.targetDbNumeric.Location = new System.Drawing.Point(850, 59);
             this.targetDbNumeric.Maximum = new decimal(new int[] {
             1059,
             0,
@@ -339,7 +353,7 @@ namespace MP3GainMT
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1067, 41);
+            this.label4.Location = new System.Drawing.Point(855, 41);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(38, 13);
             this.label4.TabIndex = 0;
@@ -349,7 +363,7 @@ namespace MP3GainMT
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1114, 63);
+            this.label5.Location = new System.Drawing.Point(902, 63);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(20, 13);
             this.label5.TabIndex = 0;
@@ -381,7 +395,7 @@ namespace MP3GainMT
             this.filterGroupBox.Controls.Add(this.clipOnlyTrackCheckBox);
             this.filterGroupBox.Controls.Add(this.removeButton);
             this.filterGroupBox.Controls.Add(this.threshLabel);
-            this.filterGroupBox.Location = new System.Drawing.Point(611, 86);
+            this.filterGroupBox.Location = new System.Drawing.Point(399, 86);
             this.filterGroupBox.MinimumSize = new System.Drawing.Size(675, 0);
             this.filterGroupBox.Name = "filterGroupBox";
             this.filterGroupBox.Size = new System.Drawing.Size(953, 57);
@@ -532,7 +546,7 @@ namespace MP3GainMT
             this.undoButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.undoButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.undoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.undoButton.Location = new System.Drawing.Point(1508, 57);
+            this.undoButton.Location = new System.Drawing.Point(1296, 57);
             this.undoButton.Name = "undoButton";
             this.undoButton.Size = new System.Drawing.Size(56, 24);
             this.undoButton.TabIndex = 7;
@@ -550,7 +564,7 @@ namespace MP3GainMT
             "1/2 Cores",
             "1/4 Cores",
             "1 Cores"});
-            this.coresComboBox.Location = new System.Drawing.Point(1138, 59);
+            this.coresComboBox.Location = new System.Drawing.Point(926, 59);
             this.coresComboBox.Name = "coresComboBox";
             this.coresComboBox.Size = new System.Drawing.Size(36, 21);
             this.coresComboBox.TabIndex = 16;
@@ -559,7 +573,7 @@ namespace MP3GainMT
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1139, 41);
+            this.label8.Location = new System.Drawing.Point(927, 41);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(34, 13);
             this.label8.TabIndex = 0;
@@ -570,7 +584,7 @@ namespace MP3GainMT
             this.mp3GainButton.BackColor = System.Drawing.SystemColors.ControlLight;
             this.mp3GainButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
             this.mp3GainButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.mp3GainButton.Location = new System.Drawing.Point(43, 57);
+            this.mp3GainButton.Location = new System.Drawing.Point(146, 55);
             this.mp3GainButton.Name = "mp3GainButton";
             this.mp3GainButton.Size = new System.Drawing.Size(71, 24);
             this.mp3GainButton.TabIndex = 2;
@@ -578,29 +592,15 @@ namespace MP3GainMT
             this.mp3GainButton.UseVisualStyleBackColor = false;
             this.mp3GainButton.Click += new System.EventHandler(this.MP3GainButton_Click);
             // 
-            // backendComboBox
-            // 
-            this.backendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.backendComboBox.FormattingEnabled = true;
-            this.backendComboBox.Items.AddRange(new object[] {
-            "Original mp3gain",
-            "mp3rgain (M-Igashi)",
-            "mp3gain-modern (Multi-threaded)"});
-            this.backendComboBox.Location = new System.Drawing.Point(16, 86);
-            this.backendComboBox.Name = "backendComboBox";
-            this.backendComboBox.Size = new System.Drawing.Size(200, 21);
-            this.backendComboBox.TabIndex = 24;
-            this.backendComboBox.SelectedIndexChanged += new System.EventHandler(this.BackendComboBox_SelectedIndexChanged);
-            // 
             // mp3GainLabel
             // 
             this.mp3GainLabel.AutoSize = true;
             this.mp3GainLabel.CausesValidation = false;
-            this.mp3GainLabel.Location = new System.Drawing.Point(16, 41);
+            this.mp3GainLabel.Location = new System.Drawing.Point(7, 40);
             this.mp3GainLabel.Name = "mp3GainLabel";
-            this.mp3GainLabel.Size = new System.Drawing.Size(98, 13);
+            this.mp3GainLabel.Size = new System.Drawing.Size(138, 13);
             this.mp3GainLabel.TabIndex = 0;
-            this.mp3GainLabel.Text = "MP3 Gain Location";
+            this.mp3GainLabel.Text = "MP3Gain Executable Setup";
             // 
             // userInterfaceGroupBox
             // 
@@ -613,7 +613,7 @@ namespace MP3GainMT
             this.userInterfaceGroupBox.Controls.Add(this.openFolderRadioButton);
             this.userInterfaceGroupBox.Controls.Add(this.playFileRadioButton);
             this.userInterfaceGroupBox.Controls.Add(this.doubleClickRowLabel);
-            this.userInterfaceGroupBox.Location = new System.Drawing.Point(223, 86);
+            this.userInterfaceGroupBox.Location = new System.Drawing.Point(11, 86);
             this.userInterfaceGroupBox.MinimumSize = new System.Drawing.Size(163, 0);
             this.userInterfaceGroupBox.Name = "userInterfaceGroupBox";
             this.userInterfaceGroupBox.Size = new System.Drawing.Size(383, 57);
@@ -719,7 +719,7 @@ namespace MP3GainMT
             // 
             this.readOnlyCheckBox1.AutoSize = true;
             this.readOnlyCheckBox1.ForeColor = System.Drawing.Color.Gray;
-            this.readOnlyCheckBox1.Location = new System.Drawing.Point(25, 63);
+            this.readOnlyCheckBox1.Location = new System.Drawing.Point(12, 61);
             this.readOnlyCheckBox1.Name = "readOnlyCheckBox1";
             this.readOnlyCheckBox1.ReadOnly = true;
             this.readOnlyCheckBox1.Size = new System.Drawing.Size(15, 14);
@@ -777,7 +777,7 @@ namespace MP3GainMT
             this.fileGridView.ReadOnly = true;
             this.fileGridView.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.fileGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.fileGridView.Size = new System.Drawing.Size(1552, 690);
+            this.fileGridView.Size = new System.Drawing.Size(1340, 690);
             this.fileGridView.TabIndex = 9;
             this.fileGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.FileGridView_CellFormatting);
             this.fileGridView.CellToolTipTextNeeded += new System.Windows.Forms.DataGridViewCellToolTipTextNeededEventHandler(this.FileGridView_CellToolTipTextNeeded);
@@ -967,7 +967,7 @@ namespace MP3GainMT
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1576, 864);
+            this.ClientSize = new System.Drawing.Size(1364, 864);
             this.Controls.Add(this.userInterfaceGroupBox);
             this.Controls.Add(this.readOnlyCheckBox1);
             this.Controls.Add(this.coresComboBox);
@@ -982,7 +982,6 @@ namespace MP3GainMT
             this.Controls.Add(this.fileGridView);
             this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.backendComboBox);
-            this.Controls.Add(this.mp3GainLabel);
             this.Controls.Add(this.mp3GainButton);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label8);
@@ -993,7 +992,7 @@ namespace MP3GainMT
             this.Controls.Add(this.applyGainButton);
             this.Controls.Add(this.browseButton);
             this.Controls.Add(this.clearButton);
-            this.MinimumSize = new System.Drawing.Size(1300, 300);
+            this.MinimumSize = new System.Drawing.Size(1380, 300);
             this.Name = "MainForm";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
