@@ -12,16 +12,22 @@ namespace MP3GainMT.MP3Gain
     {
         public virtual string Name => "Original mp3gain";
         public string ExecutablePath { get; set; }
+        public virtual BackendSchedulingStrategy SchedulingStrategy => BackendSchedulingStrategy.StandardConcurrent;
+
+        protected virtual string GetExtraArgs(int threadCount)
+        {
+            return "";
+        }
 
         public OriginalMp3GainBackend(string executablePath)
         {
             this.ExecutablePath = executablePath;
         }
 
-        public void ApplyGain(Mp3Folder folder, BackgroundWorker worker)
+        public virtual void ApplyGain(Mp3Folder folder, BackgroundWorker worker, int threadCount = 1)
         {
             var applyGainExecution = new ExecuteMp3GainAsync(this.ExecutablePath,
-                                                        $"/o /g {folder.SuggestedGain}",
+                                                        $"/o /g {folder.SuggestedGain} {GetExtraArgs(threadCount)}".Trim(),
                                                         folder.Files,
                                                         folder.FolderPath,
                                                         "APPLY GAIN",
@@ -31,7 +37,7 @@ namespace MP3GainMT.MP3Gain
             applyGainExecution.Execute();
         }
 
-        public void UndoGain(Mp3Folder folder, BackgroundWorker worker)
+        public virtual void UndoGain(Mp3Folder folder, BackgroundWorker worker, int threadCount = 1)
         {
             int undoSuggestedGain = 0;
             var firstFile = folder.Files.Values.FirstOrDefault();
@@ -41,7 +47,7 @@ namespace MP3GainMT.MP3Gain
             }
 
             var undoGainExecution = new ExecuteMp3GainAsync(this.ExecutablePath,
-                                                        "/u",
+                                                        $"/u {GetExtraArgs(threadCount)}".Trim(),
                                                         folder.Files,
                                                         folder.FolderPath,
                                                         "UNDO GAIN",
@@ -51,10 +57,10 @@ namespace MP3GainMT.MP3Gain
             undoGainExecution.Execute();
         }
 
-        public void CalculateMaxGain(Mp3Folder folder, BackgroundWorker worker)
+        public virtual void CalculateMaxGain(Mp3Folder folder, BackgroundWorker worker, int threadCount = 1)
         {
             var execute = new ExecuteMp3GainSync(this.ExecutablePath,
-                                             $"/o /s c",
+                                             $"/o /s c {GetExtraArgs(threadCount)}".Trim(),
                                              folder.Files,
                                              folder.FolderPath,
                                              "GET MAX GAIN",
@@ -63,16 +69,17 @@ namespace MP3GainMT.MP3Gain
             execute.Execute();
         }
 
-        public void AnalyzeGain(Mp3Folder folder, BackgroundWorker worker)
+        public virtual void AnalyzeGain(Mp3Folder folder, BackgroundWorker worker, int threadCount = 1)
         {
-            new AnalysisRunner(this.ExecutablePath, folder, worker).Run();
+            new AnalysisRunner(this.ExecutablePath, folder, worker, GetExtraArgs(threadCount)).Run();
         }
 
-        private class AnalysisRunner
+        protected class AnalysisRunner
         {
             private string executablePath;
             private Mp3Folder folder;
             private BackgroundWorker worker;
+            private string extraArgs;
 
             private Mp3File activeFile;
             private List<string> sortedFiles;
@@ -82,16 +89,17 @@ namespace MP3GainMT.MP3Gain
             private DateTime lastWrite = DateTime.Now;
             private int suggestedGain;
 
-            public AnalysisRunner(string executablePath, Mp3Folder folder, BackgroundWorker worker)
+            public AnalysisRunner(string executablePath, Mp3Folder folder, BackgroundWorker worker, string extraArgs = "")
             {
                 this.executablePath = executablePath;
                 this.folder = folder;
                 this.worker = worker;
+                this.extraArgs = extraArgs;
             }
 
             public void Run()
             {
-                var parameters = $"\"{Path.Combine(folder.FolderPath, "*.mp3")}\"";
+                var parameters = $"\"{Path.Combine(folder.FolderPath, "*.mp3")}\" {extraArgs}".Trim();
                 var analysisStart = new ProcessStartInfo(executablePath, parameters);
                 analysisStart.UseShellExecute = false;
                 analysisStart.RedirectStandardOutput = true;

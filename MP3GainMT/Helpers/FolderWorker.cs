@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 Thomas Boehnlein
+// Copyright (c) 2025 Thomas Boehnlein
 // 
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -25,6 +25,7 @@ namespace MP3GainMT
     {
         public Mp3Folder Folder;
         public BackgroundWorker Worker;
+        public int ThreadCount = 1;
 
         public FolderWorker(BackgroundWorker worker, Mp3Folder folder)
         {

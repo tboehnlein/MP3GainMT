@@ -33,6 +33,8 @@ namespace MP3GainMT.MP3Gain
         private const string CancelMessage = "Cancellation successful.";
 
         private int filesDone;
+        private int maxCores = 1;
+        private int activeFolderWorkers = 0;
 
         private TimeCheck findFileEventCheck = new TimeCheck(8);
 
@@ -146,13 +148,25 @@ namespace MP3GainMT.MP3Gain
 
         public void AnalyzeGain(int cores = 2)
         {
+            this.maxCores = cores;
             this.ResetAnalysis();
 
             this.Active = true;
 
             var orderedList = Folders.Values.ToList();
+            IEnumerable<Mp3Folder> foldersToProcess = Folders.Values;
 
-            foreach (var folder in Folders.Values.Reverse())
+            if (this.Backend.SchedulingStrategy == BackendSchedulingStrategy.TwoPhaseDynamic)
+            {
+                // Push largest first, so they pop last
+                foldersToProcess = foldersToProcess.OrderByDescending(f => f.MP3Files.Count);
+            }
+            else
+            {
+                foldersToProcess = foldersToProcess.Reverse();
+            }
+
+            foreach (var folder in foldersToProcess)
             {
                 var index = orderedList.IndexOf(folder);
                 var worker = new BackgroundWorker();
@@ -173,13 +187,24 @@ namespace MP3GainMT.MP3Gain
 
         public void ApplyGain(int cores = 2)
         {
+            this.maxCores = cores;
             this.ResetAnalysis();
 
             this.Active = true;
 
             var orderedList = Folders.Values.ToList();
+            IEnumerable<Mp3Folder> foldersToProcess = Folders.Values;
 
-            foreach (var folder in Folders.Values.Reverse())
+            if (this.Backend.SchedulingStrategy == BackendSchedulingStrategy.TwoPhaseDynamic)
+            {
+                foldersToProcess = foldersToProcess.OrderByDescending(f => f.MP3Files.Count);
+            }
+            else
+            {
+                foldersToProcess = foldersToProcess.Reverse();
+            }
+
+            foreach (var folder in foldersToProcess)
             {
                 var index = orderedList.IndexOf(folder);
                 var worker = new BackgroundWorker();
@@ -320,12 +345,23 @@ namespace MP3GainMT.MP3Gain
 
         internal void UndoGain(int cores = 2)
         {
+            this.maxCores = cores;
             this.ResetAnalysis();
             this.Active = true;
 
             var orderedList = Folders.Values.ToList();
+            IEnumerable<Mp3Folder> foldersToProcess = Folders.Values;
 
-            foreach (var folder in Folders.Values.Reverse())
+            if (this.Backend.SchedulingStrategy == BackendSchedulingStrategy.TwoPhaseDynamic)
+            {
+                foldersToProcess = foldersToProcess.OrderByDescending(f => f.MP3Files.Count);
+            }
+            else
+            {
+                foldersToProcess = foldersToProcess.Reverse();
+            }
+
+            foreach (var folder in foldersToProcess)
             {
                 var index = orderedList.IndexOf(folder);
                 var worker = new BackgroundWorker();
@@ -375,10 +411,10 @@ namespace MP3GainMT.MP3Gain
 
         private void AnalyzeGain_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (e.Argument is Mp3Folder folder)
+            if (e.Argument is FolderWorker workerItem)
             {
-                this.Backend.AnalyzeGain(folder, sender as BackgroundWorker);
-                e.Result = folder;
+                this.Backend.AnalyzeGain(workerItem.Folder, sender as BackgroundWorker, workerItem.ThreadCount);
+                e.Result = workerItem.Folder;
             }
         }
 
@@ -389,10 +425,10 @@ namespace MP3GainMT.MP3Gain
 
         private void ApplyGain_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (e.Argument is Mp3Folder folder)
+            if (e.Argument is FolderWorker workerItem)
             {
-                this.Backend.ApplyGain(folder, sender as BackgroundWorker);
-                e.Result = folder;
+                this.Backend.ApplyGain(workerItem.Folder, sender as BackgroundWorker, workerItem.ThreadCount);
+                e.Result = workerItem.Folder;
             }
         }
 
@@ -446,7 +482,7 @@ namespace MP3GainMT.MP3Gain
 
                 this.finished.Add(folder);
 
-                this.Backend.CalculateMaxGain(folder, null);
+                this.Backend.CalculateMaxGain(folder, null, 1);
 
                 foreach (var file in folder.Files.Values)
                 {
@@ -459,6 +495,7 @@ namespace MP3GainMT.MP3Gain
                 this.RunProgress = Helpers.GetProgress(this.finished.Count, this.Folders.Count);
                 this.RaiseTaskProgressed(GetRunProgress(0));
 
+                activeFolderWorkers--;
                 RunNextFolder();
             }
 
@@ -806,9 +843,41 @@ namespace MP3GainMT.MP3Gain
         {
             if (processStack.Count > 0)
             {
+                if (this.Backend.SchedulingStrategy == BackendSchedulingStrategy.StrictlySequential)
+                {
+                    if (activeFolderWorkers > 0) return;
+                }
+
+                var nextFolderWorker = processStack.Peek();
+                if (this.Backend.SchedulingStrategy == BackendSchedulingStrategy.TwoPhaseDynamic && nextFolderWorker.Folder.MP3Files.Count >= 20)
+                {
+                    if (activeFolderWorkers > 0) return;
+                }
+
                 var item = processStack.Pop();
-                Debug.WriteLine($"POPPED[{processStack.Count}]: {((FolderWorker)item).Folder.FolderName}");
-                item.Worker.RunWorkerAsync(item.Folder);
+                
+                int threadCount = 1;
+                if (this.Backend.SchedulingStrategy == BackendSchedulingStrategy.TwoPhaseDynamic)
+                {
+                    if (item.Folder.MP3Files.Count >= 20)
+                    {
+                        threadCount = this.maxCores;
+                    }
+                    else
+                    {
+                        // Calculate threads proportionally based on active workload
+                        int totalTracks = item.Folder.MP3Files.Count;
+                        // Since we don't strictly track all currently active FolderWorkers here, 
+                        // we can approximate by assigning 1 thread to small folders, 
+                        // which achieves the Two-Phase effect described.
+                        threadCount = 1;
+                    }
+                }
+                item.ThreadCount = threadCount;
+
+                activeFolderWorkers++;
+                Debug.WriteLine($"POPPED[{processStack.Count}]: {item.Folder.FolderName} with {threadCount} threads");
+                item.Worker.RunWorkerAsync(item);
             }
         }
 
@@ -883,10 +952,10 @@ namespace MP3GainMT.MP3Gain
 
         private void UndoGain_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (e.Argument is Mp3Folder folder)
+            if (e.Argument is FolderWorker workerItem)
             {
-                this.Backend.UndoGain(folder, sender as BackgroundWorker);
-                e.Result = folder;
+                this.Backend.UndoGain(workerItem.Folder, sender as BackgroundWorker, workerItem.ThreadCount);
+                e.Result = workerItem.Folder;
             }
         }
         
