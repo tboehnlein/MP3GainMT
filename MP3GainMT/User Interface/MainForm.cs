@@ -48,7 +48,8 @@ namespace MP3GainMT
             this.settings = new MP3GainSettings();
             this.source = new BindingSource();
 
-            IMp3GainBackend defaultBackend = new OriginalMp3GainBackend(@"C:\MP3Gain\mp3gain.exe");
+            string engineDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engines");
+            IMp3GainBackend defaultBackend = new OriginalMp3GainBackend(Path.Combine(engineDir, "mp3gain.exe"));
             this.run = new Mp3GainManager(defaultBackend);
 
             this.ReadSettings(run);
@@ -143,7 +144,7 @@ namespace MP3GainMT
             if (this.ContextMenuRowIndex >= 0)
             {
                 var row = fileGridView.Rows[this.ContextMenuRowIndex];
-                var cellValue = row.Cells["FullPath"].Value.ToString();
+                var cellValue = row.Cells["FullPath"].Value?.ToString();
                 var directory = Path.GetDirectoryName(cellValue);
                 if (Directory.Exists(directory))
                 {
@@ -163,7 +164,7 @@ namespace MP3GainMT
             if (this.ContextMenuRowIndex >= 0)
             {
                 var row = fileGridView.Rows[this.ContextMenuRowIndex];
-                var cellValue = row.Cells["FullPath"].Value.ToString();
+                var cellValue = row.Cells["FullPath"].Value?.ToString();
                 if (File.Exists(cellValue))
                 {
                     Process.Start(cellValue);
@@ -293,23 +294,19 @@ namespace MP3GainMT
                 var selection = this.backendComboBox.SelectedItem.ToString();
                 this.settings.BackendType = selection;
                 
-                string exePath = this.settings.Executable;
-                if (string.IsNullOrEmpty(exePath))
-                {
-                    exePath = @"C:\MP3Gain\mp3gain.exe";
-                }
+                string engineDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engines");
 
-                if (selection == "Original mp3gain")
+                if (selection == "Original mp3gain" || selection == "Original")
                 {
-                    this.run.Backend = new OriginalMp3GainBackend(exePath);
+                    this.run.Backend = new OriginalMp3GainBackend(Path.Combine(engineDir, "mp3gain.exe"));
                 }
-                else if (selection == "mp3rgain (M-Igashi)")
+                else if (selection == "mp3rgain (M-Igashi)" || selection == "mp3rgain")
                 {
-                    this.run.Backend = new Mp3rgainBackend(exePath);
+                    this.run.Backend = new Mp3rgainBackend(Path.Combine(engineDir, "mp3rgain.exe"));
                 }
-                else if (selection == "mp3gain-modern (Multi-threaded)")
+                else if (selection == "mp3gain-modern (Multi-threaded)" || selection == "mp3gain-modern")
                 {
-                    this.run.Backend = new Mp3gainModernBackend(exePath);
+                    this.run.Backend = new Mp3gainModernBackend(Path.Combine(engineDir, "mp3gain-modern.exe"));
                 }
             }
         }
@@ -453,7 +450,7 @@ namespace MP3GainMT
             if ((e.ColumnIndex == folderIndex || e.ColumnIndex == fileIndex) && e.RowIndex >= 0)
             {
                 var cell = this.fileGridView.Rows[e.RowIndex].Cells[pathIndex];
-                e.ToolTipText = cell.Value.ToString();
+                e.ToolTipText = cell.Value?.ToString();
             }
         }
 
