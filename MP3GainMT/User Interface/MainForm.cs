@@ -40,7 +40,6 @@ namespace MP3GainMT
         private MP3GainSettings settings;
         private BindingSource source;
         private string doubleClickTableChoice = Helpers.OpenFolderChoice;
-        private int backendComboBoxOriginalWidth;
 
         public MainForm()
         {
@@ -52,8 +51,6 @@ namespace MP3GainMT
             string engineDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engines");
             IMp3GainBackend defaultBackend = new OriginalMp3GainBackend(Path.Combine(engineDir, "mp3gain.exe"));
             this.run = new Mp3GainManager(defaultBackend);
-
-            backendComboBoxOriginalWidth = backendComboBox.Width;
 
             InitializeBackendComboBox();
 
@@ -319,13 +316,11 @@ namespace MP3GainMT
                 
                 if (isMissing)
                 {
-                    this.backendComboBox.Width = backendComboBoxOriginalWidth - this.fixEngineButton.Width - 4;
                     this.fixEngineButton.Visible = true;
                     this.analyzeButton.Enabled = false;
                 }
                 else
                 {
-                    this.backendComboBox.Width = backendComboBoxOriginalWidth;
                     this.fixEngineButton.Visible = false;
                     this.analyzeButton.Enabled = true;
                 }

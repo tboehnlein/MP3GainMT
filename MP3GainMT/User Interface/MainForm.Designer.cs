@@ -34,6 +34,7 @@ namespace MP3GainMT
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
+            this.engineTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.backendComboBox = new System.Windows.Forms.ComboBox();
             this.fixEngineButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
@@ -122,22 +123,37 @@ namespace MP3GainMT
             this.browseButton.UseVisualStyleBackColor = false;
             this.browseButton.Click += new System.EventHandler(this.BrowseButton_Click);
             // 
+            // engineTableLayoutPanel
+            // 
+            this.engineTableLayoutPanel.ColumnCount = 2;
+            this.engineTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.engineTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.engineTableLayoutPanel.Controls.Add(this.backendComboBox, 0, 0);
+            this.engineTableLayoutPanel.Controls.Add(this.fixEngineButton, 1, 0);
+            this.engineTableLayoutPanel.Location = new System.Drawing.Point(6, 56);
+            this.engineTableLayoutPanel.Name = "engineTableLayoutPanel";
+            this.engineTableLayoutPanel.RowCount = 1;
+            this.engineTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.engineTableLayoutPanel.Size = new System.Drawing.Size(139, 27);
+            this.engineTableLayoutPanel.TabIndex = 24;
+            // 
             // backendComboBox
             // 
+            this.backendComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.backendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.backendComboBox.FormattingEnabled = true;
-            this.backendComboBox.Location = new System.Drawing.Point(11, 58);
+            this.backendComboBox.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.backendComboBox.Name = "backendComboBox";
-            this.backendComboBox.Size = new System.Drawing.Size(129, 21);
-            this.backendComboBox.TabIndex = 24;
+            this.backendComboBox.TabIndex = 0;
             this.backendComboBox.SelectedIndexChanged += new System.EventHandler(this.BackendComboBox_SelectedIndexChanged);
             // 
             // fixEngineButton
             // 
-            this.fixEngineButton.Location = new System.Drawing.Point(107, 57);
+            this.fixEngineButton.AutoSize = true;
+            this.fixEngineButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.fixEngineButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.fixEngineButton.Name = "fixEngineButton";
-            this.fixEngineButton.Size = new System.Drawing.Size(33, 23);
-            this.fixEngineButton.TabIndex = 25;
+            this.fixEngineButton.TabIndex = 1;
             this.fixEngineButton.Text = "Fix";
             this.fixEngineButton.UseVisualStyleBackColor = true;
             this.fixEngineButton.Visible = false;
@@ -962,8 +978,7 @@ namespace MP3GainMT
             this.Controls.Add(this.analyzeButton);
             this.Controls.Add(this.fileGridView);
             this.Controls.Add(this.fileListLabel);
-            this.Controls.Add(this.backendComboBox);
-            this.Controls.Add(this.fixEngineButton);
+            this.Controls.Add(this.engineTableLayoutPanel);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label4);
@@ -1033,6 +1048,7 @@ namespace MP3GainMT
         private ComboBox coresComboBox;
         private Label label8;
         private Label mp3GainLabel;
+        private System.Windows.Forms.TableLayoutPanel engineTableLayoutPanel;
         private ComboBox backendComboBox;
         private Button fixEngineButton;
         private GroupBox userInterfaceGroupBox;
