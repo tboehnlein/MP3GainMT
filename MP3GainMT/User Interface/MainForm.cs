@@ -52,6 +52,8 @@ namespace MP3GainMT
             IMp3GainBackend defaultBackend = new OriginalMp3GainBackend(Path.Combine(engineDir, "mp3gain.exe"));
             this.run = new Mp3GainManager(defaultBackend);
 
+            InitializeBackendComboBox();
+
             this.ReadSettings(run);
 
             this.run.FolderFinished += Run_FolderFinished;
@@ -287,11 +289,52 @@ namespace MP3GainMT
             }
         }
 
+        private void InitializeBackendComboBox()
+        {
+            this.backendComboBox.Items.Clear();
+            string engineDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engines");
+
+            string[] expectedEngines = { "Original", "mp3rgain", "mp3gain-modern" };
+            string[] expectedFiles = { "mp3gain.exe", "mp3rgain.exe", "mp3gain-modern.exe" };
+
+            for (int i = 0; i < expectedEngines.Length; i++)
+            {
+                if (File.Exists(Path.Combine(engineDir, expectedFiles[i])))
+                {
+                    this.backendComboBox.Items.Add(expectedEngines[i]);
+                }
+                else
+                {
+                    this.backendComboBox.Items.Add($"{expectedEngines[i]} (Missing)");
+                }
+            }
+        }
+
         private void BackendComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.backendComboBox.SelectedItem != null && this.run != null)
             {
                 var selection = this.backendComboBox.SelectedItem.ToString();
+                
+                bool isMissing = selection.EndsWith(" (Missing)");
+                
+                if (isMissing)
+                {
+                    this.backendComboBox.Width = 70;
+                    this.fixEngineButton.Visible = true;
+                    this.mp3GainButton.Enabled = false;
+                    this.analyzeButton.Enabled = false;
+                }
+                else
+                {
+                    this.backendComboBox.Width = 107;
+                    this.fixEngineButton.Visible = false;
+                    this.mp3GainButton.Enabled = true;
+                    this.analyzeButton.Enabled = true;
+                }
+
+                selection = selection.Replace(" (Missing)", "");
+
                 this.settings.BackendType = selection;
                 
                 string engineDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engines");
@@ -307,6 +350,44 @@ namespace MP3GainMT
                 else if (selection == "mp3gain-modern (Multi-threaded)" || selection == "mp3gain-modern")
                 {
                     this.run.Backend = new Mp3gainModernBackend(Path.Combine(engineDir, "mp3gain-modern.exe"));
+                }
+            }
+        }
+
+        private void FixEngineButton_Click(object sender, EventArgs e)
+        {
+            if (this.backendComboBox.SelectedItem == null) return;
+            var selection = this.backendComboBox.SelectedItem.ToString().Replace(" (Missing)", "");
+            
+            string targetFile = "";
+            if (selection == "Original mp3gain" || selection == "Original") targetFile = "mp3gain.exe";
+            else if (selection == "mp3rgain (M-Igashi)" || selection == "mp3rgain") targetFile = "mp3rgain.exe";
+            else if (selection == "mp3gain-modern (Multi-threaded)" || selection == "mp3gain-modern") targetFile = "mp3gain-modern.exe";
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = $"Executable ({targetFile})|{targetFile}|All Executables (*.exe)|*.exe";
+                ofd.Title = $"Locate {targetFile}";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string engineDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engines");
+                        if (!Directory.Exists(engineDir)) Directory.CreateDirectory(engineDir);
+                        
+                        string destinationPath = Path.Combine(engineDir, targetFile);
+                        File.Copy(ofd.FileName, destinationPath, true);
+                        
+                        MessageBox.Show($"{targetFile} restored successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
+                        var selectedIndex = this.backendComboBox.SelectedIndex;
+                        InitializeBackendComboBox();
+                        this.backendComboBox.SelectedIndex = selectedIndex;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to copy executable: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }

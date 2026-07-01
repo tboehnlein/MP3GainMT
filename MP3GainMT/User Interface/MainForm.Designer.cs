@@ -35,6 +35,7 @@ namespace MP3GainMT
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.browseButton = new System.Windows.Forms.Button();
             this.backendComboBox = new System.Windows.Forms.ComboBox();
+            this.fixEngineButton = new System.Windows.Forms.Button();
             this.folderPathTextBox = new System.Windows.Forms.TextBox();
             this.applyGainButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -127,15 +128,22 @@ namespace MP3GainMT
             // 
             this.backendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.backendComboBox.FormattingEnabled = true;
-            this.backendComboBox.Items.AddRange(new object[] {
-            "Original",
-            "mp3rgain",
-            "mp3gain-modern"});
             this.backendComboBox.Location = new System.Drawing.Point(33, 58);
             this.backendComboBox.Name = "backendComboBox";
             this.backendComboBox.Size = new System.Drawing.Size(107, 21);
             this.backendComboBox.TabIndex = 24;
             this.backendComboBox.SelectedIndexChanged += new System.EventHandler(this.BackendComboBox_SelectedIndexChanged);
+            // 
+            // fixEngineButton
+            // 
+            this.fixEngineButton.Location = new System.Drawing.Point(107, 57);
+            this.fixEngineButton.Name = "fixEngineButton";
+            this.fixEngineButton.Size = new System.Drawing.Size(33, 23);
+            this.fixEngineButton.TabIndex = 25;
+            this.fixEngineButton.Text = "Fix";
+            this.fixEngineButton.UseVisualStyleBackColor = true;
+            this.fixEngineButton.Visible = false;
+            this.fixEngineButton.Click += new System.EventHandler(this.FixEngineButton_Click);
             // 
             // folderPathTextBox
             // 
@@ -982,6 +990,7 @@ namespace MP3GainMT
             this.Controls.Add(this.fileGridView);
             this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.backendComboBox);
+            this.Controls.Add(this.fixEngineButton);
             this.Controls.Add(this.mp3GainButton);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label8);
@@ -1054,6 +1063,7 @@ namespace MP3GainMT
         private Button mp3GainButton;
         private Label mp3GainLabel;
         private ComboBox backendComboBox;
+        private Button fixEngineButton;
         private ReadOnlyCheckBox readOnlyCheckBox1;
         private GroupBox userInterfaceGroupBox;
         private RadioButton openFolderRadioButton;
