@@ -69,7 +69,6 @@ namespace MP3GainMT
             this.undoButton = new System.Windows.Forms.Button();
             this.coresComboBox = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.mp3GainButton = new System.Windows.Forms.Button();
             this.mp3GainLabel = new System.Windows.Forms.Label();
             this.userInterfaceGroupBox = new System.Windows.Forms.GroupBox();
             this.tableFontSizeNumeric = new System.Windows.Forms.NumericUpDown();
@@ -80,7 +79,6 @@ namespace MP3GainMT
             this.openFolderRadioButton = new System.Windows.Forms.RadioButton();
             this.playFileRadioButton = new System.Windows.Forms.RadioButton();
             this.doubleClickRowLabel = new System.Windows.Forms.Label();
-            this.readOnlyCheckBox1 = new MP3GainMT.User_Interface.ReadOnlyCheckBox();
             this.fileGridView = new MP3GainMT.User_Interface.DataGridViewBuffered();
             this.HasGainTags = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.FullPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -128,9 +126,9 @@ namespace MP3GainMT
             // 
             this.backendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.backendComboBox.FormattingEnabled = true;
-            this.backendComboBox.Location = new System.Drawing.Point(33, 58);
+            this.backendComboBox.Location = new System.Drawing.Point(11, 58);
             this.backendComboBox.Name = "backendComboBox";
-            this.backendComboBox.Size = new System.Drawing.Size(107, 21);
+            this.backendComboBox.Size = new System.Drawing.Size(129, 21);
             this.backendComboBox.TabIndex = 24;
             this.backendComboBox.SelectedIndexChanged += new System.EventHandler(this.BackendComboBox_SelectedIndexChanged);
             // 
@@ -150,10 +148,10 @@ namespace MP3GainMT
             this.folderPathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.folderPathTextBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.folderPathTextBox.Location = new System.Drawing.Point(223, 59);
+            this.folderPathTextBox.Location = new System.Drawing.Point(150, 59);
             this.folderPathTextBox.Name = "folderPathTextBox";
             this.folderPathTextBox.ReadOnly = true;
-            this.folderPathTextBox.Size = new System.Drawing.Size(358, 20);
+            this.folderPathTextBox.Size = new System.Drawing.Size(431, 20);
             this.folderPathTextBox.TabIndex = 1;
             // 
             // applyGainButton
@@ -173,7 +171,7 @@ namespace MP3GainMT
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(229, 41);
+            this.label1.Location = new System.Drawing.Point(155, 40);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(151, 13);
             this.label1.TabIndex = 0;
@@ -587,28 +585,15 @@ namespace MP3GainMT
             this.label8.TabIndex = 0;
             this.label8.Text = "Cores";
             // 
-            // mp3GainButton
-            // 
-            this.mp3GainButton.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.mp3GainButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlDark;
-            this.mp3GainButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.mp3GainButton.Location = new System.Drawing.Point(146, 55);
-            this.mp3GainButton.Name = "mp3GainButton";
-            this.mp3GainButton.Size = new System.Drawing.Size(71, 24);
-            this.mp3GainButton.TabIndex = 2;
-            this.mp3GainButton.Text = "Bro&wse...";
-            this.mp3GainButton.UseVisualStyleBackColor = false;
-            this.mp3GainButton.Click += new System.EventHandler(this.MP3GainButton_Click);
-            // 
             // mp3GainLabel
             // 
             this.mp3GainLabel.AutoSize = true;
             this.mp3GainLabel.CausesValidation = false;
             this.mp3GainLabel.Location = new System.Drawing.Point(7, 40);
             this.mp3GainLabel.Name = "mp3GainLabel";
-            this.mp3GainLabel.Size = new System.Drawing.Size(138, 13);
+            this.mp3GainLabel.Size = new System.Drawing.Size(87, 13);
             this.mp3GainLabel.TabIndex = 0;
-            this.mp3GainLabel.Text = "MP3Gain Executable Setup";
+            this.mp3GainLabel.Text = "MP3Gain Engine";
             // 
             // userInterfaceGroupBox
             // 
@@ -722,17 +707,6 @@ namespace MP3GainMT
             this.doubleClickRowLabel.Size = new System.Drawing.Size(67, 13);
             this.doubleClickRowLabel.TabIndex = 16;
             this.doubleClickRowLabel.Text = "Double Click";
-            // 
-            // readOnlyCheckBox1
-            // 
-            this.readOnlyCheckBox1.AutoSize = true;
-            this.readOnlyCheckBox1.ForeColor = System.Drawing.Color.Gray;
-            this.readOnlyCheckBox1.Location = new System.Drawing.Point(12, 61);
-            this.readOnlyCheckBox1.Name = "readOnlyCheckBox1";
-            this.readOnlyCheckBox1.ReadOnly = true;
-            this.readOnlyCheckBox1.Size = new System.Drawing.Size(15, 14);
-            this.readOnlyCheckBox1.TabIndex = 17;
-            this.readOnlyCheckBox1.UseVisualStyleBackColor = true;
             // 
             // fileGridView
             // 
@@ -977,7 +951,6 @@ namespace MP3GainMT
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1364, 864);
             this.Controls.Add(this.userInterfaceGroupBox);
-            this.Controls.Add(this.readOnlyCheckBox1);
             this.Controls.Add(this.coresComboBox);
             this.Controls.Add(this.filterGroupBox);
             this.Controls.Add(this.targetDbNumeric);
@@ -991,7 +964,6 @@ namespace MP3GainMT
             this.Controls.Add(this.fileListLabel);
             this.Controls.Add(this.backendComboBox);
             this.Controls.Add(this.fixEngineButton);
-            this.Controls.Add(this.mp3GainButton);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label4);
@@ -1060,11 +1032,9 @@ namespace MP3GainMT
         private Label label7;
         private ComboBox coresComboBox;
         private Label label8;
-        private Button mp3GainButton;
         private Label mp3GainLabel;
         private ComboBox backendComboBox;
         private Button fixEngineButton;
-        private ReadOnlyCheckBox readOnlyCheckBox1;
         private GroupBox userInterfaceGroupBox;
         private RadioButton openFolderRadioButton;
         private RadioButton playFileRadioButton;

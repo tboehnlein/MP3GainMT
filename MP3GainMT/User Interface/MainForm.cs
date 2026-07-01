@@ -40,6 +40,7 @@ namespace MP3GainMT
         private MP3GainSettings settings;
         private BindingSource source;
         private string doubleClickTableChoice = Helpers.OpenFolderChoice;
+        private int backendComboBoxOriginalWidth;
 
         public MainForm()
         {
@@ -51,6 +52,8 @@ namespace MP3GainMT
             string engineDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Engines");
             IMp3GainBackend defaultBackend = new OriginalMp3GainBackend(Path.Combine(engineDir, "mp3gain.exe"));
             this.run = new Mp3GainManager(defaultBackend);
+
+            backendComboBoxOriginalWidth = backendComboBox.Width;
 
             InitializeBackendComboBox();
 
@@ -278,14 +281,10 @@ namespace MP3GainMT
         private void ApplyMP3GainExecutable(string fileName)
         {
             this.settings.Executable = fileName;
+
             if (this.run != null && this.run.Backend != null)
             {
                 this.run.Backend.ExecutablePath = fileName;
-                this.readOnlyCheckBox1.Checked = File.Exists(this.run.Backend.ExecutablePath);
-            }
-            else
-            {
-                this.readOnlyCheckBox1.Checked = File.Exists(fileName);
             }
         }
 
@@ -320,16 +319,14 @@ namespace MP3GainMT
                 
                 if (isMissing)
                 {
-                    this.backendComboBox.Width = 70;
+                    this.backendComboBox.Width = backendComboBoxOriginalWidth - this.fixEngineButton.Width - 4;
                     this.fixEngineButton.Visible = true;
-                    this.mp3GainButton.Enabled = false;
                     this.analyzeButton.Enabled = false;
                 }
                 else
                 {
-                    this.backendComboBox.Width = 107;
+                    this.backendComboBox.Width = backendComboBoxOriginalWidth;
                     this.fixEngineButton.Visible = false;
-                    this.mp3GainButton.Enabled = true;
                     this.analyzeButton.Enabled = true;
                 }
 
@@ -632,23 +629,6 @@ namespace MP3GainMT
         private void MainForm_Shown(object sender, EventArgs e)
         {
             this.folderPathTextBox.DeselectAll();
-        }
-
-        private void MP3GainButton_Click(object sender, EventArgs e)
-        {
-            var selectFolder = new OpenFileDialog();
-
-            selectFolder.InitialDirectory = this.settings.Executable;
-            selectFolder.Title = "Select MP3Gain.exe";
-            selectFolder.Filter = "MP3Gain|MP3Gain.exe";
-
-            var result = selectFolder.ShowDialog(this);
-            var fileName = selectFolder.FileName;
-
-            if (result == DialogResult.OK)
-            {
-                ApplyMP3GainExecutable(fileName);
-            }
         }
 
         private void ReadSettings(Mp3GainManager run)
