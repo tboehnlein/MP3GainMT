@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 Thomas Boehnlein
+// Copyright (c) 2025 Thomas Boehnlein
 // 
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -120,7 +120,7 @@ namespace MP3GainMT
                     dataGridView.BackgroundColor = TableColor;
                     dataGridView.DefaultCellStyle.Font = new Font("Segoe UI", TableFontSize, FontStyle.Regular);
                 }
-                else if (control is Panel panel && panel.Tag.ToString() == "Instruction")
+                else if (control is Panel panel && panel.Tag != null && panel.Tag.ToString() == "Instruction")
                 {
                     //panel.BackColor = InstructionBackColor;
                     //panel.ForeColor = InstructionText;

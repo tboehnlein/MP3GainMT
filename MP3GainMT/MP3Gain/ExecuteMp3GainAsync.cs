@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 Thomas Boehnlein
+// Copyright (c) 2025 Thomas Boehnlein
 // 
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -30,7 +30,7 @@ namespace MP3GainMT.MP3Gain
         protected Mp3File activeFile = null;
         protected int filesFinished = 0;
         protected TimeCheck progressTimeCheck = new TimeCheck(5);
-        private Dictionary<string, string> fileLookUp;
+        protected Dictionary<string, string> fileLookUp;
         protected List<string> sortedFiles = new List<string>();
 
         public ExecuteMp3GainAsync(string executable,
@@ -62,16 +62,17 @@ namespace MP3GainMT.MP3Gain
         public Process Process { get; set; }
         public BackgroundWorker Worker { get; private set; }
         protected string FilePrefix { get; set; } = string.Empty;
+        protected System.Text.StringBuilder fullLog = new System.Text.StringBuilder();
 
         public virtual void Execute()
         {
             //TODO: rename all of the files with a lookup dictionary to rename back to original
             // names at the end of the process
 
-            this.fileLookUp = new Dictionary<string, string>();
-
             this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
             sortedFiles.Sort();
+
+            this.fileLookUp = new Dictionary<string, string>();
 
             bool renameSuccess = Helpers.RandomlyRenameFiles(this.fileLookUp, this.sortedFiles);
 
@@ -82,40 +83,84 @@ namespace MP3GainMT.MP3Gain
                 return;
             }
 
+            if (this.Worker == null)
+            {
+                return;
+            }
+
             this.sortedFiles = this.fileLookUp.Keys.ToList();
 
-            var parameters = $"{this.Arguments} \"{Path.Combine(FolderPath, "*.mp3")}\"";
-            var processStart = new ProcessStartInfo(Executable, parameters);
-            processStart.UseShellExecute = false;
-            processStart.RedirectStandardOutput = true;
-            processStart.RedirectStandardError = true;
-            processStart.CreateNoWindow = true;
+            int maxCmdLength = 32000;
+            List<string> currentChunk = new List<string>();
+            int currentLength = this.Arguments.Length;
+            var chunks = new List<List<string>>();
 
-            this.Process = new Process();
+            foreach (var file in sortedFiles)
+            {
+                string arg = $" \"{Path.GetFileName(file)}\"";
+                if (currentLength + arg.Length > maxCmdLength && currentChunk.Count > 0)
+                {
+                    chunks.Add(currentChunk);
+                    currentChunk = new List<string>();
+                    currentLength = this.Arguments.Length;
+                }
+                currentChunk.Add(file);
+                currentLength += arg.Length;
+            }
+            if (currentChunk.Count > 0)
+            {
+                chunks.Add(currentChunk);
+            }
 
-            this.Process.StartInfo = processStart;
+            foreach (var chunk in chunks)
+            {
 
-            this.Process.OutputDataReceived += Process_OutputDataReceived;
-            this.Process.ErrorDataReceived += Process_ErrorDataReceived;
+                var builder = new System.Text.StringBuilder(this.Arguments);
+                foreach (var file in chunk)
+                {
+                    builder.Append($" \"{Path.GetFileName(file)}\"");
+                }
+                var parameters = builder.ToString();
 
-            // assume first file will be ran first in *.mp3
-            this.activeFile = this.Files[this.fileLookUp[sortedFiles.First()]];
+                var processStart = new ProcessStartInfo(Executable, parameters);
+                processStart.WorkingDirectory = this.FolderPath;
+                processStart.UseShellExecute = false;
+                processStart.RedirectStandardOutput = true;
+                processStart.RedirectStandardError = true;
+                processStart.CreateNoWindow = true;
 
-            this.Process.Start();
+                this.Process = new Process();
+                this.Process.StartInfo = processStart;
 
-            this.Process.BeginOutputReadLine();
-            this.Process.BeginErrorReadLine();
+                this.Process.OutputDataReceived += Process_OutputDataReceived;
+                this.Process.ErrorDataReceived += Process_ErrorDataReceived;
 
-            //Debug.WriteLine($"STARTED {this.ActionName} FOR {this.FolderName}");
+                this.activeFile = this.Files[this.fileLookUp[chunk.First()]];
 
-            this.Process.WaitForExit();
+                this.Process.Start();
 
-            this.Process.OutputDataReceived -= Process_OutputDataReceived;
-            this.Process.ErrorDataReceived -= Process_ErrorDataReceived;
-            
+                this.Process.BeginOutputReadLine();
+                this.Process.BeginErrorReadLine();
+
+                this.Process.WaitForExit();
+
+                this.Process.OutputDataReceived -= Process_OutputDataReceived;
+                this.Process.ErrorDataReceived -= Process_ErrorDataReceived;
+            }
+
             Helpers.UndoRandomlyRenameFiles(this.fileLookUp);
 
-            //Debug.WriteLine($"FINISHED {this.ActionName} FOR {this.FolderName}");
+            if (this.ActionName == "APPLY GAIN")
+            {
+                try
+                {
+                    var engineName = Path.GetFileNameWithoutExtension(this.Executable);
+                    string logPath = Path.Combine(this.FolderPath, $"mp3gain_apply_log.txt");
+                    File.WriteAllText(logPath, fullLog.ToString());
+                    Process.Start(new ProcessStartInfo(logPath) { UseShellExecute = true });
+                }
+                catch { }
+            }
         }
 
         
@@ -133,9 +178,12 @@ namespace MP3GainMT.MP3Gain
                 {
                     var fileEndIndex = fileStartString.LastIndexOf("...");
                     var fileString = fileStartString.Substring(0, fileEndIndex);
-                    if (this.sortedFiles.Contains(fileString))
+                    
+                    var fullPath = Path.IsPathRooted(fileString) ? fileString : Path.Combine(this.FolderPath, fileString);
+                    
+                    if (this.sortedFiles.Contains(fullPath))
                     {
-                        this.activeFile = this.Files[this.fileLookUp[fileString]];
+                        this.activeFile = this.Files[this.fileLookUp[fullPath]];
                     }
                 }
             }
@@ -145,6 +193,7 @@ namespace MP3GainMT.MP3Gain
         {
             if (!String.IsNullOrEmpty(e.Data))
             {
+                fullLog.AppendLine(e.Data);
                 ExtractActiveFile(e);
                 UpdateProgress(e);
                 ProcessFileEnding(e);
@@ -153,6 +202,10 @@ namespace MP3GainMT.MP3Gain
 
         public virtual void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
+            if (e.Data != null)
+            {
+                fullLog.AppendLine(e.Data);
+            }
             //Debug.WriteLine($"OUTPUT \"{e.Data}\"");
         }
 

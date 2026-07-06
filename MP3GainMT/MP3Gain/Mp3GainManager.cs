@@ -482,7 +482,7 @@ namespace MP3GainMT.MP3Gain
 
                 this.finished.Add(folder);
 
-                this.Backend.CalculateMaxGain(folder, null, 1);
+                this.Backend.CalculateMaxGain(folder, null, this.maxCores);
 
                 foreach (var file in folder.Files.Values)
                 {
@@ -617,7 +617,7 @@ namespace MP3GainMT.MP3Gain
         {
             if (e.Result is Mp3Folder folder)
             {
-                this.Backend.CalculateMaxGain(folder, null);
+                this.Backend.CalculateMaxGain(folder, null, this.maxCores);
 
                 foreach (var file in folder.Files.Values)
                 {
@@ -756,7 +756,7 @@ namespace MP3GainMT.MP3Gain
 
                 foreach (var folder in folders)
                 {
-                    this.Backend.CalculateMaxGain(folder, worker);
+                    this.Backend.CalculateMaxGain(folder, worker, this.maxCores);
 
                     foreach (var file in folder.Files.Values)
                     {

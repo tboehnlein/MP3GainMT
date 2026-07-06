@@ -14,53 +14,58 @@ namespace MP3GainMT.MP3Gain
         public string ExecutablePath { get; set; }
         public virtual BackendSchedulingStrategy SchedulingStrategy => BackendSchedulingStrategy.StandardConcurrent;
 
-        protected virtual string GetExtraArgs(int threadCount)
-        {
-            return "";
-        }
+        protected virtual string ArgFormat => "/o ";
+        protected virtual string ArgApply => "/g ";
+        protected virtual string ArgCheck => "/s c ";
+        protected virtual string ArgUndo => "/u ";
 
         public OriginalMp3GainBackend(string executablePath)
         {
             this.ExecutablePath = executablePath;
         }
 
+        protected virtual string GetExtraArgs(int threadCount)
+        {
+            return string.Empty;
+        }
+
         public virtual void ApplyGain(Mp3Folder folder, BackgroundWorker worker, int threadCount = 1)
         {
             var applyGainExecution = new ExecuteMp3GainAsync(this.ExecutablePath,
-                                                        $"/o /g {folder.SuggestedGain} {GetExtraArgs(threadCount)}".Trim(),
+                                                        $"{ArgFormat}{ArgApply}{folder.SuggestedGain} {GetExtraArgs(threadCount)}".Trim(),
                                                         folder.Files,
                                                         folder.FolderPath,
                                                         "APPLY GAIN",
                                                         worker,
-                                                        "Applying gain",
+                                                        "Applying Track Gain",
                                                         "done");
             applyGainExecution.Execute();
         }
 
         public virtual void UndoGain(Mp3Folder folder, BackgroundWorker worker, int threadCount = 1)
         {
-            int undoSuggestedGain = 0;
-            var firstFile = folder.Files.Values.FirstOrDefault();
-            if (firstFile != null)
+            int undoSuggestedGain = -folder.SuggestedGain;
+            if (folder.Files.Values.Any())
             {
+                var firstFile = folder.Files.Values.First();
                 undoSuggestedGain = -Convert.ToInt32(firstFile.GainUndoAlbum);
             }
 
             var undoGainExecution = new ExecuteMp3GainAsync(this.ExecutablePath,
-                                                        $"/u {GetExtraArgs(threadCount)}".Trim(),
+                                                        $"{ArgUndo}{GetExtraArgs(threadCount)}".Trim(),
                                                         folder.Files,
                                                         folder.FolderPath,
                                                         "UNDO GAIN",
                                                         worker,
-                                                        "Undoing mp3gain changes",
-                                                        "                                                   ");
+                                                        "Undoing Track Gain",
+                                                        "done");
             undoGainExecution.Execute();
         }
 
         public virtual void CalculateMaxGain(Mp3Folder folder, BackgroundWorker worker, int threadCount = 1)
         {
             var execute = new ExecuteMp3GainSync(this.ExecutablePath,
-                                             $"/o /s c {GetExtraArgs(threadCount)}".Trim(),
+                                             $"{ArgFormat}{ArgCheck}{GetExtraArgs(threadCount)}".Trim(),
                                              folder.Files,
                                              folder.FolderPath,
                                              "GET MAX GAIN",
@@ -99,22 +104,6 @@ namespace MP3GainMT.MP3Gain
 
             public void Run()
             {
-                var parameters = $"\"{Path.Combine(folder.FolderPath, "*.mp3")}\" {extraArgs}".Trim();
-                var analysisStart = new ProcessStartInfo(executablePath, parameters);
-                analysisStart.UseShellExecute = false;
-                analysisStart.RedirectStandardOutput = true;
-                analysisStart.RedirectStandardError = true;
-                analysisStart.CreateNoWindow = true;
-
-                var analysisProcess = new Process();
-                analysisProcess.StartInfo = analysisStart;
-
-                this.sortOutput = new StringBuilder();
-                this.sortError = new StringBuilder();
-
-                analysisProcess.OutputDataReceived += AnalysisProcess_OutputDataReceived;
-                analysisProcess.ErrorDataReceived += AnalysisProcess_ErrorDataReceived;
-
                 this.sortedFiles = folder.Files.Select(x => x.Value.FilePath).ToList();
                 sortedFiles.Sort();
 
@@ -133,6 +122,23 @@ namespace MP3GainMT.MP3Gain
                 {
                     this.activeFile = folder.Files[this.fileLookUp[sortedFiles.First()]];
                 }
+
+                var parameters = $"{extraArgs} *.mp3".Trim();
+                var analysisStart = new ProcessStartInfo(executablePath, parameters);
+                analysisStart.WorkingDirectory = folder.FolderPath;
+                analysisStart.UseShellExecute = false;
+                analysisStart.RedirectStandardOutput = true;
+                analysisStart.RedirectStandardError = true;
+                analysisStart.CreateNoWindow = true;
+
+                var analysisProcess = new Process();
+                analysisProcess.StartInfo = analysisStart;
+
+                this.sortOutput = new StringBuilder();
+                this.sortError = new StringBuilder();
+
+                analysisProcess.OutputDataReceived += AnalysisProcess_OutputDataReceived;
+                analysisProcess.ErrorDataReceived += AnalysisProcess_ErrorDataReceived;
 
                 analysisProcess.Start();
                 analysisProcess.BeginOutputReadLine();
@@ -214,9 +220,10 @@ namespace MP3GainMT.MP3Gain
 
             private bool ProcessFilePath(string line)
             {
-                if (File.Exists(line) && this.fileLookUp.ContainsKey(line))
+                var fullPath = Path.IsPathRooted(line) ? line : Path.Combine(folder.FolderPath, line);
+                if (File.Exists(fullPath) && this.fileLookUp.ContainsKey(fullPath))
                 {
-                    this.activeFile = folder.Files[this.fileLookUp[line]];
+                    this.activeFile = folder.Files[this.fileLookUp[fullPath]];
                     return true;
                 }
                 return false;
@@ -227,9 +234,11 @@ namespace MP3GainMT.MP3Gain
                 bool found = false;
                 bool done = false;
 
-                if (line.StartsWith("Recommended \"Track\" mp3 gain change:"))
+                string trimmedLine = line.TrimStart();
+
+                if (trimmedLine.StartsWith("Recommended \"Track\" mp3 gain change:"))
                 {
-                    var items = line.Split(new char[] { ':' });
+                    var items = trimmedLine.Split(new char[] { ':' });
                     var change = items[1].Trim();
                     if (this.activeFile != null && Int32.TryParse(change, out var gain))
                     {
@@ -239,13 +248,24 @@ namespace MP3GainMT.MP3Gain
                     }
                 }
 
-                if (line.StartsWith("Recommended \"Track\" dB change:"))
+                if (trimmedLine.StartsWith("Recommended \"Track\" dB change:"))
                 {
-                    var items = line.Split(new char[] { ':' });
+                    var items = trimmedLine.Split(new char[] { ':' });
                     var change = items[1].Trim();
                     if (this.activeFile != null && double.TryParse(change, out var offset))
                     {
                         this.activeFile.DBOffset = offset;
+                        found = true;
+                    }
+                }
+
+                if (trimmedLine.StartsWith("Max PCM sample at current gain:"))
+                {
+                    var items = trimmedLine.Split(new char[] { ':' });
+                    var change = items[1].Trim();
+                    if (this.activeFile != null && double.TryParse(change, out var maxPcm))
+                    {
+                        this.activeFile.MaxNoClipGainTrackRaw = maxPcm;
                         found = true;
                     }
                 }

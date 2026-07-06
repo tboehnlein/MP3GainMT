@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 Thomas Boehnlein
+// Copyright (c) 2025 Thomas Boehnlein
 // 
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -48,36 +48,75 @@ namespace MP3GainMT.MP3Gain
             this.sortedFiles = this.Files.Select(x => x.Value.FilePath).ToList();
             sortedFiles.Sort();
 
-            var parameters = $"{this.Arguments} \"{Path.Combine(FolderPath, "*.mp3")}\"";
-            var processStart = new ProcessStartInfo(Executable, parameters);
-            processStart.UseShellExecute = false;
-            processStart.RedirectStandardOutput = true;
-            processStart.RedirectStandardError = true;
-            processStart.CreateNoWindow = true;
+            int maxCmdLength = 32000;
+            List<string> currentChunk = new List<string>();
+            int currentLength = this.Arguments.Length;
+            var chunks = new List<List<string>>();
 
-            this.Process = new Process();
+            foreach (var file in sortedFiles)
+            {
+                string arg = $" \"{Path.GetFileName(file)}\"";
+                if (currentLength + arg.Length > maxCmdLength && currentChunk.Count > 0)
+                {
+                    chunks.Add(currentChunk);
+                    currentChunk = new List<string>();
+                    currentLength = this.Arguments.Length;
+                }
+                currentChunk.Add(file);
+                currentLength += arg.Length;
+            }
+            if (currentChunk.Count > 0)
+            {
+                chunks.Add(currentChunk);
+            }
 
-            this.Process.StartInfo = processStart;
+            foreach (var chunk in chunks)
+            {
 
-            this.Process.OutputDataReceived += Process_OutputDataReceived;
-            this.Process.ErrorDataReceived += Process_ErrorDataReceived;
+                var builder = new System.Text.StringBuilder(this.Arguments);
+                foreach (var file in chunk)
+                {
+                    builder.Append($" \"{Path.GetFileName(file)}\"");
+                }
+                var parameters = builder.ToString();
 
-            // assume first file will be ran first in *.mp3
-            this.activeFile = this.Files[sortedFiles.First()];
+                var processStart = new ProcessStartInfo(Executable, parameters);
+                processStart.WorkingDirectory = this.FolderPath;
+                processStart.UseShellExecute = false;
+                processStart.RedirectStandardOutput = true;
+                processStart.RedirectStandardError = true;
+                processStart.CreateNoWindow = true;
 
-            this.Process.Start();
+                this.Process = new Process();
+                this.Process.StartInfo = processStart;
 
-            this.Process.BeginOutputReadLine();
-            this.Process.BeginErrorReadLine();
+                this.Process.OutputDataReceived += Process_OutputDataReceived;
+                this.Process.ErrorDataReceived += Process_ErrorDataReceived;
 
-            //Debug.WriteLine($"STARTED {this.ActionName} FOR {this.FolderName}");
+                this.activeFile = this.Files[chunk.First()];
 
-            this.Process.WaitForExit();
+                this.Process.Start();
 
-            this.Process.OutputDataReceived -= Process_OutputDataReceived;
-            this.Process.ErrorDataReceived -= Process_ErrorDataReceived;
+                this.Process.BeginOutputReadLine();
+                this.Process.BeginErrorReadLine();
 
-            //Debug.WriteLine($"FINISHED {this.ActionName} FOR {this.FolderName}");
+                this.Process.WaitForExit();
+
+                this.Process.OutputDataReceived -= Process_OutputDataReceived;
+                this.Process.ErrorDataReceived -= Process_ErrorDataReceived;
+            }
+
+            if (this.ActionName == "GET MAX GAIN")
+            {
+                try
+                {
+                    var engineName = System.IO.Path.GetFileNameWithoutExtension(this.Executable);
+                    string logPath = System.IO.Path.Combine(this.FolderPath, $"mp3gain_read_tags_log_{engineName}.txt");
+                    System.IO.File.WriteAllText(logPath, fullLog.ToString());
+                    Process.Start(new ProcessStartInfo(logPath) { UseShellExecute = true });
+                }
+                catch { }
+            }
         }
 
         public override void ExtractActiveFile(DataReceivedEventArgs e)
@@ -110,7 +149,7 @@ namespace MP3GainMT.MP3Gain
             }
         }
 
-        private double GetMinGain(double minValue)
+        protected double GetMinGain(double minValue)
         {
             // convert to dB
             var final = Math.Log10(32767.0 / minValue) / Math.Log10(2.0) * 6.0206;
@@ -121,10 +160,18 @@ namespace MP3GainMT.MP3Gain
 
         public override void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
+            if (!String.IsNullOrEmpty(e.Data))
+            {
+                fullLog.AppendLine(e.Data);
+            }
         }
 
         public override void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
+            if (e.Data != null)
+            {
+                fullLog.AppendLine(e.Data);
+            }
             ExtractActiveFile(e);
         }
 

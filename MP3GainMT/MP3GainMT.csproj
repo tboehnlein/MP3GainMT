@@ -86,6 +86,8 @@
     <Compile Include="Helpers\FileProgress.cs" />
     <Compile Include="Helpers\FolderWorker.cs" />
     <Compile Include="MP3Gain\ExecuteMp3GainSync.cs" />
+    <Compile Include="MP3Gain\ExecuteMp3RGainSync.cs" />
+    <Compile Include="MP3Gain\ExecuteMp3RGainAsync.cs" />
     <Compile Include="User Interface\DataGridViewBuffered.cs">
       <SubType>Component</SubType>
     </Compile>
