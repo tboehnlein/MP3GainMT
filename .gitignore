@@ -364,3 +364,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /MP3GainMT/digest.txt
+/MP3s
+/nuget.exe

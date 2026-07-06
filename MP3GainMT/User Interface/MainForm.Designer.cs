@@ -100,6 +100,7 @@ namespace MP3GainMT
             this.AlbumClip = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.NoClipGain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ErrorMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.engineTableLayoutPanel.SuspendLayout();
             this.activityPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).BeginInit();
             this.filterGroupBox.SuspendLayout();
@@ -127,7 +128,7 @@ namespace MP3GainMT
             // 
             this.engineTableLayoutPanel.ColumnCount = 2;
             this.engineTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.engineTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.engineTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.engineTableLayoutPanel.Controls.Add(this.backendComboBox, 0, 0);
             this.engineTableLayoutPanel.Controls.Add(this.fixEngineButton, 1, 0);
             this.engineTableLayoutPanel.Location = new System.Drawing.Point(6, 56);
@@ -142,8 +143,10 @@ namespace MP3GainMT
             this.backendComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.backendComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.backendComboBox.FormattingEnabled = true;
+            this.backendComboBox.Location = new System.Drawing.Point(0, 0);
             this.backendComboBox.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.backendComboBox.Name = "backendComboBox";
+            this.backendComboBox.Size = new System.Drawing.Size(106, 21);
             this.backendComboBox.TabIndex = 0;
             this.backendComboBox.SelectedIndexChanged += new System.EventHandler(this.BackendComboBox_SelectedIndexChanged);
             // 
@@ -151,8 +154,10 @@ namespace MP3GainMT
             // 
             this.fixEngineButton.AutoSize = true;
             this.fixEngineButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.fixEngineButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.fixEngineButton.Location = new System.Drawing.Point(109, 0);
+            this.fixEngineButton.Margin = new System.Windows.Forms.Padding(0);
             this.fixEngineButton.Name = "fixEngineButton";
+            this.fixEngineButton.Size = new System.Drawing.Size(30, 23);
             this.fixEngineButton.TabIndex = 1;
             this.fixEngineButton.Text = "Fix";
             this.fixEngineButton.UseVisualStyleBackColor = true;
@@ -995,6 +1000,8 @@ namespace MP3GainMT
             this.Text = "MP3Gain Multi-Threaded";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.engineTableLayoutPanel.ResumeLayout(false);
+            this.engineTableLayoutPanel.PerformLayout();
             this.activityPanel.ResumeLayout(false);
             this.activityPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.targetDbNumeric)).EndInit();
