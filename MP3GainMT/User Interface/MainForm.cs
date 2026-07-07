@@ -958,9 +958,23 @@ namespace MP3GainMT
             }
         }
 
+        private void UpdateTargetDbColor()
+        {
+            bool isDarkTheme = this.themeComboBox.Text == "Dark";
+            if (this.targetDbNumeric.Value != 89.0m)
+            {
+                this.targetDbNumeric.BackColor = isDarkTheme ? Color.FromArgb(160, 40, 43) : Color.FromArgb(255, 200, 200);
+            }
+            else
+            {
+                this.targetDbNumeric.BackColor = isDarkTheme ? ThemeManager.DarkInputColor : ThemeManager.LightInputColor;
+            }
+        }
+
         private void TargetDbNumeric_ValueChanged(object sender, EventArgs e)
         {
             MP3GainRow.TargetDB = (double)this.targetDbNumeric.Value;
+            UpdateTargetDbColor();
 
             var index = 0;
 
@@ -1087,6 +1101,7 @@ namespace MP3GainMT
             this.fileGridView.SuspendLayout();
             ThemeManager.TableFontSize = (int)this.tableFontSizeNumeric.Value;
             ThemeManager.ApplyTheme(this, this.themeComboBox.Text == "Dark");
+            UpdateTargetDbColor();
             this.fileGridView.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
             this.fileGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
             this.fileGridView.ResumeLayout();
